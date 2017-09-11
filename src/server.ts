@@ -24,7 +24,6 @@ const MongoStore = mongo(session);
  */
 dotenv.config({ path: '.env' });
 
-
 /**
  * Controllers (route handlers).
  */
