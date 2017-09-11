@@ -19,6 +19,7 @@
     "build-sass": "node-sass src/public/css/main.scss dist/public/css/main.css",
     "watch-sass": "node-sass -w src/public/css/main.scss dist/public/css/main.css",
     "tslint": "tslint -c tslint.json -p tsconfig.json",
+    "tslint:fix": "tslint -c tslint.json -p tsconfig.json --fix",
     "copy-static-assets": "node copyStaticAssets.js",
     "debug": "npm run build && npm run watch-debug",
     "serve-debug": "nodemon --inspect dist/server.js",
