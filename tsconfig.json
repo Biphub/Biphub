@@ -10,11 +10,11 @@
         "paths": {
             "*": [
                 "node_modules/*",
-                "src/types/*"
+                "core/types/*"
             ]
         }
     },
     "include": [
-        "src/**/*"
+        "core/**/*"
     ]
 }
