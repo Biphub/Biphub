@@ -3,6 +3,7 @@ import * as request from 'request';
 import * as passportLocal from 'passport-local';
 import * as passportFacebook from 'passport-facebook';
 import * as _ from 'lodash';
+import * as R from 'ramda';
 
 import { default as User } from '../models/User.model';
 import { Request, Response, NextFunction } from 'express';
@@ -133,6 +134,7 @@ export let isAuthenticated = (req: Request, res: Response, next: NextFunction) =
 export let isAuthorized = (req: Request, res: Response, next: NextFunction) => {
   const provider = req.path.split('/').slice(-1)[0];
 
+  // TODO: Replace below with lodash
   if (_.find(req.user.tokens, { kind: provider })) {
     next();
   } else {
