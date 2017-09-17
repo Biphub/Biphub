@@ -1,3 +1,28 @@
+import * as Sequelize from 'sequelize'
+
+export default function (sequelize: any) {
+  return sequelize.define('user', {
+    email: Sequelize.STRING,
+    password: Sequelize.STRING,
+    passwordResetToken:  Sequelize.STRING,
+    passwordResetExpires: Sequelize.DATE,
+
+    facebook: Sequelize.STRING,
+    firstName: Sequelize.STRING,
+    lastName: Sequelize.STRING,
+    gender: Sequelize.STRING,
+    location: Sequelize.STRING,
+    website: Sequelize.STRING,
+    picture: Sequelize.STRING
+  }, {
+    instanceMethods: {
+      getFullName () {
+        return `${this.firstName} ${this.lastName}`
+      }
+    }
+  })
+}
+/*
 import * as bcrypt from 'bcrypt-nodejs';
 import * as crypto from 'crypto';
 import * as mongoose from 'mongoose';
@@ -48,9 +73,6 @@ const userSchema = new mongoose.Schema({
   }
 }, { timestamps: true });
 
-/**
- * Password hash middleware.
- */
 userSchema.pre('save', function save(next) {
   const user = this;
   console.log('checking user! ', user);
@@ -72,10 +94,6 @@ userSchema.methods.comparePassword = function (candidatePassword: string, cb: (e
   });
 };
 
-
-/**
- * Helper method for getting user's gravatar.
- */
 userSchema.methods.gravatar = function (size: number) {
   if (!size) {
     size = 200;
@@ -90,3 +108,4 @@ userSchema.methods.gravatar = function (size: number) {
 // export const User: UserType = mongoose.model<UserType>('User', userSchema);
 const User = mongoose.model('User', userSchema);
 export default User;
+*/

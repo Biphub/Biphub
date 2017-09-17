@@ -33,3 +33,6 @@ Thumbs.db
 
 # Ignore built ts files
 dist/**/*
+
+# sqlite
+core/database/sequelize/database.sqlite
