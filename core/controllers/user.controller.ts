@@ -2,7 +2,7 @@ import * as async from 'async';
 import * as crypto from 'crypto';
 import * as nodemailer from 'nodemailer';
 import * as passport from 'passport';
-import { default as User } from '../models/User.model';
+import * as models from '../models'
 import { Request, Response, NextFunction } from 'express';
 import { LocalStrategyInfo } from 'passport-local';
 import { WriteError } from 'mongodb';
@@ -38,7 +38,7 @@ export let postLogin = (req: Request, res: Response, next: NextFunction) => {
     return res.redirect('/login');
   }
 
-  passport.authenticate('local', (err: Error, user: UserModel, info: LocalStrategyInfo) => {
+  passport.authenticate('local', (err: Error, user: any, info: LocalStrategyInfo) => {
     if (err) { return next(err); }
     if (!user) {
       req.flash('errors', info.message);
@@ -91,12 +91,26 @@ export let postSignup = (req: Request, res: Response, next: NextFunction) => {
     return res.redirect('/signup');
   }
 
-  const user = new User({
-    email: req.body.email,
-    password: req.body.password
-  });
-
-  User.findOne({ email: req.body.email }, (err, existingUser) => {
+  models.User.findOrCreate({
+    where: {
+      email: req.body.email,
+      password: req.body.password
+    }
+  }).spread(function(userResult, created){
+    if (created) {
+      req.logIn(userResult.dataValue, (err) => {
+        if (err) {
+          console.error('login failed! ', err)
+          return next(err);
+        }
+        console.log('login success!')
+        res.redirect('/');
+      });
+    } else {
+      return next();
+    }
+  }); // end spread
+  /* User.findOne({ email: req.body.email }, (err, existingUser) => {
     if (err) { return next(err); }
     if (existingUser) {
       req.flash('errors', { msg: 'Account with that email address already exists.' });
@@ -111,7 +125,7 @@ export let postSignup = (req: Request, res: Response, next: NextFunction) => {
         res.redirect('/');
       });
     });
-  });
+  }); */
 };
 
 /**
