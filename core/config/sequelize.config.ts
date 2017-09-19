@@ -25,7 +25,6 @@ const getConnectionConfig = ():
           idle: 10000
         },
         dialect: 'sqlite',
-        // SQLite only
         storage: appRoot.resolve('/core/models/database.sqlite'),
       }
     }

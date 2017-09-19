@@ -15,6 +15,9 @@ export default function (sequelize: any) {
       type: Sequelize. STRING,
     },
   })
-
+  Pod.associate = (models) => {
+    Pod.hasMany(models.PodAction)
+    Pod.belongsTo(models.PodAuth)
+  }
   return Pod
 }
