@@ -2,7 +2,7 @@ import * as async from 'async';
 import * as crypto from 'crypto';
 import * as nodemailer from 'nodemailer';
 import * as passport from 'passport';
-import * as models from '../models'
+import * as models from '../models';
 import { Request, Response, NextFunction } from 'express';
 import { LocalStrategyInfo } from 'passport-local';
 import { WriteError } from 'mongodb';
@@ -100,10 +100,10 @@ export let postSignup = (req: Request, res: Response, next: NextFunction) => {
     if (created) {
       req.logIn(userResult.dataValue, (err) => {
         if (err) {
-          console.error('login failed! ', err)
+          console.error('login failed! ', err);
           return next(err);
         }
-        console.log('login success!')
+        console.log('login success!');
         res.redirect('/');
       });
     } else {
@@ -153,7 +153,7 @@ export let postUpdateProfile = (req: Request, res: Response, next: NextFunction)
     return res.redirect('/account');
   }
 
-  User.findById(req.user.id, (err, user: UserModel) => {
+  models.User.findById(req.user.id, (err, user: UserModel) => {
     if (err) { return next(err); }
     user.email = req.body.email || '';
     user.profile.name = req.body.name || '';
@@ -271,7 +271,7 @@ export let postReset = (req: Request, res: Response, next: NextFunction) => {
 
   async.waterfall([
     function resetPassword(done: Function) {
-      User
+      models.User
         .findOne({ passwordResetToken: req.params.token })
         .where('passwordResetExpires').gt(Date.now())
         .exec((err, user: any) => {
@@ -352,7 +352,7 @@ export let postForgot = (req: Request, res: Response, next: NextFunction) => {
       });
     },
     function setRandomToken(token: AuthToken, done: Function) {
-      User.findOne({ email: req.body.email }, (err, user: any) => {
+      models.User.findOne({ email: req.body.email }, (err, user: any) => {
         if (err) { return done(err); }
         if (!user) {
           req.flash('errors', { msg: 'Account with that email address does not exist.' });

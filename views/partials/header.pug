@@ -20,7 +20,10 @@
       ul.nav.navbar-nav.navbar-right
         if !user
           li(class=(title == 'Login') ? 'active' : undefined)
-            a(href='/login') Login
+            a(href='/login') Loginzz
+            div
+              =user
+            div
           li(class=(title == 'Create Account') ? 'active' : undefined)
             a(href='/signup') Create Account
         else
@@ -30,7 +33,7 @@
                 img(src=user.profile.picture)
               else
                 img(src=user.gravatar(60))
-              span= user.profile.name || user.email || user.id
+              span= user.name || user.email || user.id
               i.caret
             ul.dropdown-menu
               li

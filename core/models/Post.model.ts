@@ -1,4 +1,4 @@
-import * as Sequelize from 'sequelize'
+import * as Sequelize from 'sequelize';
 
 export default function (sequelize: any) {
   return sequelize.define('Post', {
@@ -7,6 +7,9 @@ export default function (sequelize: any) {
     },
     lastName: {
       type: Sequelize.STRING
+    },
+    test: {
+      type: Sequelize.STRING
     }
-  })
+  });
 }

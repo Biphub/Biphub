@@ -1,4 +1,4 @@
-import * as Sequelize from 'sequelize'
+import * as Sequelize from 'sequelize';
 import * as bcrypt from 'bcrypt-nodejs';
 import * as crypto from 'crypto';
 
@@ -20,28 +20,28 @@ export default function (sequelize: any) {
     individualHooks: true,
     instanceMethods: {
       getFullName () {
-        return `${this.firstName} ${this.lastName}`
+        return `${this.firstName} ${this.lastName}`;
       }
     }
-  })
+  });
   UserSchema.beforeCreate((user: any) => {
     return new Promise((res, rej) => {
       bcrypt.genSalt(10, (err, salt) => {
         if (err) {
-          console.error('Error while executing genSalt!')
-          return rej(err)
+          console.error('Error while executing genSalt!');
+          return rej(err);
         }
         bcrypt.hash(user.password, salt, undefined, (err, hash) => {
           if (err) {
-            console.error('Error while exeucing password hash!')
+            console.error('Error while exeucing password hash!');
           }
           user.password = hash;
-          return res(null)
-        })
-      })
-    })
-  })
-  return UserSchema
+          return res(null);
+        });
+      });
+    });
+  });
+  return UserSchema;
 }
 /*
 import * as bcrypt from 'bcrypt-nodejs';

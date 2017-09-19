@@ -1,8 +1,8 @@
 /**
  * Module dependencies.
  */
-import * as R from 'ramda'
-import * as future from 'ramda-future'
+import * as R from 'ramda';
+import * as future from 'ramda-future';
 import * as express from 'express';
 import * as compression from 'compression';  // compresses requests
 import * as session from 'express-session';
@@ -14,14 +14,14 @@ import * as mongo from 'connect-mongo';
 import * as flash from 'express-flash';
 import * as path from 'path';
 import * as passport from 'passport';
-import { default as config } from './config'
-import { default as database } from './database'
+import { default as config } from './config';
+import { default as database } from './database';
 import expressValidator = require('express-validator');
-import * as models from './models'
+import * as models from './models';
 const SessionStore = require('express-session-sequelize')(session.Store);
 
-config.setup() // <- This encourages building impure functions
-console.log('checking models ')
+config.setup(); // <- This encourages building impure functions
+console.log('checking models ');
 
 /**
  * Controllers (route handlers).
@@ -40,10 +40,10 @@ import * as passportConfig from './config/passport';
  * Create Express server.
  */
 const app = express();
-console.log('checking config ', process.env.DATABASE_TYPE)
+console.log('checking config ', process.env.DATABASE_TYPE);
 
 // Initializes sequelize
-models.sequelize.sync().then(() => console.log('Initialised seqeulize'))
+models.sequelize.sync().then(() => console.log('Initialised seqeulize'));
 const sequelizeSessionStore = new SessionStore({ db: models.sequelize });
 app.use(session({
   resave: true,

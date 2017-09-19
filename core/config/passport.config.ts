@@ -5,7 +5,7 @@ import * as passportFacebook from 'passport-facebook';
 import * as _ from 'lodash';
 import * as R from 'ramda';
 
-import * as models from '../models'
+import * as models from '../models';
 import { Request, Response, NextFunction } from 'express';
 
 const LocalStrategy = passportLocal.Strategy;
