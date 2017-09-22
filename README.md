@@ -1,27 +1,21 @@
-# TypeScript Node Starter
-
-[![Dependency Status](https://david-dm.org/Microsoft/TypeScript-Node-Starter.svg)](https://david-dm.org/Microsoft/TypeScript-Node-Starter) [![Build Status](https://travis-ci.org/Microsoft/TypeScript-Node-Starter.svg?branch=master)](https://travis-ci.org/Microsoft/TypeScript-Node-Starter) 
+# Biphub Core
 
 # Pre-reqs
-- Install [Node.js](https://nodejs.org/en/)
-- Install [MongoDB](https://docs.mongodb.com/manual/installation/)
-- Install [VS Code](https://code.visualstudio.com/)
+- Node verison 7.0.0 or higher
+- NPM version 4.0.0 or higher
 
 # Getting started
-- Clone the repository
+- 1. Clone the repository
 ```
-git clone --depth=1 https://github.com/Microsoft/TypeScript-Node-Starter.git <project_name>
+git clone https://gitlab.com/biphub/biphub.git
 ```
-- Install dependencies
+- 2. Install dependencies
 ```
 cd <project_name>
 npm install
 ```
-- Start your mongoDB server (you'll probably want another command prompt)
-```
-mongod
-```
-- Build and run the project
+
+- 3. Build and run the project
 ```
 npm start
 ```

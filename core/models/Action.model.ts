@@ -5,14 +5,14 @@ import * as Sequelize from 'sequelize'
  * @param sequelize
  * @returns {any}
  */
-export default function (sequelize: any) {
+export default function (sequelize) {
   const PodAction = sequelize.define('Action', {
     title: Sequelize.STRING,
     description: Sequelize.STRING,
     doc_ref: Sequelize.STRING,
     trigger: Sequelize.ENUM('poll', 'invoke', 'incoming_webhook'),
   })
-  PodAction.associate = (models: any) => {
+  PodAction.associate = (models) => {
     PodAction.belongsTo(models.Pod)
     // Create Action has Many action import
     PodAction.hasMany(models.Payload, { as: 'importPayload' })
