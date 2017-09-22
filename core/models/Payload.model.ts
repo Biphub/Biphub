@@ -7,7 +7,7 @@ import * as Sequelize from 'sequelize'
  */
 export default function (sequelize: any) {
   const Payload = sequelize.define('Payload', {
-    title: Sequelize.STRING,
+    title: Sequelize.STRING
   })
   Payload.associate = (models: any) => {
     Payload.belongsTo(models.PodAction)

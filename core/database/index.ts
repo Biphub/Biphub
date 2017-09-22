@@ -1,4 +1,4 @@
-import sequelize from './sequelize';
+import sequelize from './sequelize'
 
 /**
  * Each database must support
@@ -7,5 +7,5 @@ import sequelize from './sequelize';
  */
 export default {
   connect: sequelize.connect,
-  defineModels: sequelize.defineModels,
-};
+  defineModels: sequelize.defineModels
+}

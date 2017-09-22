@@ -32,7 +32,7 @@ Navigate to `http://localhost:3000`
 - Run development environment as watch mode
 
 ```
-npm run watch
+npm run dev
 ```
 
 Navgiate to `http://localhost:3000`
@@ -157,7 +157,7 @@ Below is a list of all the scripts this template has available:
 | `start`                   | Runs full build before starting all watch tasks. Can be invoked with `npm start`                  |
 | `build`                   | Full build. Runs ALL build tasks (`build-sass`, `build-ts`, `tslint`, `copy-static-assets`)       |
 | `serve`                   | Runs node on `dist/server.js` which is the apps entry point                                       |
-| `watch`                   | Runs all watch tasks (TypeScript, Sass, Node). Use this if you're not touching static assets.     |
+| `dev`                     | Runs all development tasks (TypeScript, Sass, Node). Use this if you're not touching static assets.     |
 | `test`                    | Runs tests using Jest test runner                                                                 |
 | `build-ts`                | Compiles all source `.ts` files to `.js` files in the `dist` folder                               |
 | `watch-ts`                | Same as `build-ts` but continuously watches `.ts` files and re-compiles when needed                |

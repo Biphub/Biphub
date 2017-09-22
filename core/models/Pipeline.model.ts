@@ -7,7 +7,7 @@ import * as Sequelize from 'sequelize'
  */
 export default function (sequelize: any) {
   const Piepline = sequelize.define('Piepline', {
-    title: Sequelize.STRING,
+    title: Sequelize.STRING
   })
   return Piepline
 }

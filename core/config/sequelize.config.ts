@@ -1,4 +1,3 @@
-import * as path from 'path';
 import * as appRoot from 'app-root-path'
 
 /**
@@ -25,7 +24,7 @@ const getConnectionConfig = ():
           idle: 10000
         },
         dialect: 'sqlite',
-        storage: appRoot.resolve('/core/models/database.sqlite'),
+        storage: appRoot.resolve('/core/models/database.sqlite')
       }
     }
   } else if (process.env.NODE_ENV === 'test') {
@@ -49,14 +48,14 @@ const getConnectionConfig = ():
       }
     }
   }
-  return null;
+  return null
 }
 
 /**
  * Getting options required for syncing
  * @returns {any}
  */
-const getSyncOptions = () : {
+const getSyncOptions = (): {
   sync: boolean
 } => {
   if (process.env.NODE_ENV === 'development') {
@@ -69,5 +68,5 @@ const getSyncOptions = () : {
 
 export {
   getConnectionConfig,
-  getSyncOptions,
+  getSyncOptions
 }

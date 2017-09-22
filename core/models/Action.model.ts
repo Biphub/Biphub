@@ -1,3 +1,4 @@
+import { Sequelize as Type } from 'sequelize'
 import * as Sequelize from 'sequelize'
 
 /**
@@ -5,12 +6,12 @@ import * as Sequelize from 'sequelize'
  * @param sequelize
  * @returns {any}
  */
-export default function (sequelize) {
+export default function (sequelize: Type) {
   const PodAction = sequelize.define('Action', {
     title: Sequelize.STRING,
     description: Sequelize.STRING,
     doc_ref: Sequelize.STRING,
-    trigger: Sequelize.ENUM('poll', 'invoke', 'incoming_webhook'),
+    trigger: Sequelize.ENUM('poll', 'invoke', 'incoming_webhook')
   })
   PodAction.associate = (models) => {
     PodAction.belongsTo(models.Pod)

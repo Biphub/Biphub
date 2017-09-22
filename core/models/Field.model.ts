@@ -8,7 +8,7 @@ import * as Sequelize from 'sequelize'
 export default function (sequelize: any) {
   const PodAction = sequelize.define('ActionImport', {
     title: Sequelize.STRING,
-    properties: Sequelize.JSONB,
+    properties: Sequelize.JSONB
   })
   PodAction.associate = (models: any) => {
     PodAction.belongsTo(models.Pod)

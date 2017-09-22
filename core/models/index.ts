@@ -7,31 +7,30 @@ import { getConnectionConfig } from '../config/sequelize.config'
 const config = getConnectionConfig()
 
 if (!config) {
-  throw new Error('Invalid database config!');
+  throw new Error('Invalid database config!')
 }
-const sequelize = new Sequelize(config.database, config.username, config.password, config.options);
+const sequelize = new Sequelize(config.database, config.username, config.password, config.options)
 
-let db = {};
+let db = {}
 
-const files = fs.readdirSync(__dirname);
+const files = fs.readdirSync(__dirname)
 files
-  .filter(function(file) {
+  .filter(function (file) {
     return !R.isEmpty(R.match(/\.model\.js$/g, file))
-      && file !== 'index.js';
   })
-  .forEach(function(file) {
-    console.log('checking file ', file);
-    const model = sequelize.import(path.join(__dirname, file));
-    db[model.name] = model;
-  });
+  .forEach(function (file) {
+    console.log('checking file ', file)
+    const model = sequelize.import(path.join(__dirname, file))
+    db[model.name] = model
+  })
 
-Object.keys(db).forEach(function(modelName) {
+Object.keys(db).forEach(function (modelName) {
   if ('associate' in db[modelName]) {
-    db[modelName].associate(db);
+    db[modelName].associate(db)
   }
-});
+})
 
-db.sequelize = sequelize;
-db.Sequelize = Sequelize;
+db.sequelize = sequelize
+db.Sequelize = Sequelize
 
-module.exports = db;
+module.exports = db
