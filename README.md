@@ -21,6 +21,22 @@ npm start
 ```
 Navigate to `http://localhost:3000`
 
+# Getting started for development
+
+- Do step 1 ~ 2 from ``` Getting started ```
+
+- Copy ``` ./.env.example ``` as ``` ./.env ```. It is going to be used by dotenv.
+ Example env assumes that you will be using SQLite as database so it does not have
+ username or password but DATABASE_TYPE is set to ``` sqlite ```
+
+- Run development environment as watch mode
+
+```
+npm run watch
+```
+
+Navgiate to `http://localhost:3000`
+
 # TypeScript + Node 
 The main purpose of this repository is to show a good end-to-end project setup and workflow for writing Node code in TypeScript.
 I will try to keep this as up-to-date as possible, but community contributions and recommendations for improvements are encouraged and will be most welcome. 
