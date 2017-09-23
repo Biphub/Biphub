@@ -1,9 +1,9 @@
 import * as Sequelize from 'sequelize'
 
-export interface PodAuthInstance {
+export interface PodAuthModel {
   strategyType: string,
   username: string,
-  password: string,
+  password: string
 }
 
 export default function (sequelize: Sequelize.Sequelize) {

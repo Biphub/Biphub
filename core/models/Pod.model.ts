@@ -1,6 +1,8 @@
 import * as Sequelize from 'sequelize'
 
-export default function (sequelize: any) {
+
+
+export default function (sequelize: Sequelize.Sequelize) {
   const Pod = sequelize.define('Pod', {
     name: {
       type: Sequelize.STRING

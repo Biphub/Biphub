@@ -1,17 +1,22 @@
 import * as Sequelize from 'sequelize'
 
+export interface FieldModel {
+  title: string,
+  properties: JSON
+}
+
 /**
  * Pods' action such as onNewMessage, sendMessage, postTwit, and etc
  * @param sequelize
  * @returns {any}
  */
 export default function (sequelize: any) {
-  const PodAction = sequelize.define('ActionImport', {
+  const Field = sequelize.define('Field', {
     title: Sequelize.STRING,
     properties: Sequelize.JSONB
   })
-  PodAction.associate = (models: any) => {
-    PodAction.belongsTo(models.Pod)
+  Field.associate = (models: any) => {
+    Field.belongsTo(models.Pod)
   }
-  return PodAction
+  return Field
 }

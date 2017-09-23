@@ -2,7 +2,7 @@ import * as async from 'async'
 import * as crypto from 'crypto'
 import * as nodemailer from 'nodemailer'
 import * as passport from 'passport'
-import * as models from '../models'
+import { default as models } from '../models'
 import { Request, Response, NextFunction } from 'express'
 import { LocalStrategyInfo } from 'passport-local'
 import { WriteError } from 'mongodb'
@@ -88,7 +88,6 @@ export let postSignup = (req: Request, res: Response, next: NextFunction) => {
     req.flash('errors', errors)
     return res.redirect('/signup')
   }
-
   models.User.findOrCreate({
     where: {
       email: req.body.email,
