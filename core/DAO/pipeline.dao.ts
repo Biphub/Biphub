@@ -7,7 +7,17 @@ export function create(pipeline: {
   description: string,
   sequence: JSON
 }) {
-
+  return fluture.Future((rej, res) => {
+    console.log('before fluture ')
+    models.Pipeline.create({
+      title: pipeline.title,
+      description: pipeline.description,
+      sequence: pipeline.sequence,
+    }).then(pipeline => {
+      console.log('checking pipeline after creating! ', pipeline)
+      res(pipeline)
+    }).catch(e => rej(e))
+  })
 }
 
 export function findAll() {

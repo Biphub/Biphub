@@ -33,7 +33,8 @@ const getConnectionConfig = (NODE_ENV: string):
       password: null,
       database: null,
       options: {
-        storage: ':memory'
+        storage: ':memory',
+        dialect: 'sqlite'
       }
     }
   } else if (NODE_ENV === 'production') {

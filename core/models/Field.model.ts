@@ -20,7 +20,7 @@ export default function (sequelize: any) {
     properties: Sequelize.JSONB
   })
   Field.associate = (models: any) => {
-    Field.belongsTo(models.Pod)
+    Field.belongsTo(models.Payload)
   }
   return Field
 }

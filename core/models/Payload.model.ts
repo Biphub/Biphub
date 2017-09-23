@@ -20,6 +20,7 @@ export default function (sequelize: Sequelize.Sequelize):
   })
   Payload.associate = (models: any) => {
     Payload.belongsTo(models.Action)
+    Payload.hasMany(models.Field)
   }
   return Payload
 }

@@ -3,11 +3,13 @@ import * as Sequelize from 'sequelize'
 
 export interface PipelineModel {
   title: string,
-  sequence: JSON
+  sequence: JSON,
+  description: string
 }
 
 export interface PipelineInstance extends Sequelize.Instance<PipelineModel> {
-  dataValues: PipelineModel
+  title: string,
+  sequence: JSON,
 }
 
 /**
@@ -16,7 +18,7 @@ export interface PipelineInstance extends Sequelize.Instance<PipelineModel> {
  * @returns {any}
  */
 export default function (sequelize: SequelizeType) {
-  const Piepline = sequelize.define('Piepline', {
+  const Piepline = sequelize.define('Pipeline', {
     title: Sequelize.STRING,
     description: Sequelize.STRING,
     /**
