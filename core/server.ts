@@ -14,10 +14,16 @@ import * as passport from 'passport'
 import { default as config } from './config'
 import expressValidator = require('express-validator')
 import { default as models } from './models'
+import { findAll } from './DAO/pipeline.dao'
 const SessionStore = require('express-session-sequelize')(session.Store)
 
 config.setup() // <- This encourages building impure functions
 console.log('checking models ')
+
+findAll().fork(
+  () => console.error('hmmm failed'),
+  () => console.log('success!')
+)
 
 /**
  * Controllers (route handlers).

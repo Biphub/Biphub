@@ -55,6 +55,7 @@
     "express-session-sequelize": "^1.1.0",
     "express-validator": "^3.2.1",
     "fbgraph": "^1.3.0",
+    "fluture": "^7.1.2",
     "lodash": "^4.17.4",
     "lusca": "^1.5.1",
     "mongoose": "^4.11.12",

@@ -18,6 +18,7 @@ export interface PipelineInstance extends Sequelize.Instance<PipelineModel> {
 export default function (sequelize: SequelizeType) {
   const Piepline = sequelize.define('Piepline', {
     title: Sequelize.STRING,
+    description: Sequelize.STRING,
     /**
      * {
      *   action1(trigger) {
