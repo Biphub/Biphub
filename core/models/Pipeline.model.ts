@@ -1,3 +1,4 @@
+import { Sequelize as SequelizeType } from 'sequelize'
 import * as Sequelize from 'sequelize'
 
 /**
@@ -5,7 +6,7 @@ import * as Sequelize from 'sequelize'
  * @param sequelize
  * @returns {any}
  */
-export default function (sequelize: any) {
+export default function (sequelize: SequelizeType) {
   const Piepline = sequelize.define('Piepline', {
     title: Sequelize.STRING
   })

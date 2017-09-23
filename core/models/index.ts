@@ -3,13 +3,27 @@ import * as fs from 'fs'
 import * as path from 'path'
 import * as Sequelize from 'sequelize'
 import { getConnectionConfig } from '../config/sequelize.config'
+import { UserInstance } from './User.model'
 
-const config = getConnectionConfig()
+const config = getConnectionConfig(process.env.NODE_ENV)
 
 if (!config) {
   throw new Error('Invalid database config!')
 }
-const sequelize = new Sequelize(config.database, config.username, config.password, config.options)
+
+interface DbConnection {
+  sequelize: Sequelize.Sequelize,
+  Sequelize: Sequelize.Sequelize,
+  User: UserInstance
+
+}
+
+const sequelize = new Sequelize(
+  config.database,
+  config.username,
+  config.password,
+  config.options,
+)
 
 let db = {}
 
@@ -21,7 +35,7 @@ files
   .forEach(function (file) {
     console.log('checking file ', file)
     const model = sequelize.import(path.join(__dirname, file))
-    db[model.name] = model
+    db[model['name']] = model
   })
 
 Object.keys(db).forEach(function (modelName) {
@@ -30,7 +44,7 @@ Object.keys(db).forEach(function (modelName) {
   }
 })
 
-db.sequelize = sequelize
-db.Sequelize = Sequelize
+db['sequelize'] = sequelize
+db['Sequelize'] = Sequelize
 
-module.exports = db
+export default db

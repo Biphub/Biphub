@@ -4,14 +4,14 @@ import * as appRoot from 'app-root-path'
  * Dependent on process.env.NODE_ENV
  * get sequelize
  */
-const getConnectionConfig = ():
+const getConnectionConfig = (NODE_ENV: string):
   {
     database: string | null,
     username: string | null,
     password: string | null,
     options: {} | null
   } => {
-  if (process.env.NODE_ENV === 'development') {
+  if (NODE_ENV === 'development') {
     return {
       database: null,
       username: null,
@@ -27,16 +27,16 @@ const getConnectionConfig = ():
         storage: appRoot.resolve('/core/models/database.sqlite')
       }
     }
-  } else if (process.env.NODE_ENV === 'test') {
+  } else if (NODE_ENV === 'test') {
     return {
       username: null,
       password: null,
       database: null,
       options: {
-        storage: ':memory',
-      },
+        storage: ':memory'
+      }
     }
-  } else if (process.env.NODE_ENV === 'production') {
+  } else if (NODE_ENV === 'production') {
     return {
       'username': 'root',
       'password': null,

@@ -1,4 +1,4 @@
-import { Sequelize as Type } from 'sequelize'
+import { Sequelize as SequelizeType } from 'sequelize'
 import * as Sequelize from 'sequelize'
 
 /**
@@ -6,7 +6,7 @@ import * as Sequelize from 'sequelize'
  * @param sequelize
  * @returns {any}
  */
-export default function (sequelize: Type) {
+export default function (sequelize: SequelizeType) {
   let Payload = sequelize.define('Payload', {
     title: Sequelize.STRING
   })

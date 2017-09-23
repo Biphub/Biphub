@@ -13,7 +13,7 @@ import * as path from 'path'
 import * as passport from 'passport'
 import { default as config } from './config'
 import expressValidator = require('express-validator')
-import * as models from './models'
+import { default as models } from './models'
 const SessionStore = require('express-session-sequelize')(session.Store)
 
 config.setup() // <- This encourages building impure functions

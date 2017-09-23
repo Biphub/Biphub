@@ -1,13 +1,29 @@
 import * as Sequelize from 'sequelize'
 import * as bcrypt from 'bcrypt-nodejs'
 
-export default function (sequelize: any) {
+export interface UserInstance {
+  id: number,
+  createdAt: Date,
+  updatedAt: Date,
+  email: string,
+  password: string,
+  passwordResetToken: string,
+  passwordResetExpires: Date,
+  facebook: string,
+  firstName: string,
+  lastName: string,
+  gender: string,
+  location: string,
+  website: string,
+  picture: string,
+}
+
+export default function defineUser (sequelize: Sequelize.Sequelize) {
   const UserSchema = sequelize.define('User', {
     email: Sequelize.STRING,
     password: Sequelize.STRING,
     passwordResetToken:  Sequelize.STRING,
     passwordResetExpires: Sequelize.DATE,
-
     facebook: Sequelize.STRING,
     firstName: Sequelize.STRING,
     lastName: Sequelize.STRING,
