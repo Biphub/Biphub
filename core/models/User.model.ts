@@ -18,7 +18,7 @@ export interface UserModel {
   picture: string,
 }
 
-export interface UserInstance {
+export interface UserInstance extends Sequelize.Instance<UserModel> {
   dataValues: UserModel,
 }
 

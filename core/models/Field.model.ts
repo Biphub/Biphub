@@ -5,6 +5,10 @@ export interface FieldModel {
   properties: JSON
 }
 
+export interface FieldInstance extends Sequelize.Instance<FieldModel> {
+  dataValues: FieldModel
+}
+
 /**
  * Pods' action such as onNewMessage, sendMessage, postTwit, and etc
  * @param sequelize

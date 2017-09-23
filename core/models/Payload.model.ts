@@ -4,7 +4,7 @@ export interface PayloadModel {
   title: string
 }
 
-export interface PayloadInstance {
+export interface PayloadInstance extends Sequelize.Instance<PayloadModel> {
   dataValues: PayloadModel
 }
 

@@ -1,6 +1,14 @@
 import * as Sequelize from 'sequelize'
 
+export interface PodModel {
+  name: string,
+  type: string,
+  description: string,
+  url: string,
+}
 
+export interface PodInstance extends Sequelize.Instance<PodModel> {
+}
 
 export default function (sequelize: Sequelize.Sequelize) {
   const Pod = sequelize.define('Pod', {

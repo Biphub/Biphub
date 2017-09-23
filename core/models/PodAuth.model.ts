@@ -6,6 +6,10 @@ export interface PodAuthModel {
   password: string
 }
 
+export interface PodAuthInstance extends Sequelize.Instance<PodAuthModel> {
+  dataValues: PodAuthModel
+}
+
 export default function (sequelize: Sequelize.Sequelize) {
   const PodAuth = sequelize.define('PodAuth', {
     strategyType: {

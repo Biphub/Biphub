@@ -3,11 +3,11 @@ import * as fs from 'fs'
 import * as path from 'path'
 import * as Sequelize from 'sequelize'
 import { getConnectionConfig } from '../config/sequelize.config'
-import { UserModel } from './User.model'
-import { PayloadModel } from "./Payload.model"
-import { PodAuthModel } from './PodAuth.model'
-import { FieldModel } from './Field.model'
-import { PipelineModel } from "./Pipeline.model";
+import { UserModel, UserInstance } from './User.model'
+import { PayloadModel, PayloadInstance } from "./Payload.model"
+import { PodAuthModel, PodAuthInstance } from './PodAuth.model'
+import { FieldModel, FieldInstance } from './Field.model'
+import { PipelineModel, PipelineInstance } from "./Pipeline.model";
 
 const config = getConnectionConfig(process.env.NODE_ENV)
 
@@ -18,11 +18,11 @@ if (!config) {
 interface DbConnection {
   sequelize: Sequelize.Sequelize,
   Sequelize: Sequelize.Sequelize,
-  User: UserModel,
-  Payload: PayloadModel,
-  PodAuth: PodAuthModel,
-  Field: FieldModel,
-  Pipeline: PipelineModel
+  User: Sequelize.Model<UserModel, UserInstance>,
+  Payload: Sequelize.Model<PayloadModel, PayloadInstance>,
+  PodAuth: Sequelize.Model<PodAuthModel, PodAuthInstance>,
+  Field: Sequelize.Model<FieldModel, FieldInstance>,
+  Pipeline: Sequelize.Model<PipelineModel, PipelineInstance>
 }
 
 const sequelize = new Sequelize(
