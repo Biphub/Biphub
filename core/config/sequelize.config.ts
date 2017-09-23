@@ -29,13 +29,12 @@ const getConnectionConfig = ():
     }
   } else if (process.env.NODE_ENV === 'test') {
     return {
-      username: 'root',
+      username: null,
       password: null,
-      database: 'database_test',
+      database: null,
       options: {
-        host: '127.0.0.1',
-        dialect: 'mysql'
-      }
+        storage: ':memory',
+      },
     }
   } else if (process.env.NODE_ENV === 'production') {
     return {
