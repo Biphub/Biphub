@@ -2,7 +2,8 @@ import { Sequelize as SequelizeType } from 'sequelize'
 import * as Sequelize from 'sequelize'
 
 export interface PipelineModel {
-  title: string
+  title: string,
+  sequence: JSON
 }
 
 /**
@@ -12,7 +13,44 @@ export interface PipelineModel {
  */
 export default function (sequelize: SequelizeType) {
   const Piepline = sequelize.define('Piepline', {
-    title: Sequelize.STRING
+    title: Sequelize.STRING,
+    /**
+     * {
+     *   action1(trigger) {
+     *      graph {
+     *        x
+     *        y
+     *      }
+     *      options {}
+     *      action2 {
+     *         graph {
+     *           x
+     *           y
+     *         }
+     *         options {}
+     *         action3 {
+     *           ...
+     *         }
+     *      }
+     *      action4 {
+     *        graph {
+     *          x
+     *          y
+     *        }
+     *        action 5{
+     *           ...
+     *           action6 {
+     *
+     *           }
+     *           action7 {
+     *
+     *           }
+     *        }
+     *      }
+     *   }
+     * }
+     */
+    sequence: Sequelize.JSONB
   })
   return Piepline
 }
