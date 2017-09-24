@@ -1,0 +1,147 @@
+{
+  "name": "slack",
+  "title": "Slack",
+  "description": "Slack brings all your communication together in one place. It's real-time messaging, archiving and search for modern teams.",
+  "url": "https://slack.com",
+  "trackDuplicates": false,
+  "config": {
+    "oauth": {
+      "clientID": "",
+      "clientSecret": "",
+      "scopes": [
+        "users:read",
+        "chat:write:bot",
+        "channels:read"
+      ]
+    }
+  },
+  "auth": {
+    "strategy": "oauth",
+    "properties": {
+      "access_token": {
+        "type": "string",
+        "title": "Access Token"
+      }
+    },
+    "disposition": [
+      "access_token"
+    ]
+  },
+  "rpcs": {
+    "channels_list": {
+      "contentType": "application/json",
+      "title": "Get Channels"
+    }
+  },
+  "actions": {
+    "post_message": {
+      "title": "Post to Channel",
+      "description": "Posts a Message to a Channel",
+      "trigger": "invoke",
+      "config": {
+        "properties": {
+          "channel": {
+            "type": "string",
+            "oneOf": [
+              {
+                "$ref": "/rpcs/channels_list#channels/{id}"
+              }
+            ],
+            "label": {
+              "$ref": "/rpcs/channels_list#channels/{name}"
+            },
+            "title": "Channel ID"
+          },
+          "username": {
+            "type": "string",
+            "title": "Bot Name (optional)"
+          }
+        },
+        "disposition": [
+          "channel",
+          "username"
+        ]
+      },
+      "exports": {
+        "properties": {
+          "ok": {
+            "type": "boolean",
+            "title": "Response Status"
+          }
+        }
+      },
+      "imports": {
+        "properties": {
+          "text": {
+            "type": "string",
+            "title": "Message Text"
+          }
+        },
+        "required": [
+          "text"
+        ],
+        "disposition": [
+          "text"
+        ]
+      }
+    },
+    "incoming_hook" : {
+      "title" : "Outgoing Web Hook Endpoint",
+      "description" : "Receive A Message From A Slack Outgoing Webhook",
+      "trigger" : "http",
+      "imports" : {
+        "properties" : {},
+        "definitions" : {}
+      },
+      "config" : {
+        "properties" : {},
+        "definitions" : {}
+      },
+      "exports" : {
+        "type" : "object",
+        "properties": {
+          "token": {
+            "type": "string"
+          },
+          "team_id": {
+            "type": "string"
+          },
+          "team_domain": {
+            "type": "string"
+          },
+          "service_id": {
+            "type": "string"
+          },
+          "channel_id": {
+            "type": "string"
+          },
+          "channel_name": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "string"
+          },
+          "user_id": {
+            "type": "string"
+          },
+          "user_name": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string"
+          },
+          "trigger_word": {
+            "type": "string"
+          },
+          "rawBody": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    "messaging",
+    "productivity"
+  ]
+}
