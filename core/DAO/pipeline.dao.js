@@ -4,7 +4,6 @@ var models_1 = require("../models");
 var fluture = require("fluture");
 function create(pipeline) {
     return fluture.Future(function (rej, res) {
-        console.log('before fluture ');
         models_1.default.Pipeline.create(pipeline)
             .then(function (value) { return res(value); })
             .catch(function (e) { return rej(e); });

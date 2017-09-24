@@ -15,9 +15,9 @@ describe("DAO pipeline", function () {
             description: 'test description',
             sequence: { a: 1 }
         }).fork(function (pipeline) {
-            Expect(pipeline.title).toBe('test pipeline');
-            Expect(pipeline.description).toBe('test description');
-            Expect(pipeline.sequence).toBe({ a: 1 });
+            expect(pipeline.title).toBe('test pipeline');
+            expect(pipeline.description).toBe('test description');
+            expect(pipeline.sequence).toBe({ a: 1 });
         }, function (e) {
             fail(e);
         });

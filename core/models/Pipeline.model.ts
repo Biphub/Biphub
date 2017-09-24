@@ -9,6 +9,7 @@ export interface PipelineModel {
 
 export interface PipelineInstance extends Sequelize.Instance<PipelineModel> {
   title: string,
+  description: string,
   sequence: JSON,
 }
 
