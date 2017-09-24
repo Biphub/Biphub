@@ -74,8 +74,6 @@ const bootstrapExpress = () => Future((rej, res) => {
   })
   app.use(express.static(path.join(__dirname, 'public'), { maxAge: 31557600000 }))
 
-  // API examples routes.
-
   // Routes!
   app.use(routes())
 

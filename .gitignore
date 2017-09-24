@@ -34,5 +34,13 @@ Thumbs.db
 # Ignore built ts files
 dist/**/*
 
+core/config/*.js
+core/controllers/*.js
+core/DAO/*.js
+core/models/*.js
+core/routes/*.js
+core/index.js
+core/server.js
+
 # sqlite
 core/database/sequelize/database.sqlite
