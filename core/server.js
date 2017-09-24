@@ -18,7 +18,7 @@ var expressValidator = require("express-validator");
 var models_1 = require("./models");
 var routes_1 = require("./routes");
 var Future = fluture.Future;
-var connectDb = Future(function (rej, res) {
+var connectDb = function () { return Future(function (rej, res) {
     // 3. Set up sequelize
     models_1.default.sequelize.sync({ force: process.env.NODE_ENV === 'test' })
         .then(function () {
@@ -29,8 +29,8 @@ var connectDb = Future(function (rej, res) {
         console.error(e);
         rej(e);
     });
-});
-var bootstrapExpress = Future(function (rej, res) {
+}); };
+var bootstrapExpress = function () { return Future(function (rej, res) {
     // 4. Bootstrap express
     var app = express();
     var SessionStore = require('express-session-sequelize')(session.Store);
@@ -80,26 +80,20 @@ var bootstrapExpress = Future(function (rej, res) {
     // Error Handler. Provides full stack - remove for production
     app.use(errorHandler());
     res(app);
-});
+}); };
 /**
  * Starts the server
  * Required environment variables
  * Critical:
  * NODE_ENV: development | production | test
  */
-exports.start = R.compose(R.chain(bootstrapExpress), R.chain(connectDb), Future.of(function (rej, res) {
-    // 1. Set up config from dotenv
-    config_1.default.setup();
-    // 2. Set up passport
-    passportConfig.setupPassport();
-    res();
-}));
-/*{
-  return Future((rej, res) => {
-
-
-
-  })
-}
-*/
+exports.start = R.compose(R.chain(bootstrapExpress), R.chain(connectDb), function () {
+    return Future(function (rej, res) {
+        // 1. Set up config from dotenv
+        config_1.default.setup();
+        // 2. Set up passport
+        passportConfig.setupPassport();
+        res(null);
+    });
+});
 exports.stop = function (app) { return app.close(); };

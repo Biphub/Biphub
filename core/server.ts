@@ -17,7 +17,7 @@ import { default as models } from './models'
 import { default as routes } from './routes'
 const Future = fluture.Future
 
-const connectDb = Future((rej, res) => {
+const connectDb = () => Future((rej, res) => {
   // 3. Set up sequelize
   models.sequelize.sync({ force: process.env.NODE_ENV === 'test' })
     .then(() => {
@@ -30,7 +30,7 @@ const connectDb = Future((rej, res) => {
     })
 })
 
-const bootstrapExpress = Future((rej, res) => {
+const bootstrapExpress = () => Future((rej, res) => {
   // 4. Bootstrap express
   const app = express()
   const SessionStore = require('express-session-sequelize')(session.Store)
@@ -94,21 +94,15 @@ export const start =
   R.compose(
     R.chain(bootstrapExpress),
     R.chain(connectDb),
-    Future.of((rej, res) => {
-      // 1. Set up config from dotenv
-      config.setup()
-      // 2. Set up passport
-      passportConfig.setupPassport()
-      res()
-    })
+    () => {
+      return Future((rej, res) => {
+        // 1. Set up config from dotenv
+        config.setup()
+        // 2. Set up passport
+        passportConfig.setupPassport()
+        res(null)
+      })
+    }
   )
-/*{
-  return Future((rej, res) => {
-
-
-
-  })
-}
-*/
 
 export const stop = (app: express.Application) => app.close()
