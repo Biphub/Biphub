@@ -5,19 +5,22 @@ import * as Sequelize from 'sequelize'
  * @param sequelize
  * @returns {any}
  */
-export default function defineUser (sequelize: Sequelize.Sequelize, DataTypes) {
+export default function defineUser (sequelize: Sequelize.Sequelize) {
   const PodAction = sequelize.define('Action', {
-    title: DataTypes.STRING,
-    description: DataTypes.STRING,
-    doc_ref: DataTypes.STRING,
-    trigger: DataTypes.ENUM('poll', 'invoke', 'incoming_webhook')
+    title: Sequelize.STRING,
+    description: Sequelize.STRING,
+    doc_ref: Sequelize.STRING,
+    trigger: Sequelize.STRING
+  }, {
+    classMethods: {
+      associate(models: any) {
+        PodAction.belongsTo(models.Pod)
+        // Create Action has Many action import
+        PodAction.hasMany(models.Payload)
+        // Create Action has Many action export
+        // PodAction.hasMany(models.Payload, { as: 'exportPayload' })
+      }
+    }
   })
-  PodAction.associate = (models) => {
-    PodAction.belongsTo(models.Pod)
-    // Create Action has Many action import
-    PodAction.hasMany(models.Payload, { as: 'importPayload' })
-    // Create Action has Many action export
-    PodAction.hasMany(models.Payload, { as: 'exportPayload' })
-  }
   return PodAction
 }

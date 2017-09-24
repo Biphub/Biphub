@@ -9,11 +9,14 @@ var Sequelize = require("sequelize");
 function default_1(sequelize) {
     var Payload = sequelize.define('Payload', {
         title: Sequelize.STRING
+    }, {
+        classMethods: {
+            associate: function (models) {
+                Payload.belongsTo(models.Action);
+                Payload.hasMany(models.Field);
+            }
+        }
     });
-    Payload.associate = function (models) {
-        Payload.belongsTo(models.Action);
-        Payload.hasMany(models.Field);
-    };
     return Payload;
 }
 exports.default = default_1;

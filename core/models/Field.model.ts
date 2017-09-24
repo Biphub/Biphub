@@ -14,13 +14,16 @@ export interface FieldInstance extends Sequelize.Instance<FieldModel> {
  * @param sequelize
  * @returns {any}
  */
-export default function (sequelize: any) {
+export default function (sequelize: Sequelize.Sequelize) {
   const Field = sequelize.define('Field', {
     title: Sequelize.STRING,
     properties: Sequelize.JSONB
+  }, {
+    classMethods: {
+      associate(models: any) {
+        Field.belongsTo(models.Payload)
+      }
+    }
   })
-  Field.associate = (models: any) => {
-    Field.belongsTo(models.Payload)
-  }
   return Field
 }

@@ -1,22 +1,27 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var models_1 = require("../../../dist/models");
+var models_1 = require("../../../core/models");
+var pipelineDao = require("../../../core/DAO/pipeline.dao");
 describe("DAO pipeline", function () {
     beforeAll(function (done) {
-        models_1.default.sequelize.sync().then(function () {
+        models_1.default.sequelize.sync({ force: true }).then(function () {
             return console.log('Initialised seqeulize in environment', process.env.NODE_ENV);
         });
         done();
     });
-    it("create", function () {
-        models_1.default.Pipeline.create({
+    it('create', function () {
+        pipelineDao.create({
             title: 'test pipeline',
             description: 'test description',
             sequence: { a: 1 }
-        }).then(function (pipeline) {
+        }).fork(function (pipeline) {
             Expect(pipeline.title).toBe('test pipeline');
             Expect(pipeline.description).toBe('test description');
             Expect(pipeline.sequence).toBe({ a: 1 });
+        }, function (e) {
+            fail(e);
         });
+    });
+    it('findAll', function () {
     });
 });

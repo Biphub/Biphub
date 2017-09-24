@@ -1,6 +1,6 @@
 import models from '../models'
 import * as fluture from 'fluture'
-import { PipelineInstance, PipelineModel } from "../models/Pipeline.model"
+import { PipelineModel } from "../models/Pipeline.model"
 
 export function create(pipeline: {
   title: string,
@@ -9,20 +9,20 @@ export function create(pipeline: {
 }) {
   return fluture.Future((rej, res) => {
     console.log('before fluture ')
-    models.Pipeline.create({
-      title: pipeline.title,
-      description: pipeline.description,
-      sequence: pipeline.sequence,
-    }).then(pipeline => {
-      console.log('checking pipeline after creating! ', pipeline)
-      res(pipeline)
-    }).catch(e => rej(e))
+    models.Pipeline.create(pipeline)
+      .then((value: PipelineModel) => res(value))
+      .catch((e: Error) => rej(e))
   })
 }
 
-export function findAll() {
+function findAll() {
   return fluture.Future((rej, res) => {
-    console.log('checking fluture! ')
-    res(null)
+    models.Pipeline.findAll()
+      .then((values) => res(values))
+      .catch(e => rej(e))
   })
+}
+
+export {
+  findAll
 }

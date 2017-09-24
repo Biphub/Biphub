@@ -24,10 +24,13 @@ export default function (sequelize: Sequelize.Sequelize) {
     url: {
       type: Sequelize. STRING
     }
+  }, {
+    classMethods: {
+      associate(models: any) {
+        Pod.hasMany(models.Action)
+        Pod.belongsTo(models.PodAuth)
+      }
+    }
   })
-  Pod.associate = (models: any) => {
-    Pod.hasMany(models.Action)
-    Pod.belongsTo(models.PodAuth)
-  }
   return Pod
 }
