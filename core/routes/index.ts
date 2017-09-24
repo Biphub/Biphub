@@ -1,6 +1,7 @@
 import { Request, Response, Router } from 'express'
 import * as passport from 'passport'
 import { default as accountRoutes } from './account'
+import { default as pipelineRoutes } from './pipeline'
 import * as passportConfig from '../config/passport.config'
 import * as homeController from '../controllers/home.controller'
 import * as contactController from '../controllers/contact.controller'
@@ -14,8 +15,11 @@ export default () => {
   api.post('/contact', contactController.postContact)
   api.get('/api', apiController.getApi)
   api.get('/api/facebook', passportConfig.isAuthenticated, passportConfig.isAuthorized, apiController.getFacebook)
-  // Primary account routes. -> /account
+  // Account routes. -> /account
   api.use(accountRoutes())
+
+  // Pipeline routes -> /pipeline
+  api.use(pipelineRoutes())
 
   // OAuth authentication routes. (Sign in)
   api.get('/auth/facebook', passport.authenticate('facebook', { scope: ['email', 'public_profile'] }))

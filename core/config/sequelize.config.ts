@@ -33,6 +33,11 @@ const getConnectionConfig = (NODE_ENV: string):
       password: null,
       database: null,
       options: {
+        pool: {
+          max: 5,
+          min: 0,
+          idle: 10000
+        },
         storage: ':memory',
         dialect: 'sqlite'
       }
