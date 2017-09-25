@@ -1,8 +1,8 @@
 {
-  "name": "slack",
-  "title": "Slack",
-  "description": "Slack brings all your communication together in one place. It's real-time messaging, archiving and search for modern teams.",
-  "url": "https://slack.com",
+  "name": "fake1",
+  "title": "Fake1",
+  "description": "Fake realtime messaging application! Only exist in Biphub!",
+  "url": "https://fake1.com",
   "trackDuplicates": false,
   "config": {
     "oauth": {
@@ -34,7 +34,7 @@
     }
   },
   "actions": {
-    "post_message": {
+    "post_fake_message": {
       "title": "Post to Channel",
       "description": "Posts a Message to a Channel",
       "trigger": "invoke",

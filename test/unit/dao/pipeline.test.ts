@@ -24,6 +24,4 @@ describe("DAO pipeline", () => {
       }
     )
   })
-  it('findAll', () => {
-  })
 })

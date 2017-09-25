@@ -6,6 +6,7 @@ import * as passportConfig from '../config/passport.config'
 import * as homeController from '../controllers/home.controller'
 import * as contactController from '../controllers/contact.controller'
 import * as apiController from '../controllers/api.controller'
+import * as pipelineController from '../controllers/pipeline.controller'
 
 export default () => {
   const api = Router()
@@ -19,7 +20,10 @@ export default () => {
   api.use(accountRoutes())
 
   // Pipeline routes -> /pipeline
-  api.use(pipelineRoutes())
+  api.get('/pipeline', (req: Request, res: Response) => {
+    res.json({ test: 'test success' })
+  })
+  api.post('/pipeline', pipelineController.create)
 
   // OAuth authentication routes. (Sign in)
   api.get('/auth/facebook', passport.authenticate('facebook', { scope: ['email', 'public_profile'] }))

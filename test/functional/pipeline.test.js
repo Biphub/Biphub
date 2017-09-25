@@ -3,12 +3,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var supertest = require("supertest");
 var server_1 = require("../../core/server");
 describe("#pipeline", function () {
-    beforeAll(function () {
-        jasmine.DEFAULT_TIMEOUT_INTERVAL = 999999;
-    });
     it("respond with json", function (done) {
         server_1.start().fork(function (e) { return console.error(e); }, function (app) {
-            app.listen(app.get('port'), function () {
+            var server = app.listen(app.get('port'), function () {
                 var request = supertest(app);
                 request
                     .get('/pipeline')
@@ -18,8 +15,12 @@ describe("#pipeline", function () {
                     if (err) {
                         throw err;
                     }
+                    console.log('checking body ', res.body.test);
                     expect(res.body.test).toBe('test success');
-                    done();
+                    server.close(function () {
+                        console.log('closing the server!!');
+                        done();
+                    });
                 });
             });
         });
@@ -30,7 +31,6 @@ describe("#pipeline", function () {
         }, function (app) {
             app.listen(app.get('port'), function () {
                 var request = supertest(app);
-                console.log('checking app ', app);
                 request.post('/pipeline').type('form')
                     .send({
                     title: 'testing!',
@@ -44,7 +44,7 @@ describe("#pipeline", function () {
                         console.error('Error while creating a new pipeline');
                         return err;
                     }
-                    console.log('res!! ', res.body);
+                    expect(res.body.test).toBe(1);
                     done();
                 });
             });

@@ -22,6 +22,4 @@ describe("DAO pipeline", function () {
             fail(e);
         });
     });
-    it('findAll', function () {
-    });
 });

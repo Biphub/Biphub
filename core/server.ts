@@ -19,7 +19,7 @@ const Future = fluture.Future
 
 const connectDb = () => Future((rej, res) => {
   // 3. Set up sequelize
-  models.sequelize.sync({ force: process.env.NODE_ENV === 'test' })
+  models.sequelize.sync()
     .then(() => {
       console.info('Initialised seqeulize')
       res(null)

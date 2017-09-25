@@ -16,15 +16,14 @@ export const setupPassport = () => {
     done(undefined, user.id)
   })
 
+  /*
   passport.deserializeUser((id: number, done) => {
     models.User.findById(id, (err: Error, user: UserInstance) => {
       done(err, user)
     })
   })
-
-  /**
-   * Sign in using Email and Password.
-   */
+  */
+  /*
   passport.use(new LocalStrategy({ usernameField: 'email' }, (email, password, done) => {
     models.User.findOne({ email: email.toLowerCase() }, (err, user: UserInstance) => {
       if (err) { return done(err) }
@@ -40,6 +39,7 @@ export const setupPassport = () => {
       })
     })
   }))
+  */
   /**
    * OAuth Strategy Overview
    *
@@ -58,6 +58,7 @@ export const setupPassport = () => {
   /**
    * Sign in with Facebook.
    */
+  /*
   passport.use(new FacebookStrategy({
     clientID: process.env.FACEBOOK_ID,
     clientSecret: process.env.FACEBOOK_SECRET,
@@ -114,6 +115,8 @@ export const setupPassport = () => {
       })
     }
   }))
+  */
+  console.log('passport set!')
 }
 
 

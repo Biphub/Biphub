@@ -6,15 +6,11 @@ import { start } from '../../core/server'
 import { default as pipelineRoutes } from '../../core/routes/pipeline'
 
 describe("#pipeline", () => {
-  beforeAll(() => {
-    jasmine.DEFAULT_TIMEOUT_INTERVAL = 999999
-  })
-
   it("respond with json", (done) => {
     start().fork(
       (e) => console.error(e),
       (app) => {
-        app.listen(app.get('port'), () => {
+        const server = app.listen(app.get('port'), () => {
           const request = supertest(app)
           request
             .get('/pipeline')
@@ -24,8 +20,12 @@ describe("#pipeline", () => {
               if (err) {
                 throw err
               }
+              console.log('checking body ', res.body.test)
               expect(res.body.test).toBe('test success')
-              done()
+              server.close(() => {
+                console.log('closing the server!!')
+                done()
+              })
             })
         })
       }
@@ -40,7 +40,6 @@ describe("#pipeline", () => {
       (app) => {
         app.listen(app.get('port'), () => {
           const request = supertest(app)
-          console.log('checking app ', app)
           request.post('/pipeline').type('form')
             .send({
               title: 'testing!',
@@ -54,7 +53,7 @@ describe("#pipeline", () => {
                 console.error('Error while creating a new pipeline')
                 return err
               }
-              console.log('res!! ', res.body)
+              expect(res.body.test).toBe(1)
               done()
             })
         })
