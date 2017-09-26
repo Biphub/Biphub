@@ -3,7 +3,7 @@ import * as fluture from 'fluture'
 import { PipelineModel, PipelineInstance } from "../models/Pipeline.model"
 
 /**
- * create a pipeline
+ * Creates a pipeline
  * @param {PipelineInstance} pipeline
  * @returns {any} // TODO Fix any type
  */

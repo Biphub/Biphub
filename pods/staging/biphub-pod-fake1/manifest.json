@@ -3,29 +3,18 @@
   "title": "Fake1",
   "description": "Fake realtime messaging application! Only exist in Biphub!",
   "url": "https://fake1.com",
-  "trackDuplicates": false,
-  "config": {
-    "oauth": {
-      "clientID": "",
-      "clientSecret": "",
-      "scopes": [
-        "users:read",
-        "chat:write:bot",
-        "channels:read"
-      ]
-    }
+  "trackDuplicates": true,
+  "preparedConfig": {
+    "token": ""
   },
   "auth": {
-    "strategy": "oauth",
+    "strategy": "token",
     "properties": {
       "access_token": {
         "type": "string",
         "title": "Access Token"
       }
-    },
-    "disposition": [
-      "access_token"
-    ]
+    }
   },
   "rpcs": {
     "channels_list": {

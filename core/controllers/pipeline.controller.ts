@@ -24,7 +24,7 @@ export const create = (req: Request, res: Response) => {
       (pipeline: PipelineInstance) => {
         return res.json({
           test: 1
-        }).end()
+        })
       }
     )
 }

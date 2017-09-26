@@ -38,7 +38,7 @@ describe("#pipeline", () => {
         throw e
       },
       (app) => {
-        app.listen(app.get('port'), () => {
+        const server = app.listen(app.get('port'), () => {
           const request = supertest(app)
           request.post('/pipeline').type('form')
             .send({
@@ -54,7 +54,7 @@ describe("#pipeline", () => {
                 return err
               }
               expect(res.body.test).toBe(1)
-              done()
+              server.close(() => done())
             })
         })
       }

@@ -29,7 +29,7 @@ describe("#pipeline", function () {
         server_1.start().fork(function (e) {
             throw e;
         }, function (app) {
-            app.listen(app.get('port'), function () {
+            var server = app.listen(app.get('port'), function () {
                 var request = supertest(app);
                 request.post('/pipeline').type('form')
                     .send({
@@ -45,7 +45,7 @@ describe("#pipeline", function () {
                         return err;
                     }
                     expect(res.body.test).toBe(1);
-                    done();
+                    server.close(function () { return done(); });
                 });
             });
         });

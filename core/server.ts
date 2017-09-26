@@ -11,11 +11,14 @@ import * as lusca from 'lusca'
 import * as flash from 'express-flash'
 import * as path from 'path'
 import * as passportConfig from './config/passport.config'
+import { getPodsDetail } from './bridge/node2node'
 import { default as config } from './config'
 import expressValidator = require('express-validator')
 import { default as models } from './models'
 import { default as routes } from './routes'
 const Future = fluture.Future
+
+getPodsDetail()
 
 const connectDb = () => Future((rej, res) => {
   // 3. Set up sequelize
