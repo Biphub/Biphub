@@ -22,7 +22,9 @@
     "copy-static-assets": "node copyStaticAssets.js",
     "debug": "npm run build && npm run watch-debug",
     "serve-debug": "nodemon --inspect dist/server.js",
-    "watch-debug": "concurrently -k -p \"[{name}]\" -n \"Sass,TypeScript,Node\" -c \"yellow.bold,cyan.bold,green.bold\" \"npm run watch-sass\" \"npm run watch-ts\" \"npm run serve-debug\""
+    "watch-debug": "concurrently -k -p \"[{name}]\" -n \"Sass,TypeScript,Node\" -c \"yellow.bold,cyan.bold,green.bold\" \"npm run watch-sass\" \"npm run watch-ts\" \"npm run serve-debug\"",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "jest": {
     "globals": {
@@ -69,7 +71,8 @@
     "ramda-fantasy": "^0.8.0",
     "request": "^2.82.0",
     "sequelize": "^4.10.0",
-    "sqlite3": "^3.1.12"
+    "sqlite3": "^3.1.12",
+    "snyk": "^1.41.1"
   },
   "devDependencies": {
     "@types/app-root-path": "^1.2.4",
@@ -106,5 +109,6 @@
     "tslint": "^5.7.0",
     "tslint-config-standard": "^6.0.1",
     "typescript": "^2.5.2"
-  }
+  },
+  "snyk": true
 }
