@@ -16,9 +16,8 @@ import { default as config } from './config'
 import expressValidator = require('express-validator')
 import { default as models } from './models'
 import { default as routes } from './routes'
+import * as Queue from './queue'
 const Future = fluture.Future
-
-getPodsDetail()
 
 const connectDb = () => Future((rej, res) => {
   // 3. Set up sequelize
@@ -99,6 +98,18 @@ export const start =
       return Future((rej, res) => {
         // 1. Set up config from dotenv
         config.setup()
+        console.log('setting up! ')
+
+        const QueueObj = Queue.getQueue()
+        const q = QueueObj.createQueue((task, cb) => {
+          console.log('hello ' + task.name)
+          cb()
+        })
+        QueueObj.push(q, { name: 'jason' }, () => {
+          console.log('yoyo!!')
+        })
+
+        console.log(getPodsDetail()[0])
         // 2. Set up passport
         passportConfig.setupPassport()
         res(null)
