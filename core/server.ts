@@ -17,7 +17,24 @@ import expressValidator = require('express-validator')
 import { default as models } from './models'
 import { default as routes } from './routes'
 import * as Queue from './queue'
+const numCPUs = require('os').cpus().length
+console.log('checking num cpus ', numCPUs)
 const Future = fluture.Future
+
+const setupWorkers = () => {
+
+  const QueueObj = Queue.getQueue()
+  const q = QueueObj.createQueue((task, cb) => {
+    console.log('hello ' + task.name)
+    cb()
+  })
+  QueueObj.push(q, { name: 'jason' }, () => {
+    console.log('yoyo!!')
+  })
+
+  console.log(getPodsDetail()[0])
+  return q
+}
 
 const connectDb = () => Future((rej, res) => {
   // 3. Set up sequelize
@@ -79,6 +96,9 @@ const bootstrapExpress = () => Future((rej, res) => {
   // Routes!
   app.use(routes())
 
+  // Setup message queue
+  app.queue = setupWorkers()
+
   // Error Handler. Provides full stack - remove for production
   app.use(errorHandler())
   res(app)
@@ -98,18 +118,7 @@ export const start =
       return Future((rej, res) => {
         // 1. Set up config from dotenv
         config.setup()
-        console.log('setting up! ')
 
-        const QueueObj = Queue.getQueue()
-        const q = QueueObj.createQueue((task, cb) => {
-          console.log('hello ' + task.name)
-          cb()
-        })
-        QueueObj.push(q, { name: 'jason' }, () => {
-          console.log('yoyo!!')
-        })
-
-        console.log(getPodsDetail()[0])
         // 2. Set up passport
         passportConfig.setupPassport()
         res(null)
