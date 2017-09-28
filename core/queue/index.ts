@@ -1,12 +1,12 @@
-import * as AsyncQueue from './AsyncQueue';
+import { AsyncQueue } from './AsyncQueue';
 
 /**
  * Dependent env variable: MESSAGE_QUEUE. It can be either memory | rabbit
  */
-export const getQueue = () => {
+export const createQueue = (worker: Function) => {
   console.log('checking message queue ', process.env.MESSAGE_QUEUE, '  pr ', process.env.DATABASE_TYPE)
   if (process.env.MESSAGE_QUEUE === 'memory') {
-    return AsyncQueue
+    return new AsyncQueue(worker)
   }
   return null
 }

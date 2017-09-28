@@ -11,30 +11,31 @@ import * as lusca from 'lusca'
 import * as flash from 'express-flash'
 import * as path from 'path'
 import * as passportConfig from './config/passport.config'
-import { getPodsDetail } from './bridge/node2node'
+import { installPods } from './DAO/pod.dao'
 import { default as config } from './config'
 import expressValidator = require('express-validator')
 import { default as models } from './models'
 import { default as routes } from './routes'
 import * as Queue from './queue'
-const numCPUs = require('os').cpus().length
-console.log('checking num cpus ', numCPUs)
 const Future = fluture.Future
 
-const setupWorkers = () => {
+const initializePods = () => {
 
-  const QueueObj = Queue.getQueue()
-  const q = QueueObj.createQueue((task, cb) => {
-    console.log('hello ' + task.name)
-    cb()
-  })
-  QueueObj.push(q, { name: 'jason' }, () => {
-    console.log('yoyo!!')
-  })
-
-  console.log(getPodsDetail()[0])
-  return q
 }
+
+const setupQueue = (app: express.Application) =>
+  Future((rej, res) => {
+    const q = Queue.createQueue((task: any, cb: Function) => {
+      console.log('hello ' + task.name)
+      cb()
+    })
+    if (!q) {
+      return rej(false)
+    }
+    installPods([])
+    app.queue = q
+    res(app)
+  })
 
 const connectDb = () => Future((rej, res) => {
   // 3. Set up sequelize
@@ -50,7 +51,6 @@ const connectDb = () => Future((rej, res) => {
 })
 
 const bootstrapExpress = () => Future((rej, res) => {
-  // 4. Bootstrap express
   const app = express()
   const SessionStore = require('express-session-sequelize')(session.Store)
   const sequelizeSessionStore = new SessionStore({ db: models.sequelize })
@@ -96,9 +96,6 @@ const bootstrapExpress = () => Future((rej, res) => {
   // Routes!
   app.use(routes())
 
-  // Setup message queue
-  app.queue = setupWorkers()
-
   // Error Handler. Provides full stack - remove for production
   app.use(errorHandler())
   res(app)
@@ -112,6 +109,7 @@ const bootstrapExpress = () => Future((rej, res) => {
  */
 export const start =
   R.compose(
+    R.chain(setupQueue),
     R.chain(bootstrapExpress),
     R.chain(connectDb),
     () => {
@@ -120,6 +118,7 @@ export const start =
         config.setup()
 
         // 2. Set up passport
+        // TODO: Fix this
         passportConfig.setupPassport()
         res(null)
       })
