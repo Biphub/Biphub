@@ -5,6 +5,7 @@ import * as Sequelize from 'sequelize'
 import { getConnectionConfig } from '../config/sequelize.config'
 import { UserModel, UserInstance } from './User.model'
 import { PodModel, PodInstance } from './Pod.model'
+import { ActionModel, ActionInstance } from './Action.model'
 import { PayloadModel, PayloadInstance } from "./Payload.model"
 import { PodAuthModel, PodAuthInstance } from './PodAuth.model'
 import { FieldModel, FieldInstance } from './Field.model'
@@ -21,6 +22,7 @@ interface DbConnection {
   Sequelize: Sequelize.Sequelize,
   User: Sequelize.Model<UserModel, UserInstance>,
   Pod: Sequelize.Model<PodModel, PodInstance>,
+  Action: Sequelize.Model<ActionModel, ActionInstance>,
   Payload: Sequelize.Model<PayloadModel, PayloadInstance>,
   PodAuth: Sequelize.Model<PodAuthModel, PodAuthInstance>,
   Field: Sequelize.Model<FieldModel, FieldInstance>,

@@ -1,13 +1,12 @@
 import { Request, Response, Router } from 'express'
 import * as passport from 'passport'
-import { default as accountRoutes } from './account'
-import { default as pipelineRoutes } from './pipeline'
 import * as passportConfig from '../config/passport.config'
 import * as homeController from '../controllers/home.controller'
 import * as contactController from '../controllers/contact.controller'
 import * as apiController from '../controllers/api.controller'
 import * as pipelineController from '../controllers/pipeline.controller'
 import * as userController from '../controllers/user.controller'
+import * as webhooksContoller from '../controllers/webhooks.controller'
 
 export default () => {
   const api = Router()
@@ -44,5 +43,9 @@ export default () => {
   api.get('/auth/facebook/callback', passport.authenticate('facebook', { failureRedirect: '/login' }), (req, res) => {
     res.redirect(req.session.returnTo || '/')
   })
+
+  // Webhooks
+  api.post('/webhooks*', webhooksContoller.postWebhooks)
+
   return api
 }

@@ -19,6 +19,10 @@ import { default as routes } from './routes'
 import * as Queue from './queue'
 const Future = fluture.Future
 
+/**
+ *
+ * @param {e.Application} app
+ */
 const initializePods = (app: express.Application) =>
   Future((rej, res) => {
     installPods().fork(
@@ -27,6 +31,10 @@ const initializePods = (app: express.Application) =>
     )
   })
 
+/**
+ * Binds queue to the current app context
+ * @param {e.Application} app
+ */
 const setupQueue = (app: express.Application) =>
   Future((rej, res) => {
     const q = Queue.createQueue((task: any, cb: Function) => {
@@ -42,6 +50,10 @@ const setupQueue = (app: express.Application) =>
 
 const connectDb = () => Future((rej, res) => {
   // 3. Set up sequelize
+  const env = process.env.NODE_ENV
+  const syncOptions = {
+    force: env !== 'production'
+  }
   models.sequelize.sync()
     .then(() => {
       console.info('Initialised seqeulize')

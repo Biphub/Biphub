@@ -1,5 +1,15 @@
 import * as Sequelize from 'sequelize'
 
+export interface ActionModel {
+  name: string,
+  type: string,
+  description: string,
+  url: string,
+}
+
+export interface ActionInstance extends Sequelize.Instance<ActionModel> {
+}
+
 /**
  * Pods' action such as onNewMessage, sendMessage, postTwit, and etc
  * @param sequelize

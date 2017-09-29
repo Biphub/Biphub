@@ -11,7 +11,6 @@ const Future = fluture.Future
  */
 const createPod = (manifesto: JSON) => Future((rej, res) => {
   const props = R.pick(['name', 'title', 'description', 'url'], manifesto)
-  console.log('checking props ', props)
   models.Pod.create(props)
     .then(pod => res(pod))
     .catch(e => rej(e))
