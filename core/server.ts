@@ -19,9 +19,13 @@ import { default as routes } from './routes'
 import * as Queue from './queue'
 const Future = fluture.Future
 
-const initializePods = () => {
-
-}
+const initializePods = (app: express.Application) =>
+  Future((rej, res) => {
+    installPods().fork(
+      rej,
+      () => res(app)
+    )
+  })
 
 const setupQueue = (app: express.Application) =>
   Future((rej, res) => {
@@ -32,7 +36,6 @@ const setupQueue = (app: express.Application) =>
     if (!q) {
       return rej(false)
     }
-    installPods([])
     app.queue = q
     res(app)
   })
@@ -109,6 +112,7 @@ const bootstrapExpress = () => Future((rej, res) => {
  */
 export const start =
   R.compose(
+    R.chain(initializePods),
     R.chain(setupQueue),
     R.chain(bootstrapExpress),
     R.chain(connectDb),
