@@ -6,7 +6,7 @@ import { Response, Request, NextFunction } from 'express'
  * List of API examples.
  */
 export const postWebhooks = (req: Request, res: Response) => {
-  const getPathComponents = R.compose(
+  const splitComponents = R.compose(
     (comps: Array<string>) => ({
       root: comps[0],
       pod: comps[1],
@@ -16,7 +16,15 @@ export const postWebhooks = (req: Request, res: Response) => {
     // Removes initial / if it exists
     R.replace(/^\//, ''),
   )
+  /**
+  // TODO: Fix below
+  const getPath = R.ifElse(
+    R.not(R.isEmpty(R.match(/^\/*webhooks\/[\w\d]+\//g))),
+    splitComponents,
+    () => null,
+  ) **/
+  req.queue.push({ name: `new stuff from webhook! ${splitComponents(req.path).pod}` }, () => {})
   res.json({
-    ok: getPathComponents(req.path),
+    ok: splitComponents(req.path),
   })
 }

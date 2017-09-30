@@ -23,50 +23,18 @@ const Future = fluture.Future
  *
  * @param {e.Application} app
  */
-const initializePods = (app: express.Application) =>
-  Future((rej, res) => {
-    installPods().fork(
-      rej,
-      () => res(app)
-    )
-  })
-
-/**
- * Binds queue to the current app context
- * @param {e.Application} app
- */
-const setupQueue = (app: express.Application) =>
-  Future((rej, res) => {
-    const q = Queue.createQueue((task: any, cb: Function) => {
-      console.log('hello ' + task.name)
-      cb()
-    })
-    if (!q) {
-      return rej(false)
-    }
-    app.queue = q
-    res(app)
-  })
-
-const connectDb = () => Future((rej, res) => {
-  // 3. Set up sequelize
-  const env = process.env.NODE_ENV
-  const syncOptions = {
-    force: env !== 'production'
-  }
-  models.sequelize.sync()
-    .then(() => {
-      console.info('Initialised seqeulize')
-      res(null)
-    })
-    .catch(e => {
-      console.error(e)
-      rej(e)
-    })
+const initializePods = (app: express.Application) => Future((rej, res) => {
+  installPods().fork(
+    rej,
+    () => res(app)
+  )
 })
 
-const bootstrapExpress = () => Future((rej, res) => {
-  const app = express()
+/**
+ * Bootstrap express app context with various things
+ * @param {e.Application} app
+ */
+const bootstrapExpress = (app: express.Application) => Future((rej, res) => {
   const SessionStore = require('express-session-sequelize')(session.Store)
   const sequelizeSessionStore = new SessionStore({ db: models.sequelize })
   app.use(session({
@@ -117,6 +85,61 @@ const bootstrapExpress = () => Future((rej, res) => {
 })
 
 /**
+ * Binds queue to the current app context
+ * @param {e.Application} app
+ */
+const setupQueue = (app: express.Application) => Future((rej, res) => {
+  const q = Queue.createQueue((task: any, cb: Function) => {
+    console.log('hello ' + task.name)
+    cb()
+  })
+  if (!q) {
+    return rej(false)
+  }
+  // Bind queue to application context
+  console.log('setting queue! ', app)
+  app.queue = q
+  // Binds queue to request as well
+  app.use((
+    req: express.Request, res: express.Response, next: express.NextFunction
+  ) => {
+    req.queue = q
+    next()
+  })
+  res(app)
+})
+
+/**
+ * Connect to db using Sequelize.
+ * @param {e.Application} app
+ */
+const connectDb = (app: express.Application) => Future((rej, res) => {
+  // 3. Set up sequelize
+  const env = process.env.NODE_ENV
+  const syncOptions = {
+    force: env !== 'production'
+  }
+  models.sequelize.sync()
+    .then(() => {
+      console.info('Initialised seqeulize')
+      res(app)
+    })
+    .catch(e => {
+      console.error(e)
+      rej(e)
+    })
+})
+
+// Initiating app so it's available throughout the ramda compose
+const initiateExpress = () => Future((rej, res) => {
+  const app = express()
+  if (!R.isEmpty(app)) {
+    console.info('Initiated app in start!')
+    res(app)
+  }
+})
+
+/**
  * Starts the server
  * Required environment variables
  * Critical:
@@ -125,9 +148,10 @@ const bootstrapExpress = () => Future((rej, res) => {
 export const start =
   R.compose(
     R.chain(initializePods),
-    R.chain(setupQueue),
     R.chain(bootstrapExpress),
+    R.chain(setupQueue),
     R.chain(connectDb),
+    R.chain(initiateExpress),
     () => {
       return Future((rej, res) => {
         // 1. Set up config from dotenv

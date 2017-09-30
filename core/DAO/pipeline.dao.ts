@@ -24,3 +24,6 @@ export function findAll() {
   })
 }
 
+export function handleWebhook(task) {
+  console.log('handling webhook ! ', task)
+}
