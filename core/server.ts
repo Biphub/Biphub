@@ -1,7 +1,7 @@
 import * as R from 'ramda'
 import * as fluture from 'fluture'
 import * as express from 'express'
-import * as compression from 'compression'  // compresses requests
+import * as compression from 'compression'
 import * as session from 'express-session'
 import * as bodyParser from 'body-parser'
 import * as logger from 'morgan'
@@ -16,6 +16,7 @@ import { default as config } from './config'
 import expressValidator = require('express-validator')
 import { default as models } from './models'
 import { default as routes } from './routes'
+import { executeTask } from './workers/pipeline.worker'
 import * as Queue from './queue'
 const Future = fluture.Future
 
@@ -24,6 +25,7 @@ const Future = fluture.Future
  * @param {e.Application} app
  */
 const initializePods = (app: express.Application) => Future((rej, res) => {
+  console.error('testing!!zz')
   installPods().fork(
     rej,
     () => res(app)
@@ -89,15 +91,11 @@ const bootstrapExpress = (app: express.Application) => Future((rej, res) => {
  * @param {e.Application} app
  */
 const setupQueue = (app: express.Application) => Future((rej, res) => {
-  const q = Queue.createQueue((task: any, cb: Function) => {
-    console.log('hello ' + task.name)
-    cb()
-  })
+  const q = Queue.createQueue(executeTask)
   if (!q) {
     return rej(false)
   }
   // Bind queue to application context
-  console.log('setting queue! ', app)
   app.queue = q
   // Binds queue to request as well
   app.use((
@@ -119,7 +117,7 @@ const connectDb = (app: express.Application) => Future((rej, res) => {
   const syncOptions = {
     force: env !== 'production'
   }
-  models.sequelize.sync()
+  models.sequelize.sync(syncOptions)
     .then(() => {
       console.info('Initialised seqeulize')
       res(app)

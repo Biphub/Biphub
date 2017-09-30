@@ -16,8 +16,5 @@
     },
     "include": [
       "core/**/*"
-    ],
-    "exclude": [
-      "node_modules"
     ]
 }

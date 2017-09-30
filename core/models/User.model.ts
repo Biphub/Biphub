@@ -23,7 +23,7 @@ export interface UserInstance extends Sequelize.Instance<UserModel> {
 }
 
 export default function defineUser (sequelize: Sequelize.Sequelize):
-  Sequelize.Model<UserInstance, UserModel>{
+  Sequelize.Model<UserInstance, UserModel> {
   const UserSchema = sequelize.define<UserInstance, UserModel>('User', {
     email: Sequelize.STRING,
     password: Sequelize.STRING,

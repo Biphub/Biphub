@@ -20,7 +20,7 @@ export default function (sequelize: Sequelize.Sequelize) {
     properties: Sequelize.JSONB
   }, {
     classMethods: {
-      associate(models: any) {
+      associate (models: any) {
         Field.belongsTo(models.Payload)
       }
     }

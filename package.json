@@ -12,7 +12,7 @@
     "start": "npm run build && npm run watch",
     "build": "npm run build-ts && npm run tslint",
     "serve": "nodemon dist/index.js",
-    "dev": "cross-env NODE_ENV=development concurrently -k -p \"[{name}]\" -n \"TypeScript,Express,TSLint\" -c \"yellow.bold,cyan.bold,green.bold\" \"npm run watch-ts\" \"npm run serve\" \"npm run tslint:watch\"",
+    "dev": "cross-env NODE_ENV=development concurrently -k -p \"[{name}]\" -n \"Express,TSLint\" -c \"yellow.bold,green.bold\" \"ts-node ./core\" \"npm run tslint:watch\"",
     "test": "jest --forceExit",
     "build-ts": "tsc",
     "watch-ts": "tsc -w",
@@ -69,7 +69,8 @@
     "ramda-fantasy": "^0.8.0",
     "request": "^2.82.0",
     "sequelize": "^4.10.0",
-    "sqlite3": "^3.1.12"
+    "sqlite3": "^3.1.12",
+    "ts-node": "^3.3.0"
   },
   "devDependencies": {
     "@types/app-root-path": "^1.2.4",

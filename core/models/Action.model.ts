@@ -23,7 +23,7 @@ export default function defineUser (sequelize: Sequelize.Sequelize) {
     trigger: Sequelize.STRING
   }, {
     classMethods: {
-      associate(models: any) {
+      associate (models: any) {
         PodAction.belongsTo(models.Pod)
         // Create Action has Many action import
         PodAction.hasMany(models.Payload)

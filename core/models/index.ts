@@ -6,10 +6,10 @@ import { getConnectionConfig } from '../config/sequelize.config'
 import { UserModel, UserInstance } from './User.model'
 import { PodModel, PodInstance } from './Pod.model'
 import { ActionModel, ActionInstance } from './Action.model'
-import { PayloadModel, PayloadInstance } from "./Payload.model"
+import { PayloadModel, PayloadInstance } from './Payload.model'
 import { PodAuthModel, PodAuthInstance } from './PodAuth.model'
 import { FieldModel, FieldInstance } from './Field.model'
-import { PipelineModel, PipelineInstance } from "./Pipeline.model";
+import { PipelineModel, PipelineInstance } from './Pipeline.model'
 
 const config = getConnectionConfig(process.env.NODE_ENV)
 
@@ -33,7 +33,7 @@ const sequelize = new Sequelize(
   config.database,
   config.username,
   config.password,
-  config.options,
+  config.options
 )
 
 let db = {}
@@ -58,4 +58,4 @@ Object.keys(db).forEach(function (modelName) {
 db['sequelize'] = sequelize
 db['Sequelize'] = Sequelize
 
-export default <DbConnection>db
+export default db as DbConnection

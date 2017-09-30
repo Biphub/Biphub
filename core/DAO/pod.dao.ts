@@ -23,6 +23,6 @@ export const installPods = () => Future((rej, res) => {
   R.traverse(Future.of, createPod, getAllManifests())
     .fork(
       e => rej(e),
-      pods => res(pods),
+      pods => res(pods)
     )
 })

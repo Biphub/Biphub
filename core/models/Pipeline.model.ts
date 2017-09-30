@@ -61,7 +61,7 @@ export default function (sequelize: SequelizeType) {
     sequence: {
       type: Sequelize.JSONB,
       validate: {
-        isInFormat(value) {
+        isInFormat (value) {
           console.log('checking value ', value)
           return true
         }

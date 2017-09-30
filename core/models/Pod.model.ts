@@ -26,7 +26,7 @@ export default function (sequelize: Sequelize.Sequelize) {
     }
   }, {
     classMethods: {
-      associate(models: any) {
+      associate (models: any) {
         Pod.hasMany(models.Action)
         Pod.belongsTo(models.PodAuth)
       }

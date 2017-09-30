@@ -1,14 +1,11 @@
 import * as passport from 'passport'
-import * as passportLocal from 'passport-local'
-import * as passportFacebook from 'passport-facebook'
+// import * as passportLocal from 'passport-local'
+// import * as passportFacebook from 'passport-facebook'
 import * as _ from 'lodash'
 
-import models from '../models'
 import { Request, Response, NextFunction } from 'express'
-import {UserInstance} from "../models/User.model";
-
-const LocalStrategy = passportLocal.Strategy
-const FacebookStrategy = passportFacebook.Strategy
+// const LocalStrategy = passportLocal.Strategy
+// const FacebookStrategy = passportFacebook.Strategy
 
 export const setupPassport = () => {
   console.log('setting up passport!')
@@ -118,7 +115,6 @@ export const setupPassport = () => {
   */
   console.log('passport set!')
 }
-
 
 /**
  * Login Required middleware.

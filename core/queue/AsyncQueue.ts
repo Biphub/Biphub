@@ -6,7 +6,7 @@ import { queue } from 'async'
  */
 export class AsyncQueue {
   queue: AsyncType
-  constructor(worker: Function | AsyncType.AsyncWorker) {
+  constructor (worker: Function | AsyncType.AsyncWorker) {
     this.queue = queue(worker, 1)
   }
   /**
@@ -14,7 +14,7 @@ export class AsyncQueue {
    * @param task
    * @param {Function} callback
    */
-  push(task: any, callback: Function) {
+  push (task: any, callback: Function) {
     this.queue.push(task, callback)
   }
 }

@@ -1,4 +1,4 @@
-import { Request, Response, Router } from 'express'
+import { Request, Response } from 'express'
 import { PipelineInstance } from '../models/Pipeline.model'
 import * as pipelineDao from '../DAO/pipeline.dao'
 
@@ -8,10 +8,10 @@ export const create = (req: Request, res: Response) => {
       notEmpty: true
     },
     description: {
-      notEmpty: true,
+      notEmpty: true
     },
     sequence: {
-      notEmpty: true,
+      notEmpty: true
     }
   })
   const { title, description, sequence } = req.body

@@ -19,7 +19,7 @@ export default function (sequelize: Sequelize.Sequelize):
     title: Sequelize.STRING
   }, {
     classMethods: {
-      associate(models: any) {
+      associate (models: any) {
         Payload.belongsTo(models.Action)
         Payload.hasMany(models.Field)
       }
