@@ -114,6 +114,46 @@ const setupQueue = (app: express.Application) => Future((rej, res) => {
   res(app)
 })
 
+// Move this to actual seeders folder
+const seedDb = (app: express.Application) => Future((rej, res) => {
+  const env = process.env.NODE_ENV
+  if (env === 'development' || env === 'test') {
+    models.Pipeline.bulkCreate([
+      {
+        title: 'test pipeline',
+        description: 'this is just for testing!',
+        entryApp: 'biphub-pod-fake1',
+        entryType: 'webhook',
+        sequence: {
+          'webhook': {
+            podName: 'biphub-pod-fake1',
+            graph: {
+              x: 10,
+              y: 210
+            },
+            next: {
+              'test-create-issue': {
+                podName: 'biphub-pod-fake2',
+                graph: {
+                  x: 20,
+                  y: 50
+                }
+              }
+            }
+          }
+        }
+      }
+    ]).then(() => {
+      res(app)
+    }).catch((e) => {
+      rej(e)
+    })
+  } else {
+    console.info('skipping migration because you are in production mode')
+    res(app)
+  }
+})
+
 /**
  * Connect to db using Sequelize.
  * @param {e.Application} app
@@ -155,6 +195,7 @@ export const start =
     R.chain(initializePods),
     R.chain(bootstrapExpress),
     R.chain(setupQueue),
+    R.chain(seedDb),
     R.chain(connectDb),
     R.chain(initiateExpress),
     () => {

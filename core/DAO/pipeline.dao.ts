@@ -1,6 +1,7 @@
 import models from '../models'
 import * as fluture from 'fluture'
 import { PipelineModel, PipelineInstance } from '../models/Pipeline.model'
+const Future = fluture.Future
 
 /**
  * Creates a pipeline
@@ -24,6 +25,16 @@ export function findAll () {
   })
 }
 
-export function handleWebhook (task) {
-  console.log('handling webhook ! ', task)
-}
+export const findPipeline = (entryApp) => Future((rej, res) => {
+  console.log('finding a pipeline by name', entryApp)
+  models.Pipeline.findAll({
+    where: {
+      entryApp: entryApp
+    }
+  })
+    .then((pipeline) => {
+      res(pipeline)
+    })
+    .catch(e => rej(e))
+})
+

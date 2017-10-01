@@ -23,7 +23,7 @@
     }
   },
   "actions": {
-    "post_fake_message": {
+    "post-fake-message": {
       "title": "Post to Channel",
       "description": "Posts a Message to a Channel",
       "trigger": "invoke",
@@ -74,7 +74,7 @@
         ]
       }
     },
-    "incoming_hook" : {
+    "incoming-hook" : {
       "title" : "Outgoing Web Hook Endpoint",
       "description" : "Receive A Message From A Slack Outgoing Webhook",
       "trigger" : "http",

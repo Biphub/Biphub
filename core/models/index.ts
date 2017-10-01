@@ -2,7 +2,7 @@ import * as R from 'ramda'
 import * as fs from 'fs'
 import * as path from 'path'
 import * as Sequelize from 'sequelize'
-import { getConnectionConfig } from '../config/sequelize.config'
+import { default as seqConfig } from '../config/sequelize.config'
 import { UserModel, UserInstance } from './User.model'
 import { PodModel, PodInstance } from './Pod.model'
 import { ActionModel, ActionInstance } from './Action.model'
@@ -11,7 +11,7 @@ import { PodAuthModel, PodAuthInstance } from './PodAuth.model'
 import { FieldModel, FieldInstance } from './Field.model'
 import { PipelineModel, PipelineInstance } from './Pipeline.model'
 
-const config = getConnectionConfig(process.env.NODE_ENV)
+const config = R.propOr(null, process.env.NODE_ENV, seqConfig)
 
 if (!config) {
   throw new Error('Invalid database config!')

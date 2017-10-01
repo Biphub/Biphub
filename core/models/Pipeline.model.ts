@@ -3,14 +3,13 @@ import * as Sequelize from 'sequelize'
 
 export interface PipelineModel {
   title: string,
-  sequence: JSON,
-  description: string
+  description: string,
+  sequence: any,
+  entryApp: string,
+  entryType: string
 }
 
 export interface PipelineInstance extends Sequelize.Instance<PipelineModel> {
-  title: string,
-  description: string,
-  sequence: JSON,
 }
 
 /**
@@ -22,6 +21,8 @@ export default function (sequelize: SequelizeType) {
   const Piepline = sequelize.define('Pipeline', {
     title: Sequelize.STRING,
     description: Sequelize.STRING,
+    entryApp: Sequelize.STRING,
+    entryType: Sequelize.ENUM('webhook', 'poll'),
     /**
      * {
      *   action1(trigger) {
