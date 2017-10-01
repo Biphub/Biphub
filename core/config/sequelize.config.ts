@@ -25,7 +25,6 @@ const getConnectionConfig = (NODE_ENV: string):
         },
         dialect: 'sqlite',
         storage: appRoot.resolve('/core/models/database.sqlite'),
-        logging: false
       }
     }
   } else if (NODE_ENV === 'test') {
@@ -36,7 +35,6 @@ const getConnectionConfig = (NODE_ENV: string):
       options: {
         storage: ':memory:',
         dialect: 'sqlite',
-        logging: false
       }
     }
   } else if (NODE_ENV === 'production') {

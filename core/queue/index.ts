@@ -1,5 +1,14 @@
 import { AsyncQueue } from './AsyncQueue'
 
+export interface Task {
+  name: string,
+  body: JSON,
+}
+
+export interface AppQueue {
+  push: (task: Task, cb: Function) => void
+}
+
 /**
  * Dependent env variable: MESSAGE_QUEUE. It can be either memory | rabbit
  */

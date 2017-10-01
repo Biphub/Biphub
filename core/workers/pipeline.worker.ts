@@ -1,7 +1,5 @@
-interface Task {
-  name: string,
-  body: JSON,
-}
+import { Task } from '../queue/index'
+
 /**
  *
  * @param task

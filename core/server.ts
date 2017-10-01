@@ -20,12 +20,19 @@ import { executeTask } from './workers/pipeline.worker'
 import * as Queue from './queue'
 const Future = fluture.Future
 
+export interface AppContext extends express.Application {
+  queue: Queue.AppQueue
+}
+
+export interface AppRequest extends express.Request {
+  queue: Queue.AppQueue
+}
+
 /**
  *
  * @param {e.Application} app
  */
 const initializePods = (app: express.Application) => Future((rej, res) => {
-  console.error('testing!!zz')
   installPods().fork(
     rej,
     () => res(app)
@@ -99,7 +106,7 @@ const setupQueue = (app: express.Application) => Future((rej, res) => {
   app.queue = q
   // Binds queue to request as well
   app.use((
-    req: express.Request, res: express.Response, next: express.NextFunction
+    req: AppRequest, res: express.Response, next: express.NextFunction
   ) => {
     req.queue = q
     next()
@@ -120,11 +127,11 @@ const connectDb = (app: express.Application) => Future((rej, res) => {
   models.sequelize.sync(syncOptions)
     .then(() => {
       console.info('Initialised seqeulize')
-      res(app)
+      return res(app)
     })
     .catch(e => {
       console.error(e)
-      rej(e)
+      return rej(e)
     })
 })
 
@@ -158,9 +165,8 @@ export const start =
         // 2. Set up passport
         // TODO: Fix this
         passportConfig.setupPassport()
+        console.log('initiate express!')
         res(null)
       })
     }
   )
-
-export const stop = (app: express.Application) => app.close()
