@@ -1,7 +1,7 @@
 // Enable sourcemap support
 require('source-map-support').install()
 // Better logging
-process.on('unhandledRejection', console.error)
+process.on('unhandledRejection', console.log)
 import * as express from 'express'
 import { start, AppContext } from './server'
 

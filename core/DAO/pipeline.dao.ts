@@ -17,16 +17,11 @@ export function create (pipeline: PipelineInstance) {
   })
 }
 
-export function findAll () {
-  return fluture.Future((rej, res) => {
-    models.Pipeline.findAll()
-      .then((values) => res(values))
-      .catch(e => rej(e))
-  })
-}
-
-export const findPipeline = (entryApp) => Future((rej, res) => {
-  console.log('finding a pipeline by name', entryApp)
+/**
+ * Find all pipelines by entry app name.
+ * @param {string} entryApp
+ */
+export const findAllPipelines = (entryApp: string) => Future((rej, res) => {
   models.Pipeline.findAll({
     where: {
       entryApp: entryApp
@@ -37,4 +32,3 @@ export const findPipeline = (entryApp) => Future((rej, res) => {
     })
     .catch(e => rej(e))
 })
-
