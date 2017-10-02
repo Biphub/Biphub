@@ -13,30 +13,38 @@ const Future = fluture.Future
  * @param {JSON} currentSequence
  * @returns {any}
  */
-const loopSequence = (callback: Function, currentSequence: any) => {
+const loopSequence = (callback, currentSequence) => {
   // Loop's dead end
-  if (R.isEmpty(currentSequence)) {
+  if (!currentSequence) {
     return null
   }
   // If it's a node, it must have current props
   // Current props are including podName, graph
-  const node = R.pickAll(['podName', 'graph'], currentSequence)
+  const node = R.pickAll(['actionName', 'podName', 'graph'], currentSequence)
 
   if (node && node.podName && node.graph) {
     callback(node)
-    loopSequence(callback, R.propOr(null, 'next', currentSequence))
+    // Process next node
+    return loopSequence(callback, R.propOr(null, 'next', currentSequence))
   }
 
   // Checking if edge exist. Next must be empty because it's an edge
   const keys = R.keys(currentSequence)
   if (!R.isEmpty(keys)) {
-    R.forEach((key) => {
-      loopSequence(callback, R.propOr(null, key, currentSequence))
+    return R.forEach((key) => {
+      // console.log('checking key ', key, '  ', keys)
+      const composeNextNode = R.compose(
+        R.assoc('actionName', key),
+        R.propOr(null, key)
+      )
+      const nextNode = composeNextNode(currentSequence)
+      loopSequence(callback, nextNode)
     }, keys)
   }
 }
 
 const processSequence = (sequence: JSON) => Future((rej, res) => {
+  loopSequence(console.log, sequence)
   res(sequence)
 })
 

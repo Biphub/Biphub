@@ -137,6 +137,22 @@ const seedDb = (app: express.Application) => Future((rej, res) => {
                 graph: {
                   x: 20,
                   y: 50
+                },
+                next: {
+                  'test-delete-issue': {
+                    podName: 'biphub-pod-fake2',
+                    graph: {
+                      x: 40,
+                      y: 10
+                    }
+                  }
+                }
+              },
+              'test-move-issue': {
+                podName: 'biphub-pod-fake2',
+                graph: {
+                  x: 10,
+                  y: 60
                 }
               }
             }
