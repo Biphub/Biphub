@@ -63,11 +63,12 @@ const processSequences = (sequence: JSON) => Future((rej, res) => {
   const singleSequence = (node) => Future((rej, res) => {
     setTimeout(() => {
       console.log('single sequence checking node ', node)
-      res(null)
+      res(2)
     }, 1500)
   })
-  const sequences = flattenSequence(sequence)
-  R.traverse(Future.of, singleSequence, sequences)
+  const flatSequences = flattenSequence(sequence)
+  // TODO: Store result and let it available to the next sequence
+  R.traverse(Future.of, singleSequence, flatSequences)
     .fork(
       (e) => rej(e),
       (result) => {

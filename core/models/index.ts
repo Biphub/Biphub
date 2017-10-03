@@ -51,18 +51,10 @@ files
 
 // invoke associations on each of the models
 Object.keys(db).forEach(function(modelName) {
-  console.log('checkinjg assoc! ', modelName, '  ', db[modelName].associate)
   if (db[modelName].options.hasOwnProperty('associate')) {
-    console.log('assocation found!! ', db[modelName])
     db[modelName].options.associate(db)
   }
 })
-/*
-Object.keys(db).forEach(function (modelName) {
-  if ('associate' in db[modelName]) {
-    db[modelName].associate(db)
-  }
-})*/
 
 db['sequelize'] = sequelize
 db['Sequelize'] = Sequelize
