@@ -5,15 +5,31 @@ import { findAllPipelines } from '../DAO/pipeline.dao'
 import * as fluture from 'fluture'
 const Future = fluture.Future
 
+const pathDelimiter = '.'
+function flattenObj (source, flattened = {}, keySoFar = '') {
+  function getNextKey(key) {
+    return `${keySoFar}${keySoFar ? pathDelimiter : ''}${key}`
+  }
+  if (typeof source === 'object') {
+    for (const key in source) {
+      flatten(source[key], flattened, getNextKey(key))
+    }
+  } else {
+    flattened[keySoFar] = source
+  }
+  return flattened
+}
+
 /**
  * Current sequence can be edge or node
  * edge => "action1"
  * node => "podName, graph, next"
  * @param callback
  * @param {JSON} currentSequence
+ * @param tasks
  * @returns {any}
  */
-const loopSequence = (callback, currentSequence) => {
+const flattenSequence = (currentSequence, tasks = []) => {
   // Loop's dead end
   if (!currentSequence) {
     return null
@@ -23,34 +39,47 @@ const loopSequence = (callback, currentSequence) => {
   const node = R.pickAll(['actionName', 'podName', 'graph'], currentSequence)
 
   if (node && node.podName && node.graph) {
-    callback(node)
-    // Process next node
-    return loopSequence(callback, R.propOr(null, 'next', currentSequence))
+    tasks.push(node)
+    return flattenSequence(R.propOr(null, 'next', currentSequence), tasks)
   }
 
   // Checking if edge exist. Next must be empty because it's an edge
   const keys = R.keys(currentSequence)
   if (!R.isEmpty(keys)) {
-    return R.forEach((key) => {
+    R.map((key) => {
       // console.log('checking key ', key, '  ', keys)
       const composeNextNode = R.compose(
         R.assoc('actionName', key),
         R.propOr(null, key)
       )
       const nextNode = composeNextNode(currentSequence)
-      loopSequence(callback, nextNode)
+      return flattenSequence(nextNode, tasks)
     }, keys)
   }
+  return tasks
 }
 
-const processSequence = (sequence: JSON) => Future((rej, res) => {
-  loopSequence(console.log, sequence)
-  res(sequence)
+const processSequences = (sequence: JSON) => Future((rej, res) => {
+  const singleSequence = (node) => Future((rej, res) => {
+    setTimeout(() => {
+      console.log('single sequence checking node ', node)
+      res(null)
+    }, 1500)
+  })
+  const sequences = flattenSequence(sequence)
+  R.traverse(Future.of, singleSequence, sequences)
+    .fork(
+      (e) => rej(e),
+      (result) => {
+        console.log('processed all sequences!')
+        res(result)
+      }
+    )
 })
 
 
 const processAllSequences = (sequences: Array<JSON>) => Future((rej, res) => {
-  R.traverse(Future.of, processSequence, sequences)
+  R.traverse(Future.of, processSequences, sequences)
     .fork(
       (e) => rej(e),
       (results) => res(results)
