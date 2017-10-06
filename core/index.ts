@@ -5,6 +5,7 @@ process.on('unhandledRejection', console.log)
 import * as express from 'express'
 import { start, AppContext } from './server'
 
+console.log('yoyo! start', start())
 start().fork(
   (e: express.Errback) => console.error('Failed to start the server!'),
   (app: any) => {

@@ -5,21 +5,6 @@ import { findAllPipelines } from '../DAO/pipeline.dao'
 import * as fluture from 'fluture'
 const Future = fluture.Future
 
-const pathDelimiter = '.'
-function flattenObj (source, flattened = {}, keySoFar = '') {
-  function getNextKey(key) {
-    return `${keySoFar}${keySoFar ? pathDelimiter : ''}${key}`
-  }
-  if (typeof source === 'object') {
-    for (const key in source) {
-      flatten(source[key], flattened, getNextKey(key))
-    }
-  } else {
-    flattened[keySoFar] = source
-  }
-  return flattened
-}
-
 /**
  * Current sequence can be edge or node
  * edge => "action1"
@@ -60,15 +45,21 @@ const flattenSequence = (currentSequence, tasks = []) => {
 }
 
 const processSequences = (sequence: JSON) => Future((rej, res) => {
-  const singleSequence = (node) => Future((rej, res) => {
-    setTimeout(() => {
-      console.log('single sequence checking node ', node)
-      res(2)
-    }, 1500)
-  })
-  const flatSequences = flattenSequence(sequence)
-  // TODO: Store result and let it available to the next sequence
-  R.traverse(Future.of, singleSequence, flatSequences)
+  // Dirty solution ...
+  let results = []
+  R.traverse(
+    Future.of,
+    // Each traverse step
+    (node, x) => Future((rej, res) => {
+      setTimeout(() => {
+        console.log('single sequence checking node ', node, '  x ? ', x)
+        results.push(node)
+        console.log('checking results ', results)
+        res(2)
+      }, 1500)
+    }),
+    flattenSequence(sequence)
+  )
     .fork(
       (e) => rej(e),
       (result) => {
@@ -76,6 +67,8 @@ const processSequences = (sequence: JSON) => Future((rej, res) => {
         res(result)
       }
     )
+
+
 })
 
 
