@@ -70,6 +70,7 @@
     "pug": "^2.0.0-rc.4",
     "ramda": "^0.24.1",
     "ramda-fantasy": "^0.8.0",
+    "relative": "^3.0.2",
     "request": "^2.82.0",
     "sequelize": "^4.10.0",
     "sqlite3": "^3.1.12",

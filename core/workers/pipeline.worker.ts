@@ -2,6 +2,7 @@ import * as R from 'ramda'
 import { Task } from '../queue/index'
 import { PipelineInstance } from '../models/Pipeline.model'
 import { findAllPipelines } from '../DAO/pipeline.dao'
+import { invokeAction } from '../bridge/node2node'
 import * as fluture from 'fluture'
 const Future = fluture.Future
 
@@ -45,30 +46,37 @@ const flattenSequence = (currentSequence, tasks = []) => {
 }
 
 const processSequences = (sequence: JSON) => Future((rej, res) => {
-  // Dirty solution ...
-  let results = []
-  R.traverse(
-    Future.of,
-    // Each traverse step
-    (node, x) => Future((rej, res) => {
-      setTimeout(() => {
-        console.log('single sequence checking node ', node, '  x ? ', x)
-        results.push(node)
-        console.log('checking results ', results)
-        res(2)
-      }, 1500)
-    }),
-    flattenSequence(sequence)
-  )
-    .fork(
-      (e) => rej(e),
-      (result) => {
-        console.log('processed all sequences!')
+  const getFutures = R.compose(
+    R.map((node) => {
+      return (prev = []) => Future((rej, res) => {
+        const actionName = R.propOr(null, 'actionName', node)
+        const podName = R.propOr(null, 'podName', node)
+        // If either one of these is not provided, halt the process
+        if (!actionName || !podName) {
+          return rej(false)
+        }
+        // Running action
+        invokeAction(podName, actionName)
+
+        // Recursively concatenating payload
+        const result = R.concat(prev,
+          [{
+            actionName,
+            podName,
+            payload: 123
+          }]
+        )
         res(result)
-      }
+      })
+    }),
+    flattenSequence
+  )
+  const futures = R.apply(R.pipeK)(getFutures(sequence))
+  futures()
+    .fork(
+      (e) => console.error(e),
+      (results) => console.log('future success! ', results)
     )
-
-
 })
 
 
