@@ -44,7 +44,6 @@ files
     return !R.isEmpty(R.match(/\.model\.js$/g, file))
   })
   .forEach(function (file) {
-    console.log('checking file ', file)
     const model = sequelize.import(path.join(__dirname, file))
     db[model['name']] = model
   })

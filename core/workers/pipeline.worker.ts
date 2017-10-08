@@ -75,7 +75,7 @@ const processSequences = (sequence: JSON) => Future((rej, res) => {
   futures()
     .fork(
       (e) => console.error(e),
-      (results) => console.log('future success! ', results)
+      (results) => console.info('Futures sequence successful', results)
     )
 })
 

@@ -100,7 +100,6 @@ export let postSignup = (req: Request, res: Response, next: NextFunction) => {
           console.error('login failed! ', err)
           return next(err)
         }
-        console.log('login success!')
         res.redirect('/')
       })
     } else {

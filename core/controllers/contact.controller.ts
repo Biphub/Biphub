@@ -29,7 +29,6 @@ export let postContact = (req: Request, res: Response) => {
   req.assert('message', 'Message cannot be blank').notEmpty()
 
   const errors = req.validationErrors()
-  console.log('checking errors ', errors)
   if (errors) {
     req.flash('errors', errors)
     return res.redirect('/contact')
@@ -43,7 +42,6 @@ export let postContact = (req: Request, res: Response) => {
   }
 
   transporter.sendMail(mailOptions, (err) => {
-    console.log('email send err ', err)
     if (err) {
       req.flash('errors', { msg: err.message })
       return res.redirect('/contact')

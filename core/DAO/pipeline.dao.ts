@@ -10,7 +10,6 @@ const Future = fluture.Future
  */
 export function create (pipeline: PipelineInstance) {
   return fluture.Future((rej, res) => {
-    console.log('checking models in create ', models.Pipeline)
     models.Pipeline.create(pipeline)
       .then((value: PipelineModel) => res(value))
       .catch((e: Error) => rej(e))

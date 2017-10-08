@@ -27,7 +27,6 @@ const createPod = (manifesto: JSON) => Future((rej, res) => {
     }
   )
   const fullPod = R.merge({ Actions: formatActions(actions) }, podProps)
-  console.log('checking full pod z ', fullPod)
   models.Pod.create(
     fullPod,
     {

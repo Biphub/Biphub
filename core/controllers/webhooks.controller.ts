@@ -16,7 +16,6 @@ export const postWebhooks = (req: Request, res: Response) => {
     // Removes initial / if it exists
     R.replace(/^\//, '')
   ))
-  console.log('req queue check ', req.queue.push)
   req.queue.push({
     name: getPathComponents(req.path).pod,
     body: req.body

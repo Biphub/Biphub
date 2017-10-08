@@ -235,7 +235,6 @@ export const start =
         // 2. Set up passport
         // TODO: Fix this
         passportConfig.setupPassport()
-        console.log('initiate express!')
         res(null)
       })
     }

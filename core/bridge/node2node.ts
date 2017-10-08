@@ -4,7 +4,13 @@
 import * as R from 'ramda'
 import * as appRoot from 'app-root-path'
 import * as fs from 'fs'
-import * as relative from 'relative'
+import * as path from 'path'
+import * as requireAll from 'require-all'
+import * as changeCase from 'change-case'
+import * as fluture from 'fluture'
+const stagingPods = requireAll(path.join(__dirname, '/../../pods/staging'))
+
+const Future = fluture.Future
 
 /**
  *
@@ -30,13 +36,14 @@ const getAllPods = () => fs.readdirSync(getFolderPath())
 export const getAllManifests = () => {
   const pods = getAllPods()
   const getManifests = R.compose(
-    R.tap(console.log),
     R.filter((x: JSON | boolean) => x),
     R.map(R.tryCatch(JSON.parse, R.F)),
     R.map((man: string) => fs.readFileSync(man, 'utf8')),
     R.map((pod: string) => `${getFolderPath()}/${pod}/manifest.json`)
   )
-  return getManifests(pods)
+  const manifests = getManifests(pods)
+  stagingPods['biphub-pod-fake1'].index.postFakeMessage()
+  return manifests
 }
 
 /**
@@ -46,25 +53,19 @@ export const getAllManifests = () => {
  * @param payload
  */
 export const invokeAction = (podName: string, actionName: string, payload: any) => {
-  const pods = getAllPods()
-  // fs.readFileSync(`${getFolderPath()}/${podName}.js`)
-  console.log('checking folder path')
-  const podFile = R.compose(
-    //pod => fs.readFileSync(`${getFolderPath()}/${pod}`, 'utf8'),
-    pod => relative('.', pod),
-    pod => `${getFolderPath()}/${pod}`,
-    (pod) => {
-      console.log('checking pod ', pod)
-      return pod
-    },
-    (pod: string) => {
-      if(R.test(/\.js&/g, pod)) {
-        return pod
-      }
-      return `${pod}.js`
+  // TODO: Should we check it here?
+  if (actionName === 'webhook') {
+    // We don't have to invoke any action of type "webhook"
+    return null
+  }
+  const env = process.env.NODE_ENV
+  const camelActionName = changeCase.camelCase(actionName)
+  // const stagingPodMethod = R.propOr(null, `${podName}.index.${camelActionName}`, stagingPods)
+  if (env === 'development' || env === 'test') {
+    const stagingPodMethod = stagingPods[podName]['index'][camelActionName]
+    if (!stagingPodMethod) {
+      return null
     }
-  )
-  console.log('checking pod file path ', podFile(podName));
-  console.log('checking pods ', pods, 'z  ')
+  }
 }
 

@@ -4,7 +4,6 @@ import models from '../models'
 const Future = fluture.Future
 
 const createAction = (action, pod) => Future((rej, res) => {
-  console.log('checking action before creating ', action)
   models.Action.create(action)
     .then((action) => {
       action.setPod(pod)
@@ -44,7 +43,6 @@ export const createManyActions = (data, pod) => Future((rej, res) => {
         rej(e)
       },
       (actions) => {
-        console.log('created actions!')
         res(actions)
       })
 

@@ -1,5 +1,5 @@
-export default {
-  postFakeMessage() {
-    console.log('posting fake message')
+module.exports = {
+  postFakeMessage: () => {
+    console.log('yoyo!')
   }
 }

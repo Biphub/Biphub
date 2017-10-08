@@ -8,7 +8,6 @@ import { Request, Response, NextFunction } from 'express'
 // const FacebookStrategy = passportFacebook.Strategy
 
 export const setupPassport = () => {
-  console.log('setting up passport!')
   passport.serializeUser<any, any>((user, done) => {
     done(undefined, user.id)
   })
@@ -113,7 +112,6 @@ export const setupPassport = () => {
     }
   }))
   */
-  console.log('passport set!')
 }
 
 /**
