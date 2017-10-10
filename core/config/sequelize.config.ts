@@ -14,6 +14,7 @@ const config = {
       },
       dialect: 'sqlite',
       storage: appRoot.resolve('/core/models/database.sqlite'),
+      logging: false
     }
   },
   test: {

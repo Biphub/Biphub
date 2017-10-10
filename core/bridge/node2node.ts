@@ -41,9 +41,7 @@ export const getAllManifests = () => {
     R.map((man: string) => fs.readFileSync(man, 'utf8')),
     R.map((pod: string) => `${getFolderPath()}/${pod}/manifest.json`)
   )
-  const manifests = getManifests(pods)
-  stagingPods['biphub-pod-fake1'].index.postFakeMessage()
-  return manifests
+  return getManifests(pods)
 }
 
 /**
@@ -52,20 +50,27 @@ export const getAllManifests = () => {
  * @param {string} actionName
  * @param payload
  */
-export const invokeAction = (podName: string, actionName: string, payload: any) => {
+export const invokeAction = (podName: string, actionName: string, payload: any) => Future((rej, res) => {
+  console.info('Invoking pod', podName, 'actionName:', actionName)
   // TODO: Should we check it here?
   if (actionName === 'webhook') {
     // We don't have to invoke any action of type "webhook"
-    return null
+    return res(null)
   }
   const env = process.env.NODE_ENV
   const camelActionName = changeCase.camelCase(actionName)
-  // const stagingPodMethod = R.propOr(null, `${podName}.index.${camelActionName}`, stagingPods)
   if (env === 'development' || env === 'test') {
-    const stagingPodMethod = stagingPods[podName]['index'][camelActionName]
-    if (!stagingPodMethod) {
-      return null
+    const stagingPodMethod = R.pathOr(null, [podName, 'index', camelActionName], stagingPods)
+    // If found method is a promise
+    if (stagingPodMethod) {
+      console.log('staging pod method yo ', camelActionName)
+      return stagingPodMethod({ text: 'lol' })
+        .then(() => {
+          console.info('podMethod was successfully invoked', camelActionName)
+          res(null)
+        })
+        .catch(err => rej(err))
     }
+    rej(new Error(`Pod method does not exist ${podName} of ${camelActionName}`))
   }
-}
-
+})

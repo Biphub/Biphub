@@ -1,8 +1,9 @@
 import * as R from 'ramda'
+import * as assert from 'assert'
 import { Task } from '../queue/index'
 import { PipelineInstance } from '../models/Pipeline.model'
 import { findAllPipelines } from '../DAO/pipeline.dao'
-import { invokeAction } from '../bridge/node2node'
+import * as nodeBridge from '../bridge/node2node'
 import * as fluture from 'fluture'
 const Future = fluture.Future
 
@@ -56,17 +57,28 @@ const processSequences = (sequence: JSON) => Future((rej, res) => {
           return rej(false)
         }
         // Running action
-        invokeAction(podName, actionName)
-
-        // Recursively concatenating payload
-        const result = R.concat(prev,
-          [{
-            actionName,
-            podName,
-            payload: 123
-          }]
+        console.info('About to start an action', podName, ' actionName', actionName)
+        // TODO: Find out why it does not run
+        // Find out how to use assert
+        // Find out how to do hot reloading
+        nodeBridge.invokeAction(podName, actionName, null).fork(
+          (err) => {
+            console.error('Invoke action has failed', err)
+            rej(err)
+          },
+          (payload) => {
+            // Recursively concatenating payload
+            const result = R.concat(prev,
+              [{
+                actionName,
+                podName,
+                payload
+              }]
+            )
+            console.info('Finished an action', podName, ' actionName', actionName, '  ', result)
+            res(result)
+          }
         )
-        res(result)
       })
     }),
     flattenSequence

@@ -11,11 +11,11 @@
   "scripts": {
     "start": "npm run build && npm run watch",
     "build": "npm run build-ts && npm run tslint",
-    "serve": "nodemon dist/index.js",
-    "dev": "cross-env NODE_ENV=development concurrently -p \"[{name}]\" -n \"Ts,Express\" -c \"yellow.bold,cyan.bold\" \"npm run watch-ts\" \"npm run serve\"",
+    "dev": "concurrently -p \"[{name}]\" -n \"Ts,Express\" -c \"yellow.bold,cyan.bold\" \"npm run watch-ts\" \"npm run serve\"",
     "test": "jest --forceExit",
+    "serve": "cross-env NODE_ENV=development nodemon dist/index.js",
     "build-ts": "tsc",
-    "watch-ts": "tsc -w",
+    "watch-ts": "cross-env NODE_ENV=development tsc -w",
     "sequelize:seed": "cd dist && cross-env NODE_ENV=development sequelize db:seed:all",
     "ts-node:dev": "nodemon --watch core --exec ts-node --fast --disableWarnings ./core",
     "ts-node:check": "ts-node ./core",
@@ -76,7 +76,9 @@
     "require-all": "^2.2.0",
     "sequelize": "^4.10.0",
     "sqlite3": "^3.1.12",
-    "ts-node": "^3.3.0"
+    "tracer": "^0.8.11",
+    "ts-node": "^3.3.0",
+    "winston": "^2.4.0"
   },
   "devDependencies": {
     "@types/app-root-path": "^1.2.4",
@@ -107,6 +109,7 @@
     "jest": "^19.0.2",
     "node-sass": "^4.5.2",
     "nodemon": "^1.12.1",
+    "pretty-error": "^2.1.1",
     "shelljs": "^0.7.8",
     "source-map-support": "^0.4.18",
     "supertest": "^2.0.1",

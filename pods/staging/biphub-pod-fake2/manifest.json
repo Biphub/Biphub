@@ -1,3 +1,86 @@
 {
-  "yo": 1
+  "name": "fake2",
+  "title": "Fake app 2",
+  "description": "Fake opensource repository service!",
+  "url": "https://fake2.com",
+  "trackDuplicates": true,
+  "preparedConfig": {
+    "token": ""
+  },
+  "auth": {
+    "strategy": "token",
+    "properties": {
+      "access_token": {
+        "type": "string",
+        "title": "Access Token"
+      }
+    }
+  },
+  "rpcs": {
+    "channels_list": {
+      "contentType": "application/json",
+      "title": "Get Channels"
+    }
+  },
+  "actions": {
+    "create-fake-issue": {
+      "title": "Create a fake issue",
+      "description": "Posts a Message to a Channel",
+      "trigger": "invoke",
+      "config": {
+        "properties": {
+          "channel": {
+            "type": "string",
+            "oneOf": [
+              {
+                "$ref": "/rpcs/channels_list#channels/{id}"
+              }
+            ],
+            "label": {
+              "$ref": "/rpcs/channels_list#channels/{name}"
+            },
+            "title": "Channel ID"
+          },
+          "username": {
+            "type": "string",
+            "title": "Bot Name (optional)"
+          }
+        },
+        "disposition": [
+          "channel",
+          "username"
+        ]
+      },
+      "exports": {
+        "properties": {
+          "ok": {
+            "type": "boolean",
+            "title": "Response Status"
+          }
+        }
+      },
+      "imports": {
+        "properties": {
+          "title": {
+            "type": "string",
+            "title": "Issue title"
+          },
+          "description": {
+            "type": "string",
+            "title": "Description"
+          }
+        },
+        "required": [
+          "text"
+        ],
+        "disposition": [
+          "text"
+        ]
+      }
+    }
+  },
+  "tags": [
+    "messaging",
+    "productivity"
+  ]
 }
