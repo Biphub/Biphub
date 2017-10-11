@@ -63,14 +63,14 @@ export const invokeAction = (podName: string, actionName: string, payload: any) 
     const stagingPodMethod = R.pathOr(null, [podName, 'index', camelActionName], stagingPods)
     // If found method is a promise
     if (stagingPodMethod) {
-      console.log('staging pod method yo ', camelActionName)
-      return stagingPodMethod({ text: 'lol' })
-        .then(() => {
-          console.info('podMethod was successfully invoked', camelActionName)
+      stagingPodMethod({ text: 'lol' })
+        .then((result) => {
+          console.info('podMethod was successfully invoked', camelActionName, 'result of podMethod', result)
           res(null)
         })
         .catch(err => rej(err))
+    } else {
+      rej(new Error(`Pod method does not exist ${podName} of ${camelActionName}`))
     }
-    rej(new Error(`Pod method does not exist ${podName} of ${camelActionName}`))
   }
 })

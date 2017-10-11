@@ -58,9 +58,6 @@ const processSequences = (sequence: JSON) => Future((rej, res) => {
         }
         // Running action
         console.info('About to start an action', podName, ' actionName', actionName)
-        // TODO: Find out why it does not run
-        // Find out how to use assert
-        // Find out how to do hot reloading
         nodeBridge.invokeAction(podName, actionName, null).fork(
           (err) => {
             console.error('Invoke action has failed', err)
@@ -84,6 +81,7 @@ const processSequences = (sequence: JSON) => Future((rej, res) => {
     flattenSequence
   )
   const futures = R.apply(R.pipeK)(getFutures(sequence))
+  console.log('checking futures ', getFutures(sequence))
   futures()
     .fork(
       (e) => console.error(e),
