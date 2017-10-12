@@ -139,7 +139,7 @@ const seedDb = (app: express.Application) => Future((rej, res) => {
                   y: 50
                 },
                 next: {
-                  'test-delete-issue': {
+                  'create-fake-issue': {
                     podName: 'biphub-pod-fake2',
                     graph: {
                       x: 40,
@@ -155,8 +155,8 @@ const seedDb = (app: express.Application) => Future((rej, res) => {
                   y: 60
                 },
                 next: {
-                  'really?': {
-                    podName: 'biphub-pod-fake2',
+                  'search-channel': {
+                    podName: 'biphub-pod-fake1',
                     graph: {
                       z: 10,
                       x: 20
@@ -164,8 +164,8 @@ const seedDb = (app: express.Application) => Future((rej, res) => {
                   }
                 }
               },
-              'heyhey! it should be last!': {
-                podName: 'test!',
+              'deleteFakeMessage': {
+                podName: 'biphub-pod-fake1',
                 graph: 1
               }
             }

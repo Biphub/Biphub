@@ -58,7 +58,7 @@ const processSequences = (sequence: JSON) => Future((rej, res) => {
           return rej(false)
         }
         // Running action
-        logger.log('About to start an action', podName, ' actionName', actionName)
+        logger.info('About to start an action', podName, ' actionName', actionName)
         nodeBridge.invokeAction(podName, actionName, null).fork(
           (err) => {
             console.error('Invoke action has failed', err)

@@ -74,6 +74,48 @@
         ]
       }
     },
+    "search-channel": {
+      "title": "Search channel",
+      "description": "Search everything in a given channel",
+      "trigger": "invoke",
+      "exports": {
+        "properties": {
+          "searchResults": {
+            "type": "string",
+            "title": "Search results"
+          }
+        }
+      },
+      "imports": {
+        "properties": {
+          "searchText": {
+            "type": "string",
+            "title": "Search string that might match anything"
+          }
+        }
+      }
+    },
+    "deleteFakeMessage": {
+      "title": "Delete fake message",
+      "description": "Deletes a fake message using ID",
+      "trigger": "invoke",
+      "exports": {
+        "properties": {
+          "ok": {
+            "type": "boolean",
+            "title": "Result of deletion"
+          }
+        }
+      },
+      "imports": {
+        "properties": {
+          "messageId": {
+            "type": "string",
+            "title": "Id of message to delete"
+          }
+        }
+      }
+    },
     "incoming-hook" : {
       "title" : "Outgoing Web Hook Endpoint",
       "description" : "Receive A Message From A Slack Outgoing Webhook",

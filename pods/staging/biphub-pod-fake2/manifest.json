@@ -28,6 +28,27 @@
       "description": "Deletes an issue",
       "trigger": "invoke"
     },
+    "create-move-issue": {
+      "title": "Test move issue!",
+      "description": "Test moving an issue!",
+      "trigger": "invoke",
+      "exports": {
+        "properties": {
+          "ok": {
+            "type": "boolean",
+            "title": "Response Status"
+          }
+        }
+      },
+      "imports": {
+        "properties": {
+          "reason": {
+            "type": "string",
+            "title": "Reason of moving the card"
+          }
+        }
+      }
+    },
     "create-fake-issue": {
       "title": "Create a fake issue",
       "description": "Posts a Message to a Channel",

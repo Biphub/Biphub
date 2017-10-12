@@ -7,5 +7,21 @@ module.exports = {
         res({ ok: true })
       }, 2000);
     })
+  },
+  searchChannel: ({ searchText }) => {
+    return new Promise((res, rej) => {
+      setTimeout(() => {
+        console.info('Searching a channel! ', searchText)
+        res({ ok: true })
+      }, 2000)
+    })
+  },
+  deleteFakeMessage: ({ messageId }) => {
+    return new Promise((res, rej) => {
+      setTimeout(() => {
+        console.info('Deleting a fake message', messageId)
+        res({ ok: true })
+      })
+    })
   }
 }
