@@ -21,7 +21,7 @@ module.exports = {
       setTimeout(() => {
         console.info('Deleting a fake message', messageId)
         res({ ok: true })
-      })
+      }, 1500)
     })
   }
 }
