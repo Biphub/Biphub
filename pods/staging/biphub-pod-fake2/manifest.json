@@ -23,6 +23,11 @@
     }
   },
   "actions": {
+    "test-delete-issue": {
+      "title": "Test delete an issue",
+      "description": "Deletes an issue",
+      "trigger": "invoke"
+    },
     "create-fake-issue": {
       "title": "Create a fake issue",
       "description": "Posts a Message to a Channel",

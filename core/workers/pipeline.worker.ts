@@ -1,5 +1,6 @@
 import * as R from 'ramda'
 import * as assert from 'assert'
+import { logger } from '../logger'
 import { Task } from '../queue/index'
 import { PipelineInstance } from '../models/Pipeline.model'
 import { findAllPipelines } from '../DAO/pipeline.dao'
@@ -57,7 +58,7 @@ const processSequences = (sequence: JSON) => Future((rej, res) => {
           return rej(false)
         }
         // Running action
-        console.info('About to start an action', podName, ' actionName', actionName)
+        logger.log('About to start an action', podName, ' actionName', actionName)
         nodeBridge.invokeAction(podName, actionName, null).fork(
           (err) => {
             console.error('Invoke action has failed', err)
