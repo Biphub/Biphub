@@ -28,6 +28,10 @@ export interface AppRequest extends express.Request {
   queue: Queue.AppQueue
 }
 
+const initHotReloading = () => {
+
+}
+
 /**
  *
  * @param {e.Application} app

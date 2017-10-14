@@ -1,4 +1,5 @@
 import * as R from 'ramda'
+import logger from '../logger'
 import { Response, Request } from 'express'
 
 /**
@@ -16,11 +17,19 @@ export const postWebhooks = (req: Request, res: Response) => {
     // Removes initial / if it exists
     R.replace(/^\//, '')
   ))
+  const name = R.propOr(null, 'pod', getPathComponents(req.path))
+  const body = R.propOr(null, 'body', req)
+  if (!name || !body) {
+    logger.error('Incorrect approach to webhook endpoint name:', name, 'body:', body)
+    return res.json({
+      ok: false
+    })
+  }
   req.queue.push({
     name: getPathComponents(req.path).pod,
     body: req.body
   }, () => {
-    console.info('Webhook route has pub')
+    logger.info('End: Webhook Task', name, 'has finished')
   })
   res.json({
     ok: getPathComponents(req.path)

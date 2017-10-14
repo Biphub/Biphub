@@ -1,7 +1,6 @@
 import * as R from 'ramda'
 import * as fluture from 'fluture'
 import { default as models } from '../models'
-import { createManyActions } from './action.dao'
 import { getAllManifests } from '../bridge/node2node'
 
 const Future = fluture.Future

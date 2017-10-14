@@ -5,7 +5,7 @@ module.exports = {
       setTimeout(() => {
         console.info('pod fake 1 received a fake action trigger! ', text);
         res({ ok: true })
-      }, 2000);
+      }, 2000)
     })
   },
   searchChannel: ({ searchText }) => {

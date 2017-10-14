@@ -1,11 +1,11 @@
 import * as R from 'ramda'
-import * as assert from 'assert'
 import { logger } from '../logger'
 import { Task } from '../queue/index'
 import { PipelineInstance } from '../models/Pipeline.model'
 import { findAllPipelines } from '../DAO/pipeline.dao'
 import * as nodeBridge from '../bridge/node2node'
 import * as fluture from 'fluture'
+import {seq} from "fluture";
 const Future = fluture.Future
 
 /**
@@ -47,7 +47,11 @@ const flattenSequence = (currentSequence, tasks = []) => {
   return tasks
 }
 
-const processSequences = (sequence: JSON) => Future((rej, res) => {
+/**
+ * Process sequences by turning them into a list of futures
+ * @param {JSON} sequence
+ */
+const processSequence = (sequence: Array<JSON>) => Future((rej, res) => {
   const getFutures = R.compose(
     R.map((node) => {
       return (prev = []) => Future((rej, res) => {
@@ -57,11 +61,11 @@ const processSequences = (sequence: JSON) => Future((rej, res) => {
         if (!actionName || !podName) {
           return rej(false)
         }
+        logger.info('Init: Task', podName, ':', actionName)
         // Running action
-        logger.info('About to start an action', podName, ' actionName', actionName)
         nodeBridge.invokeAction(podName, actionName, null).fork(
           (err) => {
-            console.error('Invoke action has failed', err)
+            logger.error('Action has failed', err)
             rej(err)
           },
           (payload) => {
@@ -73,7 +77,7 @@ const processSequences = (sequence: JSON) => Future((rej, res) => {
                 payload
               }]
             )
-            console.info('Finished an action', podName, ' actionName', actionName, '  ', result)
+            logger.info('Mid: task', podName, ':', actionName)
             res(result)
           }
         )
@@ -82,23 +86,37 @@ const processSequences = (sequence: JSON) => Future((rej, res) => {
     flattenSequence
   )
   const futures = R.apply(R.pipeK)(getFutures(sequence))
-  console.log('checking futures ', getFutures(sequence))
   futures()
     .fork(
-      (e) => console.error(e),
-      (results) => console.info('Futures sequence successful', results)
+      (e) => {
+        console.error(e)
+        rej(e)
+      },
+      (results) => {
+        console.info('Futures sequence successful', results)
+        res(results)
+      }
     )
 })
 
-
-const processAllSequences = (sequences: Array<JSON>) => Future((rej, res) => {
-  R.traverse(Future.of, processSequences, sequences)
+/**
+ * Processing all seq
+ * @param {Array<JSON>} sequence
+ */
+const traverseFlatSequence = (sequence: Array<JSON>) => Future((rej, res) => {
+  // Sequence looks like [ { webhook: { podName: 'biphub-pod-fake1', graph: [Object], next: [Object] } } ]
+  // Technically it does not need traverse, but we will just receive it here as a backward compatibility
+  R.traverse(Future.of, processSequence, sequence)
     .fork(
       (e) => rej(e),
       (results) => res(results)
     )
 })
 
+/**
+ * Flattens Sequelize retrieved pipeline data
+ * @param {Array<PipelineInstance>} pipelines
+ */
 const flattenPipelines = (pipelines: Array<PipelineInstance>) => Future((rej, res) => {
   if (R.isEmpty(pipelines)) {
     rej(new Error('Flatten pipelines received empty an empty list'))
@@ -108,8 +126,9 @@ const flattenPipelines = (pipelines: Array<PipelineInstance>) => Future((rej, re
 })
 
 /**
- *
+ * Execute single queue task
  * @param task
+ * @param cb
  */
 export const executeTask = (task: Task, cb: Function) => {
   const podName = R.propOr(null, 'name', task)
@@ -118,7 +137,7 @@ export const executeTask = (task: Task, cb: Function) => {
     throw new Error('Invalid payload while executing queue task')
   }
   const executeSequence = R.compose(
-    R.chain(processAllSequences),
+    R.chain(traverseFlatSequence),
     R.chain(flattenPipelines),
     findAllPipelines
   )
@@ -128,9 +147,9 @@ export const executeTask = (task: Task, cb: Function) => {
         console.error('Failed to execute a pipeline!')
         cb(e)
       },
-      () => {
-        console.info('Successfully executed all the pipeline tasks for', task.name)
-        cb()
+      (results: any) => {
+        logger.info('End: Pipeline task has finished -', task.name)
+        cb(results)
       }
     )
 }

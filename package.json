@@ -110,6 +110,7 @@
     "@types/supertest": "^2.0.3",
     "concurrently": "^3.5.0",
     "jest": "^19.0.2",
+    "node-emoji": "^1.8.1",
     "node-sass": "^4.5.2",
     "nodemon": "^1.12.1",
     "pretty-error": "^2.1.1",

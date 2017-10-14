@@ -1,62 +1,73 @@
-import * as chalk from "chalk";
-import * as fs from "fs-extra";
-import * as sourceMap from "source-map";
-import * as tracer from "tracer";
+import * as R from 'ramda'
+import * as chalk from 'chalk'
+import * as fs from 'fs-extra'
+import * as sourceMap from 'source-map'
+import * as tracer from 'tracer'
 
 interface ISourceMap {
-  version: number;
-  sources: Array<string>;
-  names: Array<string>;
-  sourcesContent?: string[];
-  mappings: string;
+  version: number
+  sources: Array<string>
+  names: Array<string>
+  sourcesContent?: string[]
+  mappings: string
 }
 
 interface IMappedPosition {
-  column: number;
-  line: number;
-  name?: string;
-  source: string;
+  column: number
+  line: number
+  name?: string
+  source: string
 }
 
 class SourceMapManager {
-  private static sourceMapCache: Map<String, ISourceMap> = new Map();
-  static getOriginalLineFor(pathToJsFile: string, line: number, col: number): IMappedPosition {
-    let sourceMapFile = pathToJsFile + ".map";
-    let sourceMapAsJson = SourceMapManager.sourceMapCache.get(sourceMapFile);
+  private static sourceMapCache: Map<String, ISourceMap> = new Map()
+  static getOriginalLineFor (pathToJsFile: string, line: number, col: number): IMappedPosition {
+    let sourceMapFile = pathToJsFile + '.map'
+    let sourceMapAsJson = SourceMapManager.sourceMapCache.get(sourceMapFile)
     if (!sourceMapAsJson) {
       try {
-        sourceMapAsJson = fs.readJsonSync(sourceMapFile);
-        SourceMapManager.sourceMapCache.set(sourceMapFile, sourceMapAsJson);
+        sourceMapAsJson = fs.readJsonSync(sourceMapFile)
+        SourceMapManager.sourceMapCache.set(sourceMapFile, sourceMapAsJson)
       } catch (e) {
-        return null;
+        return null
       }
     }
 
-    let smc = new sourceMap.SourceMapConsumer(sourceMapAsJson);
+    let smc = new sourceMap.SourceMapConsumer(sourceMapAsJson)
     return smc.originalPositionFor({
       column: +col,
       line: +line
-    });
+    })
   }
 }
 
 let logger = tracer.console(
   {
-    dateformat: "HH:MM:ss",
+    dateformat: 'HH:MM:ss',
     format : [
-      "{{timestamp}} {{icon}} {{message}} (in {{method}}@{{file}}:{{line}})",
+      '{{timestamp}} {{icon}} {{message}} (in {{method}}@{{file}}:{{line}})',
       {
-        error: "{{timestamp}} {{icon}} {{message}} (in {{method}}@{{file}}:{{line}})\nCall Stack:\n{{stack}}",
-        info: "{{timestamp}} {{icon}} {{message}}"
+        error: '{{timestamp}} {{icon}} {{message}} (in {{method}}@{{file}}:{{line}})\nCall Stack:\n{{stack}}',
+        info: '{{timestamp}} {{icon}} {{message}} (in {{method}}@{{file}}:{{line}})'
       }
     ],
-    preprocess: (data) => {
-      if (data.title === "info") {
-        data.icon = chalk.blue("ℹ");
-      } else if (data.title === "warn") {
-        data.icon = chalk.yellow("⚠");
+    preprocess: (data: tracer) => {
+      if (data.title === 'info') {
+        const { args } = data
+        const head = R.propOr('', '0', args)
+        if (R.test(/^init:/gi, head)) {
+          data.icon = chalk.yellow('👶')
+        } else if (R.test(/^mid/gi, head)) {
+          data.icon = chalk.blue('👷')
+        } else if (R.test(/^end/gi, head)) {
+          data.icon = chalk.green('💲')
+        } else {
+          data.icon = chalk.blue('ℹ')
+        }
+      } else if (data.title === 'warn') {
+        data.icon = chalk.yellow('⚠')
       } else {
-        data.icon = chalk.red("✖");
+        data.icon = chalk.red('✖')
       }
       let originalLoc = SourceMapManager.getOriginalLineFor(data.path, data.line, data.pos)
       if (originalLoc) {
@@ -64,11 +75,11 @@ let logger = tracer.console(
         data.method = originalLoc.name || data.method
 
         if (originalLoc.source) {
-          let paths = originalLoc.source.split("/")
+          let paths = originalLoc.source.split('/')
           let filteredPaths = paths.filter((path) => {
-            return path !== ".."
+            return path !== '..'
           })
-          data.file = filteredPaths.join("/")
+          data.file = filteredPaths.join('/')
         }
       }
     }

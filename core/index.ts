@@ -4,13 +4,12 @@ const env = process.env.NODE_ENV
 require('source-map-support').install()
 // Pretty error
 if (env === 'development' || env === 'test') {
-  console.log('started PE')
+  console.log('started Pretty Error')
   const pe = new PrettyError()
   pe.start()
-  console.error('started PE')
 }
 import * as express from 'express'
-import { start, AppContext } from './server'
+import { start } from './server'
 
 start().fork(
   (e: express.Errback) => console.error('Failed to start the server!'),
