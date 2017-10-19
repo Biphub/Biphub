@@ -65,7 +65,7 @@ export const invokeAction = (podName: string, actionName: string, payload: any) 
       stagingPodMethod({ text: 'lol' })
         .then((result) => {
           console.info('podMethod was successfully invoked', camelActionName, 'result of podMethod', result)
-          res(null)
+          res(result)
         })
         .catch(err => rej(err))
     } else {

@@ -1,9 +1,11 @@
 import * as R from 'ramda'
+import * as graphqlHTTP from 'express-graphql'
 import * as fluture from 'fluture'
 import * as express from 'express'
 import * as compression from 'compression'
 import * as session from 'express-session'
 import * as bodyParser from 'body-parser'
+import * as cors from 'cors'
 import * as logger from 'morgan'
 import * as passport from 'passport'
 import * as errorHandler from 'errorhandler'
@@ -18,6 +20,7 @@ import { default as models } from './models'
 import { default as routes } from './routes'
 import { executeTask } from './workers/pipeline.worker'
 import * as Queue from './queue'
+import { default as Schema } from './graphql/schema'
 const Future = fluture.Future
 
 export interface AppContext extends express.Application {
@@ -45,6 +48,8 @@ const initializePods = (app: express.Application) => Future((rej, res) => {
 
 /**
  * Bootstrap express app context with various things
+ * Typical REST endpoints
+ * Graphql Endpoint
  * @param {e.Application} app
  */
 const bootstrapExpress = (app: express.Application) => Future((rej, res) => {
@@ -60,6 +65,7 @@ const bootstrapExpress = (app: express.Application) => Future((rej, res) => {
   app.set('views', path.join(__dirname, '../views'))
   app.set('view engine', 'pug')
   app.use(compression())
+  app.use(cors())
   app.use(logger('dev'))
   app.use(bodyParser.json())
   app.use(bodyParser.urlencoded({ extended: true }))
@@ -91,6 +97,17 @@ const bootstrapExpress = (app: express.Application) => Future((rej, res) => {
 
   // Routes!
   app.use(routes())
+
+  // Graphql
+  const root = {
+    hello: () => 'Hello from Bipflow!'
+  }
+  app.use('/graphql', graphqlHTTP({
+    schema: Schema,
+    rootValue: root,
+    pretty: true,
+    graphiql: true
+  }))
 
   // Error Handler. Provides full stack - remove for production
   app.use(errorHandler())
