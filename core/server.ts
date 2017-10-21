@@ -3,6 +3,7 @@ import * as graphqlHTTP from 'express-graphql'
 import * as fluture from 'fluture'
 import * as express from 'express'
 import * as compression from 'compression'
+import * as appRoot from 'app-root-path'
 import * as session from 'express-session'
 import * as bodyParser from 'body-parser'
 import * as cors from 'cors'
@@ -93,7 +94,9 @@ const bootstrapExpress = (app: express.Application) => Future((rej, res) => {
     }
     next()
   })
-  app.use(express.static(path.join(__dirname, 'public'), { maxAge: 31557600000 }))
+  console.log('yoyo! ', appRoot.resolve('/public/images'), '  ', path.join(__dirname, '/public'))
+  //, { maxAge: 31557600000 }
+  app.use(express.static(appRoot.resolve('/core/public')))
 
   // Routes!
   app.use(routes())
