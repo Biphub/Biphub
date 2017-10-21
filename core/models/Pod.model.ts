@@ -10,6 +10,9 @@ export interface PodModel {
 export interface PodInstance extends Sequelize.Instance<PodModel> {
 }
 
+// Conventional namespace used by all biphub pods
+const NAMESPACE = 'biphub-pod-'
+
 export default function (sequelize: Sequelize.Sequelize) {
   const Pod = sequelize.define('Pod', {
     name: {
@@ -22,7 +25,19 @@ export default function (sequelize: Sequelize.Sequelize) {
       type: Sequelize.STRING
     },
     url: {
-      type: Sequelize. STRING
+      type: Sequelize.STRING
+    },
+    stage: {
+      type: Sequelize.ENUM('staging', 'public'),
+    },
+    icon: {
+      type: Sequelize.STRING,
+      get() {
+        const stage = this.getDataValue('stage')
+        const name = this.getDataValue('name')
+        const icon = this.getDataValue('icon')
+        return `/${stage}/${NAMESPACE}${name}/${icon}`
+      }
     }
   }, {
     associate (models: any) {

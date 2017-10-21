@@ -7,7 +7,7 @@ import * as appRoot from 'app-root-path'
 import * as session from 'express-session'
 import * as bodyParser from 'body-parser'
 import * as cors from 'cors'
-import * as logger from 'morgan'
+import { logger } from './logger'
 import * as passport from 'passport'
 import * as errorHandler from 'errorhandler'
 import * as lusca from 'lusca'
@@ -41,7 +41,7 @@ const initHotReloading = () => {
  * @param {e.Application} app
  */
 const initializePods = (app: express.Application) => Future((rej, res) => {
-  installPods().fork(
+  installPods(app).fork(
     rej,
     () => res(app)
   )
@@ -67,7 +67,6 @@ const bootstrapExpress = (app: express.Application) => Future((rej, res) => {
   app.set('view engine', 'pug')
   app.use(compression())
   app.use(cors())
-  app.use(logger('dev'))
   app.use(bodyParser.json())
   app.use(bodyParser.urlencoded({ extended: true }))
   app.use(expressValidator())
@@ -94,10 +93,14 @@ const bootstrapExpress = (app: express.Application) => Future((rej, res) => {
     }
     next()
   })
-  console.log('yoyo! ', appRoot.resolve('/public/images'), '  ', path.join(__dirname, '/public'))
-  //, { maxAge: 31557600000 }
-  app.use(express.static(appRoot.resolve('/core/public')))
-
+  const staticConfig = {
+    maxAge: 31557600000
+  }
+  // Main statics
+  app.use(express.static(appRoot.resolve('/core/public'), staticConfig))
+  logger.info('main /core/public static is set!')
+  app.use(express.static(appRoot.resolve('/pods'), staticConfig))
+  logger.info('staging pod /pod/staging')
   // Routes!
   app.use(routes())
 
@@ -232,7 +235,7 @@ const connectDb = (app: express.Application) => Future((rej, res) => {
 const initiateExpress = () => Future((rej, res) => {
   const app = express()
   if (!R.isEmpty(app)) {
-    console.info('Initiated app in start!')
+    logger.info('Initiated app in start!')
     res(app)
   }
 })
@@ -255,10 +258,11 @@ export const start =
       return Future((rej, res) => {
         // 1. Set up config from dotenv
         config.setup()
-
+        logger.info('Main config setup!')
         // 2. Set up passport
         // TODO: Fix this
         passportConfig.setupPassport()
+        logger.info('Passport setup!')
         res(null)
       })
     }

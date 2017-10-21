@@ -1,6 +1,7 @@
 import * as R from 'ramda'
 import * as fluture from 'fluture'
 import { default as models } from '../models'
+import { AppContext } from '../server'
 import { getAllManifests } from '../bridge/node2node'
 
 const Future = fluture.Future
@@ -10,7 +11,7 @@ const Future = fluture.Future
  * @param {JSON} manifesto
  */
 const createPod = (manifesto: JSON) => Future((rej, res) => {
-  const podProps = R.pick(['name', 'title', 'description', 'url'], manifesto)
+  const podProps = R.pick(['name', 'title', 'description', 'url', 'icon', 'stage'], manifesto)
   const actions = R.propOr([], 'actions', manifesto)
   const formatActions = R.compose(
     ({ keys, x }) => {
@@ -33,14 +34,6 @@ const createPod = (manifesto: JSON) => Future((rej, res) => {
     }
   )
     .then(pod => {
-      /* if (!R.isEmpty(actions)) {
-        createManyActions(actions, pod).fork(
-          () => console.error('failed to create actions'),
-          (actions) => {
-            console.log('create many actions ', actions)
-          }
-        )
-      } */
       res(pod)
     })
     .catch(e => rej(e))
@@ -49,7 +42,7 @@ const createPod = (manifesto: JSON) => Future((rej, res) => {
 /**
  * install all pods
  */
-export const installPods = () => Future((rej, res) => {
+export const installPods = (app: AppContext) => Future((rej, res) => {
   R.traverse(Future.of, createPod, getAllManifests())
     .fork(
       e => rej(e),

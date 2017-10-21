@@ -35,7 +35,9 @@ const getAllPods = () => fs.readdirSync(getFolderPath())
  */
 export const getAllManifests = () => {
   const pods = getAllPods()
+  // change below to get staging pods
   const getManifests = R.compose(
+    // Filter empty ones
     R.filter((x: JSON | boolean) => x),
     R.map(R.tryCatch(JSON.parse, R.F)),
     R.map((man: string) => fs.readFileSync(man, 'utf8')),

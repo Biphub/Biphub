@@ -3,6 +3,8 @@
   "title": "Fake1",
   "description": "Fake realtime messaging application! Only exist in Biphub!",
   "url": "https://fake1.com",
+  "icon": "app_icon.jpg",
+  "stage": "staging",
   "trackDuplicates": true,
   "preparedConfig": {
     "token": ""

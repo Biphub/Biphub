@@ -31,6 +31,14 @@ export const PodType = new GraphQLObjectType({
       url: {
         type: GraphQLString,
         resolve: x => x.get('url')
+      },
+      icon: {
+        type: GraphQLString,
+        resolve: x => x.get('icon')
+      },
+      stage: {
+        type: GraphQLString,
+        resolve: x => x.get('stage')
       }
     }
   }
