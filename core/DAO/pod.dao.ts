@@ -49,3 +49,13 @@ export const installPods = (app: AppContext) => Future((rej, res) => {
       pods => res(pods)
     )
 })
+
+export const findPodsWithNames = (names: Array<string>) => Future((rej, res) => {
+  models.Pod.findAll({
+    where: {
+      name: names
+    }
+  })
+    .then(res)
+    .catch(rej)
+})

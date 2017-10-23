@@ -44,6 +44,7 @@
     "testEnvironment": "node"
   },
   "dependencies": {
+    "@types/graphql-type-json": "^0.1.1",
     "app-root-path": "^2.0.1",
     "async": "^2.5.0",
     "bcrypt-nodejs": "^0.0.3",
@@ -65,6 +66,7 @@
     "fluture": "^7.1.2",
     "fs-extra": "^4.0.2",
     "graphql": "^0.11.7",
+    "graphql-type-json": "^0.1.4",
     "lodash": "^4.17.4",
     "lusca": "^1.5.1",
     "mongoose": "^4.11.12",

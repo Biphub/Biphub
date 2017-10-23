@@ -1,10 +1,11 @@
+import * as appRoot from 'app-root-path'
 
 const config = {
   development: {
     database: null,
     username: null,
     password: null,
-    /* options: {
+    options: {
       host: 'localhost',
       pool: {
         max: 5,
@@ -14,12 +15,12 @@ const config = {
       dialect: 'sqlite',
       storage: appRoot.resolve('/core/models/database.sqlite'),
       logging: false
-    } */
-    options: {
+    }
+    /* options: {
       storage: ':memory:',
       dialect: 'sqlite',
       logging: false
-    }
+    } */
   },
   test: {
     username: null,

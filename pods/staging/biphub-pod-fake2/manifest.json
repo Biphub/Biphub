@@ -3,6 +3,8 @@
   "title": "Fake app 2",
   "description": "Fake opensource repository service!",
   "url": "https://fake2.com",
+  "icon": "app_icon.jpg",
+  "stage": "staging",
   "trackDuplicates": true,
   "preparedConfig": {
     "token": ""
