@@ -1,9 +1,11 @@
 import * as R from 'ramda'
 import * as fluture from 'fluture'
 import models from '../models'
+import {ActionInstance} from '../models/Action.model'
+import { PodInstance } from '../models/Pod.model'
 const Future = fluture.Future
 
-const createAction = (action, pod) => Future((rej, res) => {
+const createAction = (action: ActionInstance, pod: PodInstance) => Future((rej, res) => {
   models.Action.create(action)
     .then((action) => {
       action.setPod(pod)
@@ -21,13 +23,13 @@ const createAction = (action, pod) => Future((rej, res) => {
  *
  * fake_message and incoming_hooks becomes unique identifier of each action
  * @param data
+ * @param pod
  */
-export const createManyActions = (data, pod) => Future((rej, res) => {
+export const createManyActions = (data: JSON, pod: PodInstance) => Future((rej, res) => {
   const formatActions = R.compose(
     ({ keys, x }) => {
       return R.reduce((acc, key) => {
         const action = R.merge({ name: key }, R.propOr({}, key, x))
-        // const actionWithPod = R.merge({ podId: pod.get('id') }, action)
         return R.append(action, acc)
       }, [], keys)
     },
@@ -36,7 +38,7 @@ export const createManyActions = (data, pod) => Future((rej, res) => {
       return { keys, x }
     }
   )
-  R.traverse(Future.of, createAction, formatActions(data, pod))
+  R.traverse(Future.of, createAction, formatActions(data))
     .fork(
       (e) => {
         console.error('failed to create actions ', e)

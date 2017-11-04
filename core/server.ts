@@ -32,10 +32,6 @@ export interface AppRequest extends express.Request {
   queue: Queue.AppQueue
 }
 
-const initHotReloading = () => {
-
-}
-
 /**
  *
  * @param {e.Application} app
@@ -145,7 +141,7 @@ const setupQueue = (app: express.Application) => Future((rej, res) => {
 const seedDb = (app: express.Application) => Future((rej, res) => {
   const env = process.env.NODE_ENV
   if (env === 'development' || env === 'test') {
-    models.Pipeline.bulkCreate([
+    models.Pipeline.create(
       {
         title: 'test pipeline',
         description: 'this is just for testing!',
@@ -199,7 +195,7 @@ const seedDb = (app: express.Application) => Future((rej, res) => {
           }
         }
       }
-    ]).then(() => {
+    ).then(() => {
       res(app)
     }).catch((e) => {
       rej(e)

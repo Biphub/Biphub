@@ -21,16 +21,16 @@ export function create (pipeline: PipelineInstance) {
  * Find all pipelines by entry app name.
  * @param {string} entryApp
  */
-export const findAllPipelines = (entryApp: string) => Future((rej, res) => {
+export const findAllPipelines = (entryApp: Array<string> | string) => Future((rej, res) => {
   models.Pipeline.findAll({
     where: {
       entryApp: entryApp
     }
   })
-    .then((pipeline) => {
+    .then((pipeline: PipelineInstance) => {
       res(pipeline)
     })
-    .catch(e => rej(e))
+    .catch((e: Error) => rej(e))
 })
 
 /**
@@ -42,14 +42,14 @@ export const findAllPipelines = (entryApp: string) => Future((rej, res) => {
  * @param tasks
  * @returns {any}
  */
-export const flattenSequence = (currentSequence, tasks = []) => {
+export const flattenSequence = (currentSequence: JSON | null, tasks: Array<any> = []) => {
   // Loop's dead end
   if (!currentSequence) {
     return null
   }
   // If it's a node, it must have current props
   // Current props are including podName, graph
-  const node = R.pickAll(['actionName', 'podName', 'graph'], currentSequence)
+  const node: Array<string, string, JSON> = R.pickAll(['actionName', 'podName', 'graph'], currentSequence)
 
   if (node && node.podName && node.graph) {
     tasks.push(node)

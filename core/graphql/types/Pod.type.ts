@@ -4,6 +4,7 @@ import {
   GraphQLInt,
   GraphQLList
 } from 'graphql'
+import * as GraphQLJSON from 'graphql-type-json'
 
 import { default as models } from '../../models'
 

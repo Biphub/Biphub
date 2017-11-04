@@ -36,7 +36,7 @@ export default function (sequelize: Sequelize.Sequelize) {
         const stage = this.getDataValue('stage')
         const name = this.getDataValue('name')
         const icon = this.getDataValue('icon')
-        return `/${stage}/${NAMESPACE}${name}/${icon}`
+        return `/${stage}/${NAMESPACE}${name}/images/${icon}`
       }
     }
   }, {
