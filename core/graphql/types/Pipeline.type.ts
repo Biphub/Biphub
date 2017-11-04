@@ -4,7 +4,8 @@ import {
   GraphQLObjectType,
   GraphQLString,
   GraphQLInt,
-  GraphQLList
+  GraphQLList,
+  GraphQLID
 } from 'graphql'
 import * as GraphQLJSON from 'graphql-type-json'
 import * as fluture from 'fluture'
@@ -43,6 +44,7 @@ export const PipelineType = new GraphQLObjectType({
         type: GraphQLJSON,
         resolve: x => x.get('sequence')
       },
+      // Flatten sequence (aka list of pods required to run this pipeline)
       flattenSequence: {
         type: GraphQLJSON,
         resolve: (x) => new Promise((res, rej) => {
@@ -65,7 +67,7 @@ export const Pipeline = {
   type: PipelineType,
   args: {
     id: {
-      type: GraphQLInt
+      type: GraphQLID
     }
   },
   resolve(root, args) {
