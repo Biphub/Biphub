@@ -17,7 +17,7 @@ if (!config) {
   throw new Error('Invalid database config!')
 }
 
-interface DbConnection {
+interface SequelizeModels {
   sequelize: Sequelize.Sequelize,
   Sequelize: Sequelize.Sequelize,
   User: Sequelize.Model<UserModel, UserInstance>,
@@ -29,33 +29,41 @@ interface DbConnection {
   Pipeline: Sequelize.Model<PipelineModel, PipelineInstance>
 }
 
-const sequelize = new Sequelize(
-  config.database,
-  config.username,
-  config.password,
-  config.options
-)
+class Database {
+  private _models: SequelizeModels;
+  private _sequelize: Sequelize.Sequelize;
 
-let db = {}
+  constructor () {
+    this._sequelize = new Sequelize(
+      config.database,
+      config.username,
+      config.password,
+      config.options
+    )
 
-const files = fs.readdirSync(__dirname)
-files
-  .filter(function (file) {
-    return !R.isEmpty(R.match(/\.model\.js$/g, file))
-  })
-  .forEach(function (file) {
-    const model = sequelize.import(path.join(__dirname, file))
-    db[model['name']] = model
-  })
+    this._models = ({} as any)
 
-// invoke associations on each of the models
-Object.keys(db).forEach(function (modelName) {
-  if (db[modelName].options.hasOwnProperty('associate')) {
-    db[modelName].options.associate(db)
+    const files = fs.readdirSync(__dirname)
+    files
+      .filter(function (file) {
+        return !R.isEmpty(R.match(/\.model\.js$/g, file))
+      })
+      .forEach(function (file) {
+        const model = this._sequelize.import(path.join(__dirname, file))
+        this._models[(model as any)['name']] = model
+      })
+
+    // invoke associations on each of the models
+    Object.keys(this._models).forEach(function (modelName) {
+      if (this._models[modelName].options.hasOwnProperty('associate')) {
+        this._models[modelName].options.associate(this._models)
+      }
+    })
   }
-})
+  getModels = () => this._models
+  getSequelize = () => this._sequelize
+}
 
-db['sequelize'] = sequelize
-db['Sequelize'] = Sequelize
-
-export default db as DbConnection
+const database = new Database()
+export const models = database.getModels()
+export const sequelize = database.getSequelize()

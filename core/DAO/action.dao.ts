@@ -28,7 +28,7 @@ const createAction = (action: ActionInstance, pod: PodInstance) => Future((rej, 
 export const createManyActions = (data: JSON, pod: PodInstance) => Future((rej, res) => {
   const formatActions = R.compose(
     ({ keys, x }) => {
-      return R.reduce((acc, key) => {
+      return R.reduce((acc, key: string) => {
         const action = R.merge({ name: key }, R.propOr({}, key, x))
         return R.append(action, acc)
       }, [], keys)
@@ -40,11 +40,11 @@ export const createManyActions = (data: JSON, pod: PodInstance) => Future((rej, 
   )
   R.traverse(Future.of, createAction, formatActions(data))
     .fork(
-      (e) => {
+      (e: Error) => {
         console.error('failed to create actions ', e)
         rej(e)
       },
-      (actions) => {
+      (actions: Array<ActionInstance>) => {
         res(actions)
       })
 

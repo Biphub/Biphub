@@ -217,8 +217,8 @@ const connectDb = (app: express.Application) => Future((rej, res) => {
     force: env !== 'production'
   }
   models.sequelize.sync(syncOptions)
-    .then(() => {
-      console.info('Initialised seqeulize')
+    .then((migrator) => {
+      console.info('Initialised seqeulize', migrator)
       return res(app)
     })
     .catch(e => {
@@ -247,7 +247,7 @@ export const start =
     R.chain(initializePods),
     R.chain(bootstrapExpress),
     R.chain(setupQueue),
-    R.chain(seedDb),
+    // R.chain(seedDb),
     R.chain(connectDb),
     R.chain(initiateExpress),
     () => {

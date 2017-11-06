@@ -1,10 +1,11 @@
-import * as appRoot from 'app-root-path'
-
-const config = {
+export default {
   development: {
     database: null,
     username: null,
     password: null,
+    host: 'localhost',
+    dialect: 'sqlite',
+    storage: 'database.sqlite',
     options: {
       host: 'localhost',
       pool: {
@@ -13,7 +14,7 @@ const config = {
         idle: 10000
       },
       dialect: 'sqlite',
-      storage: appRoot.resolve('/core/models/database.sqlite'),
+      storage: 'database.sqlite',
       logging: false
     }
     /* options: {
@@ -26,20 +27,20 @@ const config = {
     username: null,
     password: null,
     database: null,
+    dialect: 'sqlite',
     options: {
       storage: ':memory:',
       dialect: 'sqlite'
     }
   },
   production: {
-    'username': 'root',
-    'password': null,
-    'database': 'database_production',
+    username: null,
+    password: null,
+    database: null,
+    dialect: 'sqlite',
     options: {
-      'host': '127.0.0.1',
-      'dialect': 'mysql'
+      storage: ':memory:',
+      dialect: 'sqlite'
     }
   }
 }
-
-export default config

@@ -1,11 +1,13 @@
 import * as Sequelize from 'sequelize'
+import { PodInstance } from './Pod.model'
 
 export interface ActionModel {
   title: string,
   doc_ref: string,
   trigger: string,
   imports: JSON,
-  exports: JSON
+  exports: JSON,
+  setPod: (pod: PodInstance) => void
 }
 
 export interface ActionInstance extends Sequelize.Instance<ActionModel> {

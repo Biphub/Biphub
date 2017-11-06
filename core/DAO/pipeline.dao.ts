@@ -21,7 +21,7 @@ export function create (pipeline: PipelineInstance) {
  * Find all pipelines by entry app name.
  * @param {string} entryApp
  */
-export const findAllPipelines = (entryApp: Array<string> | string) => Future((rej, res) => {
+export const findAllPipelines = (entryApp: string) => Future((rej, res) => {
   models.Pipeline.findAll({
     where: {
       entryApp: entryApp
