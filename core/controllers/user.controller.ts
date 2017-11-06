@@ -2,15 +2,13 @@ import * as async from 'async'
 import * as crypto from 'crypto'
 import * as nodemailer from 'nodemailer'
 import * as passport from 'passport'
-import { default as models } from '../models'
+import { models } from '../models'
+import {UserInstance, UserModel} from '../models/User.model'
 import { Request, Response, NextFunction } from 'express'
 import { LocalStrategyInfo } from 'passport-local'
 import { WriteError } from 'mongodb'
 
-/**
- * GET /login
- * Login page.
- */
+/*
 export let getLogin = (req: Request, res: Response) => {
   if (req.user) {
     return res.redirect('/')
@@ -20,10 +18,6 @@ export let getLogin = (req: Request, res: Response) => {
   })
 }
 
-/**
- * POST /login
- * Sign in using email and password.
- */
 export let postLogin = (req: Request, res: Response, next: NextFunction) => {
   req.assert('email', 'Email is not valid').isEmail()
   req.assert('password', 'Password cannot be blank').notEmpty()
@@ -50,19 +44,11 @@ export let postLogin = (req: Request, res: Response, next: NextFunction) => {
   })(req, res, next)
 }
 
-/**
- * GET /logout
- * Log out.
- */
 export let logout = (req: Request, res: Response) => {
   req.logout()
   res.redirect('/')
 }
 
-/**
- * GET /signup
- * Signup page.
- */
 export let getSignup = (req: Request, res: Response) => {
   if (req.user) {
     return res.redirect('/')
@@ -72,10 +58,6 @@ export let getSignup = (req: Request, res: Response) => {
   })
 }
 
-/**
- * POST /signup
- * Create a new local account.
- */
 export let postSignup = (req: Request, res: Response, next: NextFunction) => {
   req.assert('email', 'Email is not valid').isEmail()
   req.assert('password', 'Password must be at least 4 characters long').len({ min: 4 })
@@ -106,38 +88,14 @@ export let postSignup = (req: Request, res: Response, next: NextFunction) => {
       return next()
     }
   }) // end spread
-  /* User.findOne({ email: req.body.email }, (err, existingUser) => {
-    if (err) { return next(err); }
-    if (existingUser) {
-      req.flash('errors', { msg: 'Account with that email address already exists.' });
-      return res.redirect('/signup');
-    }
-    user.save((err) => {
-      if (err) { return next(err); }
-      req.logIn(user, (err) => {
-        if (err) {
-          return next(err);
-        }
-        res.redirect('/');
-      });
-    });
-  }); */
 }
 
-/**
- * GET /account
- * Profile page.
- */
 export let getAccount = (req: Request, res: Response) => {
   res.render('account/profile', {
     title: 'Account Management'
   })
 }
 
-/**
- * POST /account/profile
- * Update profile information.
- */
 export let postUpdateProfile = (req: Request, res: Response, next: NextFunction) => {
   req.assert('email', 'Please enter a valid email address.').isEmail()
   req.sanitize('email').normalizeEmail({ gmail_remove_dots: false })
@@ -152,10 +110,10 @@ export let postUpdateProfile = (req: Request, res: Response, next: NextFunction)
   models.User.findById(req.user.id, (err, user: UserModel) => {
     if (err) { return next(err) }
     user.email = req.body.email || ''
-    user.profile.name = req.body.name || ''
-    user.profile.gender = req.body.gender || ''
-    user.profile.location = req.body.location || ''
-    user.profile.website = req.body.website || ''
+    user.firstName = req.body.name || ''
+    user.gender = req.body.gender || ''
+    user.location = req.body.location || ''
+    user.website = req.body.website || ''
     user.save((err: WriteError) => {
       if (err) {
         if (err.code === 11000) {
@@ -170,10 +128,6 @@ export let postUpdateProfile = (req: Request, res: Response, next: NextFunction)
   })
 }
 
-/**
- * POST /account/password
- * Update current password.
- */
 export let postUpdatePassword = (req: Request, res: Response, next: NextFunction) => {
   req.assert('password', 'Password must be at least 4 characters long').len({ min: 4 })
   req.assert('confirmPassword', 'Passwords do not match').equals(req.body.password)
@@ -196,10 +150,6 @@ export let postUpdatePassword = (req: Request, res: Response, next: NextFunction
   })
 }
 
-/**
- * POST /account/delete
- * Delete user account.
- */
 export let postDeleteAccount = (req: Request, res: Response, next: NextFunction) => {
   User.remove({ _id: req.user.id }, (err) => {
     if (err) { return next(err) }
@@ -209,10 +159,6 @@ export let postDeleteAccount = (req: Request, res: Response, next: NextFunction)
   })
 }
 
-/**
- * GET /account/unlink/:provider
- * Unlink OAuth provider.
- */
 export let getOauthUnlink = (req: Request, res: Response, next: NextFunction) => {
   const provider = req.params.provider
   User.findById(req.user.id, (err, user: any) => {
@@ -227,10 +173,6 @@ export let getOauthUnlink = (req: Request, res: Response, next: NextFunction) =>
   })
 }
 
-/**
- * GET /reset/:token
- * Reset Password page.
- */
 export let getReset = (req: Request, res: Response, next: NextFunction) => {
   if (req.isAuthenticated()) {
     return res.redirect('/')
@@ -250,10 +192,6 @@ export let getReset = (req: Request, res: Response, next: NextFunction) => {
     })
 }
 
-/**
- * POST /reset/:token
- * Process the reset password request.
- */
 export let postReset = (req: Request, res: Response, next: NextFunction) => {
   req.assert('password', 'Password must be at least 4 characters long.').len({ min: 4 })
   req.assert('confirm', 'Passwords must match.').equals(req.body.password)
@@ -312,10 +250,6 @@ export let postReset = (req: Request, res: Response, next: NextFunction) => {
   })
 }
 
-/**
- * GET /forgot
- * Forgot Password page.
- */
 export let getForgot = (req: Request, res: Response) => {
   if (req.isAuthenticated()) {
     return res.redirect('/')
@@ -325,10 +259,6 @@ export let getForgot = (req: Request, res: Response) => {
   })
 }
 
-/**
- * POST /forgot
- * Create a random token, then the send user an email with a reset link.
- */
 export let postForgot = (req: Request, res: Response, next: NextFunction) => {
   req.assert('email', 'Please enter a valid email address.').isEmail()
   req.sanitize('email').normalizeEmail({ gmail_remove_dots: false })
@@ -388,3 +318,4 @@ export let postForgot = (req: Request, res: Response, next: NextFunction) => {
     res.redirect('/forgot')
   })
 }
+*/

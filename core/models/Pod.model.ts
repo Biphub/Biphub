@@ -14,7 +14,7 @@ export interface PodInstance extends Sequelize.Instance<PodModel> {
 const NAMESPACE = 'biphub-pod-'
 
 export default function (sequelize: Sequelize.Sequelize) {
-  const Pod = sequelize.define('Pod', {
+  const Pod = sequelize.define<PodModel, PodInstance>('Pod', {
     name: {
       type: Sequelize.STRING
     },

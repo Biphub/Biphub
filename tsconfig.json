@@ -8,6 +8,7 @@
         "inlineSourceMap": true,
         "outDir": "dist",
         "baseUrl": ".",
+        "types": ["node"],
         "paths": {
             "*": [
                 "node_modules/*",
@@ -16,6 +17,6 @@
         }
     },
     "include": [
-      "core/**/*"
+        "core/**/*"
     ]
 }

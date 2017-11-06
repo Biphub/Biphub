@@ -1,3 +1,13 @@
+export interface ConfigType {
+  database: any;
+  username: any;
+  password: any;
+  host: any;
+  dialect: any;
+  storage: any;
+  options: any;
+}
+
 export default {
   development: {
     database: null,

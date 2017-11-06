@@ -2,28 +2,25 @@ import * as R from 'ramda'
 import * as fs from 'fs'
 import * as path from 'path'
 import * as Sequelize from 'sequelize'
-import { default as seqConfig } from '../config/sequelize.config'
+import { default as seqConfig, ConfigType } from '../config/sequelize.config'
 import { UserModel, UserInstance } from './User.model'
 import { PodModel, PodInstance } from './Pod.model'
 import { ActionModel, ActionInstance } from './Action.model'
-import { PayloadModel, PayloadInstance } from './Payload.model'
 import { PodAuthModel, PodAuthInstance } from './PodAuth.model'
 import { FieldModel, FieldInstance } from './Field.model'
 import { PipelineModel, PipelineInstance } from './Pipeline.model'
 
-const config = R.propOr(null, process.env.NODE_ENV, seqConfig)
+// Fix any config type
+const config = R.propOr(null, process.env.NODE_ENV, seqConfig) as any
 
 if (!config) {
   throw new Error('Invalid database config!')
 }
 
 interface SequelizeModels {
-  sequelize: Sequelize.Sequelize,
-  Sequelize: Sequelize.Sequelize,
   User: Sequelize.Model<UserModel, UserInstance>,
   Pod: Sequelize.Model<PodModel, PodInstance>,
   Action: Sequelize.Model<ActionModel, ActionInstance>,
-  Payload: Sequelize.Model<PayloadModel, PayloadInstance>,
   PodAuth: Sequelize.Model<PodAuthModel, PodAuthInstance>,
   Field: Sequelize.Model<FieldModel, FieldInstance>,
   Pipeline: Sequelize.Model<PipelineModel, PipelineInstance>
@@ -67,3 +64,8 @@ class Database {
 const database = new Database()
 export const models = database.getModels()
 export const sequelize = database.getSequelize()
+
+export default {
+  models,
+  sequelize
+}

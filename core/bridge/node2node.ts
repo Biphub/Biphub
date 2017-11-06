@@ -13,13 +13,14 @@ const stagingPods = requireAll(path.join(__dirname, '/../../pods/staging'))
 const Future = fluture.Future
 
 /**
- *
+ * Gets the current app root path
  * @returns {string}
  */
-const getFolderPath = () => {
+const getFolderPath = (): string | null => {
   if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
     return appRoot.resolve('/pods/staging')
   }
+  return null
 }
 
 /**
@@ -33,12 +34,12 @@ const getAllPods = () => fs.readdirSync(getFolderPath())
 /**
  * Using commonjs require all pods' details
  */
-export const getAllManifests = () => {
+export const getAllManifests = (): Array<JSON> | {} => {
   const pods = getAllPods()
   // change below to get staging pods
   const getManifests = R.compose(
     // Filter empty ones
-    R.filter((x: JSON | boolean) => x),
+    R.filter((x: any) => x),
     R.map(R.tryCatch(JSON.parse, R.F)),
     R.map((man: string) => fs.readFileSync(man, 'utf8')),
     R.map((pod: string) => `${getFolderPath()}/${pod}/manifest.json`)
@@ -61,15 +62,15 @@ export const invokeAction = (podName: string, actionName: string, payload: any) 
   const env = process.env.NODE_ENV
   const camelActionName = changeCase.camelCase(actionName)
   if (env === 'development' || env === 'test') {
-    const stagingPodMethod = R.pathOr(null, [podName, 'index', camelActionName], stagingPods)
+    const stagingPodMethod = R.pathOr(null, [podName, 'index', camelActionName], stagingPods) as any
     // If found method is a promise
     if (stagingPodMethod) {
       stagingPodMethod({ text: 'lol' })
-        .then((result) => {
+        .then((result: any) => {
           console.info('podMethod was successfully invoked', camelActionName, 'result of podMethod', result)
           res(result)
         })
-        .catch(err => rej(err))
+        .catch((err: Error) => rej(err))
     } else {
       rej(new Error(`Pod method does not exist ${podName} of ${camelActionName}`))
     }

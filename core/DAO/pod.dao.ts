@@ -1,8 +1,10 @@
 import * as R from 'ramda'
 import * as fluture from 'fluture'
-import { default as models } from '../models'
+import { models } from '../models'
 import { AppContext } from '../server'
 import { getAllManifests } from '../bridge/node2node'
+import { PodModel } from "../models/Pod.model";
+import { Applicative } from "ramda";
 
 const Future = fluture.Future
 
@@ -26,33 +28,32 @@ const createPod = (manifesto: JSON) => Future((rej, res) => {
       return { keys, x }
     }
   )
-  const fullPod = R.merge({ Actions: formatActions(actions) }, podProps)
+  const fullPod = R.merge({ Actions: formatActions(actions) }, podProps) as any
   models.Pod.create(
     fullPod,
     {
       include: [ models.Action ]
     }
   )
-    .then(pod => {
+    .then((pod: PodModel) => {
       res(pod)
     })
-    .catch(e => rej(e))
+    .catch((e: Error) => rej(e))
 })
 
 /**
  * install all pods
  */
 export const installPods = (app: AppContext) => Future((rej, res) => {
-  R.traverse(Future.of, createPod, getAllManifests())
+  R.traverse(Future.of as any, createPod, getAllManifests())
     .fork(
-      e => rej(e),
-      pods => res(pods)
+      (e: Error) => rej(e),
+      (pods: Array<PodModel>) => res(pods)
     )
 })
 
 export const findPodsWithNames = (names: Array<string>) => Future((rej, res) => {
-  console.log('checking names ', names)
-  models.Pod.findAll({
+  models.Pod.findAll<PodModel>({
     where: {
       name: names
     }

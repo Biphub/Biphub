@@ -1,12 +1,19 @@
 import * as R from 'ramda'
+import { propOr } from 'ramda'
 import { logger } from '../logger'
 import { Task } from '../queue/index'
 import { PipelineInstance } from '../models/Pipeline.model'
 import { findAllPipelines, flattenSequence } from '../DAO/pipeline.dao'
 import * as nodeBridge from '../bridge/node2node'
 import * as fluture from 'fluture'
-import {seq} from "fluture"
+import { seq } from 'fluture'
 const Future = fluture.Future
+
+export interface PayloadType {
+  actionName: string;
+  podName: string;
+  payload: any;
+}
 
 /**
  * Process sequences by turning them into a list of futures
@@ -15,9 +22,9 @@ const Future = fluture.Future
 const processSequence = (sequence: Array<JSON>) => Future((rej, res) => {
   const getFutures = R.compose(
     R.map((node) => {
-      return (prev = []) => Future((rej, res) => {
-        const actionName = R.propOr(null, 'actionName', node)
-        const podName = R.propOr(null, 'podName', node)
+      return (prev = [] as Array<PayloadType>) => Future((rej, res) => {
+        const actionName = R.propOr(null, 'actionName', node) as any
+        const podName = R.propOr(null, 'podName', node) as any
         // If either one of these is not provided, halt the process
         if (!actionName || !podName) {
           return rej(false)
@@ -25,7 +32,7 @@ const processSequence = (sequence: Array<JSON>) => Future((rej, res) => {
         logger.info('Init: Task', podName, ':', actionName)
         // Running action
         nodeBridge.invokeAction(podName, actionName, null).fork(
-          (err) => {
+          (err: Error) => {
             logger.error('Action has failed', err)
             rej(err)
           },
@@ -46,14 +53,14 @@ const processSequence = (sequence: Array<JSON>) => Future((rej, res) => {
     }),
     flattenSequence
   )
-  const futures = R.apply(R.pipeK)(getFutures(sequence))
-  futures()
+  const futures = R.apply(R.pipeK)(getFutures(sequence)) as any
+  futures(null)
     .fork(
-      (e) => {
+      (e: Error) => {
         console.error(e)
         rej(e)
       },
-      (results) => {
+      (results: Array<PayloadType>) => {
         console.info('Futures sequence successful', results)
         res(results)
       }
@@ -67,10 +74,10 @@ const processSequence = (sequence: Array<JSON>) => Future((rej, res) => {
 const traverseFlatSequence = (sequence: Array<JSON>) => Future((rej, res) => {
   // Sequence looks like [ { webhook: { podName: 'biphub-pod-fake1', graph: [Object], next: [Object] } } ]
   // Technically it does not need traverse, but we will just receive it here as a backward compatibility
-  R.traverse(Future.of, processSequence, sequence)
+  R.traverse(Future.of as any, processSequence, sequence)
     .fork(
-      (e) => rej(e),
-      (results) => res(results)
+      (e: Error) => rej(e),
+      (results: Array<PayloadType>) => res(results)
     )
 })
 
