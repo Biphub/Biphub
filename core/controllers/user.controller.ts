@@ -8,7 +8,6 @@ import { Request, Response, NextFunction } from 'express'
 import { LocalStrategyInfo } from 'passport-local'
 import { WriteError } from 'mongodb'
 
-/*
 export let getLogin = (req: Request, res: Response) => {
   if (req.user) {
     return res.redirect('/')
@@ -139,7 +138,7 @@ export let postUpdatePassword = (req: Request, res: Response, next: NextFunction
     return res.redirect('/account')
   }
 
-  User.findById(req.user.id, (err, user: UserModel) => {
+  models.User.findById(req.user.id, (err, user: UserModel) => {
     if (err) { return next(err) }
     user.password = req.body.password
     user.save((err: WriteError) => {
@@ -151,7 +150,7 @@ export let postUpdatePassword = (req: Request, res: Response, next: NextFunction
 }
 
 export let postDeleteAccount = (req: Request, res: Response, next: NextFunction) => {
-  User.remove({ _id: req.user.id }, (err) => {
+  models.User.remove({ _id: req.user.id }, (err) => {
     if (err) { return next(err) }
     req.logout()
     req.flash('info', { msg: 'Your account has been deleted.' })
@@ -161,7 +160,7 @@ export let postDeleteAccount = (req: Request, res: Response, next: NextFunction)
 
 export let getOauthUnlink = (req: Request, res: Response, next: NextFunction) => {
   const provider = req.params.provider
-  User.findById(req.user.id, (err, user: any) => {
+  models.User.findById(req.user.id, (err, user: any) => {
     if (err) { return next(err) }
     user[provider] = undefined
     user.tokens = user.tokens.filter((token: AuthToken) => token.kind !== provider)
@@ -177,7 +176,7 @@ export let getReset = (req: Request, res: Response, next: NextFunction) => {
   if (req.isAuthenticated()) {
     return res.redirect('/')
   }
-  User
+  models.User
     .findOne({ passwordResetToken: req.params.token })
     .where('passwordResetExpires').gt(Date.now())
     .exec((err, user) => {
@@ -318,4 +317,3 @@ export let postForgot = (req: Request, res: Response, next: NextFunction) => {
     res.redirect('/forgot')
   })
 }
-*/

@@ -17,7 +17,7 @@ import * as passportConfig from './config/passport.config'
 import { installPods } from './DAO/pod.dao'
 import { default as config } from './config'
 import expressValidator = require('express-validator')
-import { default as models } from './models'
+import { models, sequelize } from './models'
 import { default as routes } from './routes'
 import { executeTask } from './workers/pipeline.worker'
 import * as Queue from './queue'
@@ -50,8 +50,9 @@ const initializePods = (app: express.Application) => Future((rej, res) => {
  * @param {e.Application} app
  */
 const bootstrapExpress = (app: express.Application) => Future((rej, res) => {
+  logger.info('START - Express setup')
   const SessionStore = require('express-session-sequelize')(session.Store)
-  const sequelizeSessionStore = new SessionStore({ db: models.sequelize })
+  const sequelizeSessionStore = new SessionStore({ db: sequelize })
   app.use(session({
     resave: true,
     saveUninitialized: true,
@@ -113,6 +114,7 @@ const bootstrapExpress = (app: express.Application) => Future((rej, res) => {
 
   // Error Handler. Provides full stack - remove for production
   app.use(errorHandler())
+  logger.info('END - Express setup')
   res(app)
 })
 
@@ -121,6 +123,7 @@ const bootstrapExpress = (app: express.Application) => Future((rej, res) => {
  * @param {e.Application} app
  */
 const setupQueue = (app: express.Application) => Future((rej, res) => {
+  logger.info('START - Queue setup')
   const q = Queue.createQueue(executeTask)
   if (!q) {
     return rej(false)
@@ -134,6 +137,7 @@ const setupQueue = (app: express.Application) => Future((rej, res) => {
     req.queue = q
     next()
   })
+  logger.info('END - Queue setup')
   res(app)
 })
 
@@ -141,6 +145,7 @@ const setupQueue = (app: express.Application) => Future((rej, res) => {
 const seedDb = (app: express.Application) => Future((rej, res) => {
   const env = process.env.NODE_ENV
   if (env === 'development' || env === 'test') {
+    console.log('checking models ', models)
     models.Pipeline.create(
       {
         title: 'test pipeline',
@@ -216,9 +221,8 @@ const connectDb = (app: express.Application) => Future((rej, res) => {
   const syncOptions = {
     force: env !== 'production'
   }
-  models.sequelize.sync(syncOptions)
+  sequelize.sync(syncOptions)
     .then((migrator) => {
-      console.info('Initialised seqeulize', migrator)
       return res(app)
     })
     .catch(e => {
@@ -247,7 +251,7 @@ export const start =
     R.chain(initializePods),
     R.chain(bootstrapExpress),
     R.chain(setupQueue),
-    // R.chain(seedDb),
+    R.chain(seedDb),
     R.chain(connectDb),
     R.chain(initiateExpress),
     () => {

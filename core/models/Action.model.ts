@@ -18,24 +18,26 @@ export interface ActionInstance extends Sequelize.Instance<ActionModel> {
  * @param sequelize
  * @returns {any}
  */
-export default function defineUser (sequelize: Sequelize.Sequelize) {
-  const PodAction = sequelize.define('Action', {
-    title: Sequelize.STRING,
-    /** Description of the action */
-    description: Sequelize.STRING,
-    /** Reference to action's documentation. Typically an URL. */
-    doc_ref: Sequelize.STRING,
-    /** Type of trigger */
-    trigger: Sequelize.ENUM('webhook', 'invoke', 'poll'),
-    /** Inputs required to execute the action. Webhook and poll do not require this */
-    imports: Sequelize.JSONB,
-    /** Output format after executing the action */
-    exports: Sequelize.JSONB
-  }, {
-    associate (models: any) {
-      PodAction.belongsTo(models.Pod)
-      // Create Action has Many action import
-    }
-  })
-  return PodAction
-}
+export default function defineUser (sequelize: Sequelize.Sequelize):
+  Sequelize.Model<ActionInstance, ActionModel> {
+    const PodAction = sequelize.define<ActionInstance, ActionModel>('Action', {
+      title: Sequelize.STRING,
+      /** Description of the action */
+      description: Sequelize.STRING,
+      /** Reference to action's documentation. Typically an URL. */
+      doc_ref: Sequelize.STRING,
+      /** Type of trigger */
+      trigger: Sequelize.ENUM('webhook', 'invoke', 'poll'),
+      /** Inputs required to execute the action. Webhook and poll do not require this */
+      imports: Sequelize.JSONB,
+      /** Output format after executing the action */
+      exports: Sequelize.JSONB
+    }, {
+      associate (models: any) {
+        PodAction.belongsTo(models.Pod)
+        // Create Action has Many action import
+      }
+    } as any)
+    return PodAction
+  }
+

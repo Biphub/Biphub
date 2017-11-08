@@ -23,7 +23,8 @@ interface SequelizeModels {
   Action: Sequelize.Model<ActionModel, ActionInstance>,
   PodAuth: Sequelize.Model<PodAuthModel, PodAuthInstance>,
   Field: Sequelize.Model<FieldModel, FieldInstance>,
-  Pipeline: Sequelize.Model<PipelineModel, PipelineInstance>
+  Pipeline: Sequelize.Model<PipelineModel, PipelineInstance>;
+  [key: string]: any;
 }
 
 class Database {
@@ -42,16 +43,16 @@ class Database {
 
     const files = fs.readdirSync(__dirname)
     files
-      .filter(function (file) {
+      .filter((file) => {
         return !R.isEmpty(R.match(/\.model\.js$/g, file))
       })
-      .forEach(function (file) {
+      .forEach((file) => {
         const model = this._sequelize.import(path.join(__dirname, file))
         this._models[(model as any)['name']] = model
       })
 
     // invoke associations on each of the models
-    Object.keys(this._models).forEach(function (modelName) {
+    Object.keys(this._models).forEach((modelName) => {
       if (this._models[modelName].options.hasOwnProperty('associate')) {
         this._models[modelName].options.associate(this._models)
       }

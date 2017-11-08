@@ -20,7 +20,7 @@ export interface PipelineInstance extends Sequelize.Instance<PipelineModel> {
  */
 export default function (sequelize: SequelizeType):
   Sequelize.Model<PipelineInstance, PipelineModel> {
-    return sequelize.define<PipelineInstance, PipelineModel>('Pipelines', {
+    return sequelize.define<PipelineInstance, PipelineModel>('Pipeline', {
       title: Sequelize.STRING,
       description: Sequelize.STRING,
       entryApp: Sequelize.STRING,
@@ -64,7 +64,7 @@ export default function (sequelize: SequelizeType):
       sequence: {
         type: Sequelize.JSONB,
         validate: {
-          isInFormat (value) {
+          isInFormat () {
             return true
           }
         }

@@ -19,7 +19,7 @@ export interface UserModel {
 }
 
 export interface UserInstance extends Sequelize.Instance<UserModel> {
-  dataValues: UserModel,
+  dataValues: UserModel;
 }
 
 export default function defineUser (sequelize: Sequelize.Sequelize):
@@ -37,7 +37,7 @@ export default function defineUser (sequelize: Sequelize.Sequelize):
     website: Sequelize.STRING,
     picture: Sequelize.STRING
   }, {
-    individualHooks: true,
+    // individualHooks: true,
     instanceMethods: {
       getFullName () {
         return `${this.firstName} ${this.lastName}`

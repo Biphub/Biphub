@@ -14,7 +14,7 @@
     "dev": "concurrently -p \"[{name}]\" -n \"Ts,Express\" -c \"yellow.bold,cyan.bold\" \"npm run watch-ts\" \"npm run serve\"",
     "dev2": "cross-env NODE_ENV=development tsc-watch -p ./ --onSuccess \"node ./dist\"",
     "test": "jest --forceExit",
-    "serve": "cross-env NODE_ENV=development node dist/index.js",
+    "serve": "cross-env NODE_ENV=development nodemon dist/index.js",
     "build-ts": "tsc",
     "watch-ts": "cross-env NODE_ENV=development tsc -w",
     "sequelize:seed": "cd dist && cross-env NODE_ENV=development sequelize db:seed:all",

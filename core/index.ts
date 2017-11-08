@@ -10,7 +10,6 @@ if (env === 'development' || env === 'test') {
 }
 import * as express from 'express'
 import { start } from './server'
-
 start().fork(
   (e: express.Errback) => console.error('Failed to start the server!'),
   (app: any) => {
