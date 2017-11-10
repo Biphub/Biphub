@@ -8,12 +8,9 @@ import {
   GraphQLID
 } from 'graphql'
 import * as GraphQLJSON from 'graphql-type-json'
-import * as fluture from 'fluture'
 import { findPodsWithNames } from '../../DAO/pod.dao'
 import { flattenSequence } from '../../DAO/pipeline.dao'
-import { default as models } from '../../models'
-
-const Future = fluture.Future
+import { models } from '../../models'
 
 export const PipelineType = new GraphQLObjectType({
   name: 'Pipeline',
@@ -53,10 +50,14 @@ export const PipelineType = new GraphQLObjectType({
             R.map(R.last),
             R.map(R.split('-')),
             R.uniq,
-            R.map(z => z.podName),
+            R.map(z => (z as any).podName),
             flattenSequence
           )
-          findPodsWithNames(getNames(x.get('sequence'))).fork(rej, res)
+          const names = getNames(x.get('sequence')) as any
+          if (!names) {
+            rej(new Error('Name is invalid!'))
+          }
+          findPodsWithNames(names).fork(rej, res)
         })
       }
     }

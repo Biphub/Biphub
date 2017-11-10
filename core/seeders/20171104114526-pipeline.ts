@@ -4,23 +4,16 @@ import { QueryInterface, Sequelize } from 'sequelize'
 
 module.exports = {
   up: (queryInterface: QueryInterface, Sequelize: Sequelize) => {
-    /*
-      Add altering commands here.
-      Return a promise to correctly handle asynchronicity.
-
-      Example:
-      return queryInterface.bulkInsert('Person', [{
-        name: 'John Doe',
-        isBetaMember: false
-      }], {});
-    */
     return queryInterface.bulkInsert(
       'Pipelines',
       [{
+        id: 1,
         title: 'test pipeline',
         description: 'this is just for testing!',
         entryApp: 'biphub-pod-fake1',
         entryType: 'webhook',
+        createdAt: new Date(),
+        updatedAt: new Date(),
         sequence: JSON.stringify({
           'webhook': {
             podName: 'biphub-pod-fake1',

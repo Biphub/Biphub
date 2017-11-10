@@ -2,15 +2,18 @@ import * as R from 'ramda'
 import * as fs from 'fs'
 import * as path from 'path'
 import * as Sequelize from 'sequelize'
-import { default as seqConfig, ConfigType } from '../config/sequelize.config'
 import { UserModel, UserInstance } from './User.model'
 import { PodModel, PodInstance } from './Pod.model'
 import { ActionModel, ActionInstance } from './Action.model'
 import { PodAuthModel, PodAuthInstance } from './PodAuth.model'
 import { FieldModel, FieldInstance } from './Field.model'
 import { PipelineModel, PipelineInstance } from './Pipeline.model'
-
+const getSeqConfig = (file: string) => R.compose(
+  JSON.parse,
+  x => fs.readFileSync(`core/config/${x}`, 'utf8')
+)(file)
 // Fix any config type
+const seqConfig = R.memoize(getSeqConfig)('sequelize.config.json')
 const config = R.propOr(null, process.env.NODE_ENV, seqConfig) as any
 
 if (!config) {
@@ -32,11 +35,16 @@ class Database {
   private _sequelize: Sequelize.Sequelize;
 
   constructor () {
+    const options = {
+      dialect: config.dialect,
+      storage: config.storage,
+      logging: config.logging
+    }
     this._sequelize = new Sequelize(
       config.database,
       config.username,
       config.password,
-      config.options
+      options
     )
 
     this._models = ({} as any)

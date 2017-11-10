@@ -156,15 +156,15 @@ const seedDb = (app: express.Application) => Future((rej, res) => {
           'webhook': {
             podName: 'biphub-pod-fake1',
             graph: {
-              x: 10,
-              y: 210
+              x: 150,
+              y: 20
             },
             next: {
               'post-fake-message': {
                 podName: 'biphub-pod-fake1',
                 graph: {
-                  x: 20,
-                  y: 50
+                  x: 30,
+                  y: 120
                 },
                 next: {
                   'create-fake-issue': {
@@ -251,7 +251,7 @@ export const start =
     R.chain(initializePods),
     R.chain(bootstrapExpress),
     R.chain(setupQueue),
-    R.chain(seedDb),
+    // R.chain(seedDb),
     R.chain(connectDb),
     R.chain(initiateExpress),
     () => {
