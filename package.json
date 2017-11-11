@@ -48,6 +48,8 @@
     "@types/graphql-type-json": "^0.1.1",
     "app-root-path": "^2.0.1",
     "async": "^2.5.0",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-preset-env": "^1.6.1",
     "bcrypt-nodejs": "^0.0.3",
     "body-parser": "^1.18.2",
     "chalk": "^2.1.0",
@@ -90,6 +92,7 @@
     "winston": "^2.4.0"
   },
   "devDependencies": {
+    "@babel/preset-env": "^7.0.0-beta.31",
     "@types/app-root-path": "^1.2.4",
     "@types/async": "^2.0.42",
     "@types/bcrypt-nodejs": "0.0.30",
@@ -116,6 +119,8 @@
     "@types/sequelize": "^4.0.74",
     "@types/supertest": "^2.0.3",
     "concurrently": "^3.5.0",
+    "gulp": "^3.9.1",
+    "gulp-babel": "^7.0.0",
     "jest": "^19.0.2",
     "node-emoji": "^1.8.1",
     "node-sass": "^4.5.2",

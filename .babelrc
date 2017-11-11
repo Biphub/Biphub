@@ -1,0 +1,16 @@
+{
+  "presets": [
+    ["env", {
+      "targets": {
+        "node": "8.0.0"
+      }
+    }]
+  ],
+  "plugins": [
+    ["transform-class-properties", { "spec": true }]
+  ],
+  "ignore": [
+    "core/**/*.json",
+    "core/**/*.password"
+  ]
+}
