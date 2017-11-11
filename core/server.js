@@ -7,28 +7,29 @@ import * as appRoot from 'app-root-path'
 import * as session from 'express-session'
 import * as bodyParser from 'body-parser'
 import * as cors from 'cors'
-import { logger } from './logger'
 import * as passport from 'passport'
 import * as errorHandler from 'errorhandler'
 import * as lusca from 'lusca'
 import * as flash from 'express-flash'
 import * as path from 'path'
+import {logger} from './logger'
 import * as passportConfig from './config/passport.config'
-import { installPods } from './DAO/pod.dao'
-import { default as config } from './config'
+import {installPods} from './DAO/pod.dao'
+import {default as config} from './config'
 import expressValidator from 'express-validator'
-import { models, sequelize } from './models'
-import { default as routes } from './routes'
-import { executeTask } from './workers/pipeline.worker'
+import {models, sequelize} from './models'
+import {default as routes} from './routes'
+import {executeTask} from './workers/pipeline.worker'
 import * as Queue from './queue'
-import { default as Schema } from './graphql/schema'
+import {default as Schema} from './graphql/schema'
+
 const Future = fluture.Future
 
 /**
  *
  * @param {e.Application} app
  */
-const initializePods = (app) => Future((rej, res) => {
+const initializePods = app => Future((rej, res) => {
   installPods(app).fork(
     rej,
     () => res(app)
@@ -41,10 +42,10 @@ const initializePods = (app) => Future((rej, res) => {
  * Graphql Endpoint
  * @param {e.Application} app
  */
-const bootstrapExpress = (app) => Future((rej, res) => {
+const bootstrapExpress = app => Future((rej, res) => {
   logger.info('START - Express setup')
   const SessionStore = require('express-session-sequelize')(session.Store)
-  const sequelizeSessionStore = new SessionStore({ db: sequelize })
+  const sequelizeSessionStore = new SessionStore({db: sequelize})
   app.use(session({
     resave: true,
     saveUninitialized: true,
@@ -57,7 +58,7 @@ const bootstrapExpress = (app) => Future((rej, res) => {
   app.use(compression())
   app.use(cors())
   app.use(bodyParser.json())
-  app.use(bodyParser.urlencoded({ extended: true }))
+  app.use(bodyParser.urlencoded({extended: true}))
   app.use(expressValidator())
   app.use(passport.initialize())
   app.use(passport.session())
@@ -114,7 +115,7 @@ const bootstrapExpress = (app) => Future((rej, res) => {
  * Binds queue to the current app context
  * @param {e.Application} app
  */
-const setupQueue = (app) => Future((rej, res) => {
+const setupQueue = app => Future((rej, res) => {
   logger.info('START - Queue setup')
   const q = Queue.createQueue(executeTask)
   if (!q) {
@@ -132,7 +133,7 @@ const setupQueue = (app) => Future((rej, res) => {
 })
 
 // Move this to actual seeders folder
-const seedDb = (app) => Future((rej, res) => {
+const seedDb = app => Future((rej, res) => {
   const env = process.env.NODE_ENV
   if (env === 'development' || env === 'test') {
     console.log('checking models ', models)
@@ -143,7 +144,7 @@ const seedDb = (app) => Future((rej, res) => {
         entryApp: 'biphub-pod-fake1',
         entryType: 'webhook',
         sequence: {
-          'webhook': {
+          webhook: {
             podName: 'biphub-pod-fake1',
             graph: {
               x: 150,
@@ -182,7 +183,7 @@ const seedDb = (app) => Future((rej, res) => {
                   }
                 }
               },
-              'deleteFakeMessage': {
+              deleteFakeMessage: {
                 podName: 'biphub-pod-fake1',
                 graph: 1
               }
@@ -192,7 +193,7 @@ const seedDb = (app) => Future((rej, res) => {
       }
     ).then(() => {
       res(app)
-    }).catch((e) => {
+    }).catch(e => {
       rej(e)
     })
   } else {
@@ -205,14 +206,14 @@ const seedDb = (app) => Future((rej, res) => {
  * Connect to db using Sequelize.
  * @param {e.Application} app
  */
-const connectDb = (app) => Future((rej, res) => {
+const connectDb = app => Future((rej, res) => {
   // 3. Set up sequelize
   const env = process.env.NODE_ENV
   const syncOptions = {
     force: env !== 'production'
   }
   sequelize.sync(syncOptions)
-    .then((migrator) => {
+    .then(migrator => {
       return res(app)
     })
     .catch(e => {

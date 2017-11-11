@@ -1,6 +1,6 @@
 import * as R from 'ramda'
 import logger from '../logger'
-import { Response, Request } from 'express'
+import {Response, Request} from 'express'
 
 /**
  * GET /webhooks*
@@ -8,7 +8,7 @@ import { Response, Request } from 'express'
  */
 export const postWebhooks = (req, res) => {
   const getPathComponents = R.memoize(R.compose(
-    (comps) => ({
+    comps => ({
       root: comps[0],
       pod: comps[1]
     }),

@@ -1,4 +1,4 @@
-import { logger } from '../../logger'
+import {logger} from '../../logger'
 import * as R from 'ramda'
 import {
   GraphQLObjectType,
@@ -8,9 +8,9 @@ import {
   GraphQLID
 } from 'graphql'
 import * as GraphQLJSON from 'graphql-type-json'
-import { findPodsWithNames } from '../../DAO/pod.dao'
-import { flattenSequence } from '../../DAO/pipeline.dao'
-import { models } from '../../models'
+import {findPodsWithNames} from '../../DAO/pod.dao'
+import {flattenSequence} from '../../DAO/pipeline.dao'
+import {models} from '../../models'
 
 export const PipelineType = new GraphQLObjectType({
   name: 'Pipeline',
@@ -44,7 +44,7 @@ export const PipelineType = new GraphQLObjectType({
       // Flatten sequence (aka list of pods required to run this pipeline)
       flattenSequence: {
         type: GraphQLJSON,
-        resolve: (x) => new Promise((res, rej) => {
+        resolve: x => new Promise((res, rej) => {
           // Get pods from flat sequence
           const getNames = R.compose(
             R.map(R.last),
@@ -61,7 +61,7 @@ export const PipelineType = new GraphQLObjectType({
         })
       }
     }
-  },
+  }
 })
 
 export const Pipeline = {

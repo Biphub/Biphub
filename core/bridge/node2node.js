@@ -8,6 +8,7 @@ import * as path from 'path'
 import * as requireAll from 'require-all'
 import * as changeCase from 'change-case'
 import * as fluture from 'fluture'
+
 const stagingPods = requireAll(path.join(__dirname, '/../../pods/staging'))
 
 const Future = fluture.Future
@@ -36,7 +37,7 @@ const getAllPods = () => fs.readdirSync(getFolderPath())
  */
 export const getAllManifests = () => {
   const pods = getAllPods()
-  // change below to get staging pods
+  // Change below to get staging pods
   const getManifests = R.compose(
     // Filter empty ones
     R.filter(R.identity),
@@ -65,12 +66,12 @@ export const invokeAction = (podName, actionName, payload) => Future((rej, res) 
     const stagingPodMethod = R.pathOr(null, [podName, 'index', camelActionName], stagingPods)
     // If found method is a promise
     if (stagingPodMethod) {
-      stagingPodMethod({ text: 'lol' })
-        .then((result) => {
+      stagingPodMethod({text: 'lol'})
+        .then(result => {
           console.info('podMethod was successfully invoked', camelActionName, 'result of podMethod', result)
           res(result)
         })
-        .catch((err) => rej(err))
+        .catch(err => rej(err))
     } else {
       rej(new Error(`Pod method does not exist ${podName} of ${camelActionName}`))
     }

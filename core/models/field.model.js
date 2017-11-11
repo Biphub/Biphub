@@ -11,7 +11,7 @@ export default function (sequelize) {
     properties: Sequelize.JSONB
   }, {
     classMethods: {
-      associate (models) {
+      associate(models) {
         Field.belongsTo(models.Payload)
       }
     }

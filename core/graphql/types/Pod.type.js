@@ -6,7 +6,7 @@ import {
 } from 'graphql'
 import * as GraphQLJSON from 'graphql-type-json'
 
-import { models } from '../../models'
+import {models} from '../../models'
 
 export const PodType = new GraphQLObjectType({
   name: 'Pod',

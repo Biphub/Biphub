@@ -1,18 +1,19 @@
 import * as R from 'ramda'
-import { models } from '../models'
+import {models} from '../models'
 import * as fluture from 'fluture'
-import { PipelineModel, PipelineInstance } from '../models/Pipeline.model'
+import {PipelineModel, PipelineInstance} from '../models/Pipeline.model'
+
 const Future = fluture.Future
 /**
  * Creates a pipeline
  * @param {PipelineInstance} pipeline
  * @returns {any} // TODO Fix any type
  */
-export function create (pipeline) {
+export function create(pipeline) {
   return fluture.Future((rej, res) => {
     models.Pipeline.create(pipeline)
-      .then((value) => res(value))
-      .catch((e) => rej(e))
+      .then(value => res(value))
+      .catch(e => rej(e))
   })
 }
 
@@ -20,16 +21,16 @@ export function create (pipeline) {
  * Find all pipelines by entry app name.
  * @param {string} entryApp
  */
-export const findAllPipelines = (entryApp) => Future((rej, res) => {
+export const findAllPipelines = entryApp => Future((rej, res) => {
   models.Pipeline.findAll({
     where: {
-      entryApp: entryApp
+      entryApp
     }
   })
-    .then((pipelines) => {
+    .then(pipelines => {
       res(pipelines)
     })
-    .catch((e) => rej(e))
+    .catch(e => rej(e))
 })
 
 /**
@@ -40,7 +41,7 @@ export const findAllPipelines = (entryApp) => Future((rej, res) => {
  * @param tasks
  * @returns {any}
  */
-export const flattenSequence = (currentSequence) => {
+export const flattenSequence = currentSequence => {
   // Loop's dead end
   if (!currentSequence) {
     return null
@@ -64,7 +65,7 @@ export const flattenSequence = (currentSequence) => {
   // Checking if edge exist. Next must be empty because it's an edge
   const keys = R.keys(currentSequence)
   if (!R.isEmpty(keys)) {
-    R.map((key) => {
+    R.map(key => {
       const composeNextNode = R.compose(
         R.assoc('actionName', key),
         R.propOr(null, key)

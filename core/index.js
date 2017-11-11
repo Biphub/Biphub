@@ -1,4 +1,5 @@
 const PrettyError = require('pretty-error')
+
 const env = process.env.NODE_ENV
 // Enable sourcemap support
 require('source-map-support').install()
@@ -9,10 +10,11 @@ if (env === 'development' || env === 'test') {
   pe.start()
 }
 import * as express from 'express'
-import { start } from './server'
+import {start} from './server'
+
 start().fork(
   e => console.error('Failed to start the server!'),
-  (app) => {
+  app => {
     app.listen(app.get('port'), () => {
       console.info(('  App is running at http://localhost:%d in %s mode'), app.get('port'), app.get('env'))
       console.info('  Press CTRL-C to stop\n')

@@ -18,7 +18,7 @@ export default function (sequelize) {
       type: Sequelize.STRING
     },
     stage: {
-      type: Sequelize.ENUM('staging', 'public'),
+      type: Sequelize.ENUM('staging', 'public')
     },
     icon: {
       type: Sequelize.STRING,
@@ -30,7 +30,7 @@ export default function (sequelize) {
       }
     }
   }, {
-    associate (models) {
+    associate(models) {
       Pod.hasMany(models.Action)
       Pod.belongsTo(models.PodAuth)
     }

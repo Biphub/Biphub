@@ -1,8 +1,8 @@
 import * as passport from 'passport'
-// import * as passportLocal from 'passport-local'
+// Import * as passportLocal from 'passport-local'
 // import * as passportFacebook from 'passport-facebook'
 import * as _ from 'lodash'
-// const LocalStrategy = passportLocal.Strategy
+// Const LocalStrategy = passportLocal.Strategy
 // const FacebookStrategy = passportFacebook.Strategy
 
 export const setupPassport = () => {
@@ -11,7 +11,7 @@ export const setupPassport = () => {
   })
 
   /*
-  passport.deserializeUser((id: number, done) => {
+  Passport.deserializeUser((id: number, done) => {
     models.User.findById(id, (err: Error, user: UserInstance) => {
       done(err, user)
     })
@@ -115,7 +115,7 @@ export const setupPassport = () => {
 /**
  * Login Required middleware.
  */
-export let isAuthenticated = (req, res, next) => {
+export const isAuthenticated = (req, res, next) => {
   if (req.isAuthenticated()) {
     return next()
   }
@@ -125,11 +125,11 @@ export let isAuthenticated = (req, res, next) => {
 /**
  * Authorization Required middleware.
  */
-export let isAuthorized = (req, res, next) => {
+export const isAuthorized = (req, res, next) => {
   const provider = req.path.split('/').slice(-1)[0]
 
   // TODO: Replace below with lodash
-  if (_.find(req.user.tokens, { kind: provider })) {
+  if (_.find(req.user.tokens, {kind: provider})) {
     next()
   } else {
     res.redirect(`/auth/${provider}`)

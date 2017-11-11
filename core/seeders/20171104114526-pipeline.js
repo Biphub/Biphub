@@ -13,7 +13,7 @@ module.exports = {
         createdAt: new Date(),
         updatedAt: new Date(),
         sequence: JSON.stringify({
-          'webhook': {
+          webhook: {
             podName: 'biphub-pod-fake1',
             graph: {
               x: 10,
@@ -52,7 +52,7 @@ module.exports = {
                   }
                 }
               },
-              'deleteFakeMessage': {
+              deleteFakeMessage: {
                 podName: 'biphub-pod-fake1',
                 graph: 1
               }
@@ -60,9 +60,9 @@ module.exports = {
           }
         })
       }]
-    ).catch(function (err) {
-      console.error(err.message);
-      throw err;
+    ).catch(err => {
+      console.error(err.message)
+      throw err
     })
   },
 
@@ -75,4 +75,4 @@ module.exports = {
       return queryInterface.bulkDelete('Person', null, {});
     */
   }
-};
+}

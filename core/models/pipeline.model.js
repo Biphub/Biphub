@@ -50,7 +50,7 @@ export default function (sequelize) {
     sequence: {
       type: Sequelize.JSONB,
       validate: {
-        isInFormat () {
+        isInFormat() {
           return true
         }
       }

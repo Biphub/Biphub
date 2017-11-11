@@ -1,4 +1,4 @@
-import { Request, Response, Router } from 'express'
+import {Request, Response, Router} from 'express'
 import * as passport from 'passport'
 import * as passportConfig from '../config/passport.config'
 import * as homeController from '../controllers/home.controller'
@@ -34,13 +34,13 @@ export default () => {
 
   // Pipeline routes -> /pipeline
   api.get('/pipeline', (req, res) => {
-    res.json({ test: 'test success' })
+    res.json({test: 'test success'})
   })
   api.post('/pipeline', pipelineController.create)
 
   // OAuth authentication routes. (Sign in)
-  api.get('/auth/facebook', passport.authenticate('facebook', { scope: ['email', 'public_profile'] }))
-  api.get('/auth/facebook/callback', passport.authenticate('facebook', { failureRedirect: '/login' }), (req, res) => {
+  api.get('/auth/facebook', passport.authenticate('facebook', {scope: ['email', 'public_profile']}))
+  api.get('/auth/facebook/callback', passport.authenticate('facebook', {failureRedirect: '/login'}), (req, res) => {
     res.redirect(req.session.returnTo || '/')
   })
 

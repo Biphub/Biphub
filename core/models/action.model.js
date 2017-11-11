@@ -5,7 +5,7 @@ import * as Sequelize from 'sequelize'
  * @param sequelize
  * @returns {any}
  */
-export default function defineUser (sequelize) {
+export default function defineUser(sequelize) {
   const PodAction = sequelize.define('Action', {
     title: Sequelize.STRING,
     /** Description of the action */
@@ -19,7 +19,7 @@ export default function defineUser (sequelize) {
     /** Output format after executing the action */
     exports: Sequelize.JSONB
   }, {
-    associate (models) {
+    associate(models) {
       PodAction.belongsTo(models.Pod)
       // Create Action has Many action import
     }

@@ -1,4 +1,4 @@
-import { logger } from '../logger'
+import {logger} from '../logger'
 import * as pipelineDao from '../DAO/pipeline.dao'
 
 export const create = (req, res) => {
@@ -13,14 +13,14 @@ export const create = (req, res) => {
       notEmpty: true
     }
   })
-  const { title, description, sequence } = req.body
-  pipelineDao.create({ title, description, sequence })
+  const {title, description, sequence} = req.body
+  pipelineDao.create({title, description, sequence})
     .fork(
-      (e) => {
+      e => {
         console.error('failed to create a pipeline ', e)
         throw e
       },
-      (pipeline) => {
+      pipeline => {
         return res.json({
           test: 1
         })

@@ -1,12 +1,13 @@
 import * as R from 'ramda'
 import * as fluture from 'fluture'
-import { models } from '../models'
+import {models} from '../models'
 import {ActionInstance, ActionModel} from '../models/Action.model'
-import { PodInstance } from '../models/Pod.model'
+import {PodInstance} from '../models/Pod.model'
+
 const Future = fluture.Future
 
 /*
-const createAction = (action: ActionInstance, pod: PodInstance) => Future((rej, res) => {
+Const createAction = (action: ActionInstance, pod: PodInstance) => Future((rej, res) => {
   models.Action.create(action)
     .then((action: ActionModel) => {
       action.setPod(pod)

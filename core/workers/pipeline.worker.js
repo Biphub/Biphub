@@ -1,20 +1,20 @@
-import * as R from 'ramda'
-import { propOr } from 'ramda'
-import { logger } from '../logger'
-import { Task } from '../queue/index'
-import { findAllPipelines, flattenSequence } from '../DAO/pipeline.dao'
+import R from 'ramda'
+import {logger} from '../logger'
+import {Task} from '../queue/index'
+import {findAllPipelines, flattenSequence} from '../DAO/pipeline.dao'
 import * as nodeBridge from '../bridge/node2node'
 import * as fluture from 'fluture'
-import { seq } from 'fluture'
+import {seq} from 'fluture'
+
 const Future = fluture.Future
 
 /**
  * Process sequences by turning them into a list of futures
  * @param {JSON} sequence
  */
-const processSequence = (sequence) => Future((rej, res) => {
+const processSequence = sequence => Future((rej, res) => {
   const getFutures = R.compose(
-    R.map((node) => {
+    R.map(node => {
       return (prev = []) => Future((rej, res) => {
         const actionName = R.propOr(null, 'actionName', node)
         const podName = R.propOr(null, 'podName', node)
@@ -25,11 +25,11 @@ const processSequence = (sequence) => Future((rej, res) => {
         logger.info('Init: Task', podName, ':', actionName)
         // Running action
         nodeBridge.invokeAction(podName, actionName, null).fork(
-          (err) => {
+          err => {
             logger.error('Action has failed', err)
             rej(err)
           },
-          (payload) => {
+          payload => {
             // Recursively concatenating payload
             const result = R.concat(prev,
               [{
@@ -49,11 +49,11 @@ const processSequence = (sequence) => Future((rej, res) => {
   const futures = R.apply(R.pipeK)(getFutures(sequence))
   futures(null)
     .fork(
-      (e) => {
+      e => {
         console.error(e)
         rej(e)
       },
-      (results) => {
+      results => {
         console.info('Futures sequence successful', results)
         res(results)
       }
@@ -64,13 +64,13 @@ const processSequence = (sequence) => Future((rej, res) => {
  * Processing all seq
  * @param {Array<JSON>} sequence
  */
-const traverseFlatSequence = (sequence) => Future((rej, res) => {
+const traverseFlatSequence = sequence => Future((rej, res) => {
   // Sequence looks like [ { webhook: { podName: 'biphub-pod-fake1', graph: [Object], next: [Object] } } ]
   // Technically it does not need traverse, but we will just receive it here as a backward compatibility
   R.traverse(Future.of, processSequence, sequence)
     .fork(
-      (e) => rej(e),
-      (results) => res(results)
+      e => rej(e),
+      results => res(results)
     )
 })
 
@@ -78,7 +78,7 @@ const traverseFlatSequence = (sequence) => Future((rej, res) => {
  * Flattens Sequelize retrieved pipeline data
  * @param {Array<PipelineInstance>} pipelines
  */
-const flattenPipelines = (pipelines) => Future((rej, res) => {
+const flattenPipelines = pipelines => Future((rej, res) => {
   if (R.isEmpty(pipelines)) {
     rej(new Error('Flatten pipelines received empty an empty list'))
   }
@@ -104,11 +104,11 @@ export const executeTask = (task, cb) => {
   )
   executeSequence(podName)
     .fork(
-      (e) => {
+      e => {
         console.error('Failed to execute a pipeline!')
         cb(e)
       },
-      (results) => {
+      results => {
         logger.info('End: Pipeline task has finished -', task.name)
         cb(results)
       }

@@ -1,10 +1,10 @@
-import { queue } from 'async'
+import {queue} from 'async'
 
 /**
  * Async queue for inmemory messaging system
  */
 export class AsyncQueue {
-  constructor (worker) {
+  constructor(worker) {
     this.queue = queue(worker, 1)
   }
   /**
@@ -12,7 +12,7 @@ export class AsyncQueue {
    * @param task
    * @param {Function} callback
    */
-  push (task, callback) {
+  push(task, callback) {
     this.queue.push(task, callback)
   }
 }

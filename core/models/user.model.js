@@ -1,11 +1,11 @@
 import * as Sequelize from 'sequelize'
 import * as bcrypt from 'bcrypt-nodejs'
 
-export default function defineUser (sequelize) {
+export default function defineUser(sequelize) {
   const UserSchema = sequelize.define('User', {
     email: Sequelize.STRING,
     password: Sequelize.STRING,
-    passwordResetToken:  Sequelize.STRING,
+    passwordResetToken: Sequelize.STRING,
     passwordResetExpires: Sequelize.DATE,
     facebook: Sequelize.STRING,
     firstName: Sequelize.STRING,
@@ -15,14 +15,14 @@ export default function defineUser (sequelize) {
     website: Sequelize.STRING,
     picture: Sequelize.STRING
   }, {
-    // individualHooks: true,
+    // IndividualHooks: true,
     instanceMethods: {
-      getFullName () {
+      getFullName() {
         return `${this.firstName} ${this.lastName}`
       }
     }
   })
-  UserSchema.beforeCreate((user) => {
+  UserSchema.beforeCreate(user => {
     return new Promise((res, rej) => {
       bcrypt.genSalt(10, (err, salt) => {
         if (err) {
