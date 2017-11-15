@@ -2,12 +2,14 @@
   "presets": [
     ["env", {
       "targets": {
-        "node": "8.0.0"
+        "node": "7.0.0"
       }
     }]
   ],
   "plugins": [
-    ["transform-class-properties", { "spec": true }]
+    ["transform-class-properties", { "spec": true }],
+    "transform-es2015-block-scoping",
+    "transform-es2015-parameters"
   ],
   "ignore": [
     "core/**/*.json",
