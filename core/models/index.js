@@ -1,7 +1,7 @@
-import * as R from 'ramda'
-import * as fs from 'fs'
-import * as path from 'path'
-import * as Sequelize from 'sequelize'
+import R from 'ramda'
+import fs from 'fs'
+import path from 'path'
+import Sequelize from 'sequelize'
 const getSeqConfig = (file) => R.compose(
   JSON.parse,
   x => fs.readFileSync(`core/config/${x}`, 'utf8')

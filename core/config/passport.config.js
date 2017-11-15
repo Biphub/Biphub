@@ -1,7 +1,7 @@
-import * as passport from 'passport'
+import passport from 'passport'
 // Import * as passportLocal from 'passport-local'
 // import * as passportFacebook from 'passport-facebook'
-import * as _ from 'lodash'
+import _ from 'lodash'
 // Const LocalStrategy = passportLocal.Strategy
 // const FacebookStrategy = passportFacebook.Strategy
 

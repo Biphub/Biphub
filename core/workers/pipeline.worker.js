@@ -3,19 +3,17 @@ import {logger} from '../logger'
 import {Task} from '../queue/index'
 import {findAllPipelines, flattenSequence} from '../DAO/pipeline.dao'
 import * as nodeBridge from '../bridge/node2node'
-import * as fluture from 'fluture'
-import {seq} from 'fluture'
-
+import fluture from 'fluture'
 const Future = fluture.Future
-
 /**
  * Process sequences by turning them into a list of futures
  * @param {JSON} sequence
  */
 const processSequence = sequence => Future((rej, res) => {
+  logger.info('Processing sequence! ', sequence)
   const getFutures = R.compose(
     R.map(node => {
-      return (prev = []) => Future((rej, res) => {
+      return (prev) => Future((rej, res) => {
         const actionName = R.propOr(null, 'actionName', node)
         const podName = R.propOr(null, 'podName', node)
         // If either one of these is not provided, halt the process
@@ -24,14 +22,16 @@ const processSequence = sequence => Future((rej, res) => {
         }
         logger.info('Init: Task', podName, ':', actionName)
         // Running action
+        // TODO: Fix from here!
         nodeBridge.invokeAction(podName, actionName, null).fork(
           err => {
             logger.error('Action has failed', err)
             rej(err)
           },
           payload => {
+            const _prev = prev ? prev : []
             // Recursively concatenating payload
-            const result = R.concat(prev,
+            const result = R.concat(_prev,
               [{
                 actionName,
                 podName,
@@ -46,11 +46,14 @@ const processSequence = sequence => Future((rej, res) => {
     }),
     flattenSequence
   )
+  logger.info('before getting futures')
+  logger.info(getFutures(sequence))
   const futures = R.apply(R.pipeK)(getFutures(sequence))
+  logger.info('Futures', futures)
   futures(null)
     .fork(
       e => {
-        console.error(e)
+        logger.error(e)
         rej(e)
       },
       results => {
@@ -83,6 +86,7 @@ const flattenPipelines = pipelines => Future((rej, res) => {
     rej(new Error('Flatten pipelines received empty an empty list'))
   }
   const sequences = R.map(x => x.get('sequence'), pipelines)
+  logger.info('flatten sequences ', sequences)
   res(sequences)
 })
 
@@ -94,6 +98,7 @@ const flattenPipelines = pipelines => Future((rej, res) => {
 export const executeTask = (task, cb) => {
   const podName = R.propOr(null, 'name', task)
   const body = R.propOr(null, 'body', task)
+  console.log('executing task', task)
   if (!podName || !body) {
     throw new Error('Invalid payload while executing queue task')
   }
@@ -102,10 +107,12 @@ export const executeTask = (task, cb) => {
     R.chain(flattenPipelines),
     findAllPipelines
   )
+  console.log('checking execute seq ', executeSequence, Future)
+
   executeSequence(podName)
     .fork(
       e => {
-        console.error('Failed to execute a pipeline!')
+        logger.error('Failed to execute a pipeline!', e)
         cb(e)
       },
       results => {

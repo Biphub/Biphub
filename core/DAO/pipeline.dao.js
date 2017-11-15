@@ -1,12 +1,12 @@
-import * as R from 'ramda'
-import {models} from '../models'
-import * as fluture from 'fluture'
-import {PipelineModel, PipelineInstance} from '../models/Pipeline.model'
+import R from 'ramda'
+import { logger } from '../logger'
+import { models } from '../models'
+import fluture from 'fluture'
 
 const Future = fluture.Future
 /**
  * Creates a pipeline
- * @param {PipelineInstance} pipeline
+ * @param pipeline
  * @returns {any} // TODO Fix any type
  */
 export function create(pipeline) {
@@ -22,12 +22,18 @@ export function create(pipeline) {
  * @param {string} entryApp
  */
 export const findAllPipelines = entryApp => Future((rej, res) => {
+  console.log('entryapp ', entryApp)
   models.Pipeline.findAll({
     where: {
       entryApp
     }
   })
     .then(pipelines => {
+      logger.info('Found all pipes ', pipelines)
+      if(R.isEmpty(pipelines)) {
+        logger.error('Could not retrieve any pipelines of ', entryApp, 'did you run seeding?')
+        return rej()
+      }
       res(pipelines)
     })
     .catch(e => rej(e))
@@ -41,7 +47,7 @@ export const findAllPipelines = entryApp => Future((rej, res) => {
  * @param tasks
  * @returns {any}
  */
-export const flattenSequence = currentSequence => {
+export const flattenSequence = (currentSequence, tasks = []) => {
   // Loop's dead end
   if (!currentSequence) {
     return null

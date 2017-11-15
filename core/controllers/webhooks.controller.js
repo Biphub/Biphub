@@ -1,6 +1,5 @@
 import * as R from 'ramda'
 import logger from '../logger'
-import {Response, Request} from 'express'
 
 /**
  * GET /webhooks*
@@ -25,6 +24,7 @@ export const postWebhooks = (req, res) => {
       ok: false
     })
   }
+  console.log('received stuff!')
   req.queue.push({
     name: getPathComponents(req.path).pod,
     body: req.body

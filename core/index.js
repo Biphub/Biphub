@@ -1,15 +1,12 @@
 const PrettyError = require('pretty-error')
 
 const env = process.env.NODE_ENV
-// Enable sourcemap support
-require('source-map-support').install()
 // Pretty error
 if (env === 'development' || env === 'test') {
   console.log('started Pretty Error')
   const pe = new PrettyError()
   pe.start()
 }
-import * as express from 'express'
 import {start} from './server'
 
 start().fork(

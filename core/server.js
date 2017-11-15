@@ -1,27 +1,28 @@
-import * as R from 'ramda'
-import * as graphqlHTTP from 'express-graphql'
-import * as fluture from 'fluture'
-import * as express from 'express'
-import * as compression from 'compression'
-import * as appRoot from 'app-root-path'
-import * as session from 'express-session'
-import * as bodyParser from 'body-parser'
-import * as cors from 'cors'
-import * as passport from 'passport'
-import * as errorHandler from 'errorhandler'
-import * as lusca from 'lusca'
-import * as flash from 'express-flash'
-import * as path from 'path'
+import R from 'ramda'
+import graphqlHTTP from 'express-graphql'
+import fluture from 'fluture'
+import express from 'express'
+import compression from 'compression'
+import appRoot from 'app-root-path'
+import session from 'express-session'
+import bodyParser from 'body-parser'
+import cors from 'cors'
+import passport from 'passport'
+import errorHandler from 'errorhandler'
+import lusca from 'lusca'
+import flash from 'express-flash'
+import path from 'path'
+import { exec } from 'child_process'
 import {logger} from './logger'
 import * as passportConfig from './config/passport.config'
 import {installPods} from './DAO/pod.dao'
 import {default as config} from './config'
 import expressValidator from 'express-validator'
 import {models, sequelize} from './models'
-import {default as routes} from './routes'
+import routes from './routes'
 import {executeTask} from './workers/pipeline.worker'
 import * as Queue from './queue'
-import {default as Schema} from './graphql/schema'
+import Schema from './graphql/schema'
 
 const Future = fluture.Future
 
@@ -118,6 +119,7 @@ const bootstrapExpress = app => Future((rej, res) => {
 const setupQueue = app => Future((rej, res) => {
   logger.info('START - Queue setup')
   const q = Queue.createQueue(executeTask)
+  console.log('setting up', Queue)
   if (!q) {
     return rej(false)
   }
@@ -136,65 +138,15 @@ const setupQueue = app => Future((rej, res) => {
 const seedDb = app => Future((rej, res) => {
   const env = process.env.NODE_ENV
   if (env === 'development' || env === 'test') {
-    console.log('checking models ', models)
-    models.Pipeline.create(
-      {
-        title: 'test pipeline',
-        description: 'this is just for testing!',
-        entryApp: 'biphub-pod-fake1',
-        entryType: 'webhook',
-        sequence: {
-          webhook: {
-            podName: 'biphub-pod-fake1',
-            graph: {
-              x: 150,
-              y: 20
-            },
-            next: {
-              'post-fake-message': {
-                podName: 'biphub-pod-fake1',
-                graph: {
-                  x: 30,
-                  y: 120
-                },
-                next: {
-                  'create-fake-issue': {
-                    podName: 'biphub-pod-fake2',
-                    graph: {
-                      x: 40,
-                      y: 10
-                    }
-                  }
-                }
-              },
-              'test-move-issue': {
-                podName: 'biphub-pod-fake2',
-                graph: {
-                  x: 10,
-                  y: 60
-                },
-                next: {
-                  'search-channel': {
-                    podName: 'biphub-pod-fake1',
-                    graph: {
-                      z: 10,
-                      x: 20
-                    }
-                  }
-                }
-              },
-              deleteFakeMessage: {
-                podName: 'biphub-pod-fake1',
-                graph: 1
-              }
-            }
-          }
-        }
+    logger.info('It always run seeding in development')
+    exec('sequelize db:seed:all', (err, stdout, stderr) => {
+      if (err) {
+        logger.error(err)
+        rej(err)
       }
-    ).then(() => {
+      logger.info(stdout)
+      logger.info(stderr)
       res(app)
-    }).catch(e => {
-      rej(e)
     })
   } else {
     console.info('skipping migration because you are in production mode')
@@ -242,7 +194,7 @@ export const start =
     R.chain(initializePods),
     R.chain(bootstrapExpress),
     R.chain(setupQueue),
-    // R.chain(seedDb),
+    R.chain(seedDb),
     R.chain(connectDb),
     R.chain(initiateExpress),
     () => {

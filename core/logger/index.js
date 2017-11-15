@@ -1,8 +1,8 @@
-import * as R from 'ramda'
-import * as chalk from 'chalk'
-import * as fs from 'fs-extra'
-import * as sourceMap from 'source-map'
-import * as tracer from 'tracer'
+import R from 'ramda'
+import chalk from 'chalk'
+import fs from 'fs-extra'
+import sourceMap from 'source-map'
+import tracer from 'tracer'
 
 class SourceMapManager {
   static sourceMapCache = new Map()

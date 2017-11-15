@@ -1,5 +1,5 @@
 import {logger} from '../../logger'
-import * as R from 'ramda'
+import R from 'ramda'
 import {
   GraphQLObjectType,
   GraphQLString,
@@ -7,7 +7,7 @@ import {
   GraphQLList,
   GraphQLID
 } from 'graphql'
-import * as GraphQLJSON from 'graphql-type-json'
+import GraphQLJSON from 'graphql-type-json'
 import {findPodsWithNames} from '../../DAO/pod.dao'
 import {flattenSequence} from '../../DAO/pipeline.dao'
 import {models} from '../../models'

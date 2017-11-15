@@ -1,5 +1,5 @@
-import {Request, Response, Router} from 'express'
-import * as passport from 'passport'
+import { Router } from 'express'
+import passport from 'passport'
 import * as passportConfig from '../config/passport.config'
 import * as homeController from '../controllers/home.controller'
 import * as contactController from '../controllers/contact.controller'

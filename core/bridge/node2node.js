@@ -1,13 +1,13 @@
 /**
  * General utilities required for node pods to node hub integration
  */
-import * as R from 'ramda'
-import * as appRoot from 'app-root-path'
-import * as fs from 'fs'
-import * as path from 'path'
-import * as requireAll from 'require-all'
-import * as changeCase from 'change-case'
-import * as fluture from 'fluture'
+import R from 'ramda'
+import appRoot from 'app-root-path'
+import fs from 'fs'
+import path from 'path'
+import requireAll from 'require-all'
+import changeCase from 'change-case'
+import fluture from 'fluture'
 
 const stagingPods = requireAll(path.join(__dirname, '/../../pods/staging'))
 
@@ -56,14 +56,17 @@ export const getAllManifests = () => {
  */
 export const invokeAction = (podName, actionName, payload) => Future((rej, res) => {
   // TODO: Should we check it here?
+  console.log('invoking action!!! ', podName)
   if (actionName === 'webhook') {
     // We don't have to invoke any action of type "webhook"
     return res(null)
   }
   const env = process.env.NODE_ENV
+  console.log('env? ', env)
   const camelActionName = changeCase.camelCase(actionName)
   if (env === 'development' || env === 'test') {
     const stagingPodMethod = R.pathOr(null, [podName, 'index', camelActionName], stagingPods)
+    console.log('staging pod method ', stagingPodMethod)
     // If found method is a promise
     if (stagingPodMethod) {
       stagingPodMethod({text: 'lol'})
