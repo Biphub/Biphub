@@ -18,7 +18,7 @@ const paths = {
 
 // Babel JS files
 gulp.task('babel', () => {
-  gulp.src('core/**/*.js')
+  return gulp.src('core/**/*.js')
     .pipe(sourcemaps.init())
     .pipe(babel())
     .pipe(sourcemaps.write('.', { sourceRoot: paths.sourceRoot }))
@@ -26,13 +26,13 @@ gulp.task('babel', () => {
 })
 
 gulp.task('build-clean', () => {
-  gulp.src('dist')
+  return gulp.src('dist')
     .pipe(clean({ force: true }))
     .pipe(gulp.dest('dist'))
 })
 
 gulp.task('build', (cb) => {
-  runSequence(
+  return runSequence(
     'build-clean',
     'babel',
     'others',

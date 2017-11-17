@@ -56,17 +56,14 @@ export const getAllManifests = () => {
  */
 export const invokeAction = (podName, actionName, payload) => Future((rej, res) => {
   // TODO: Should we check it here?
-  console.log('invoking action!!! ', podName)
   if (actionName === 'webhook') {
     // We don't have to invoke any action of type "webhook"
     return res(null)
   }
   const env = process.env.NODE_ENV
-  console.log('env? ', env)
   const camelActionName = changeCase.camelCase(actionName)
   if (env === 'development' || env === 'test') {
     const stagingPodMethod = R.pathOr(null, [podName, 'index', camelActionName], stagingPods)
-    console.log('staging pod method ', stagingPodMethod)
     // If found method is a promise
     if (stagingPodMethod) {
       stagingPodMethod({text: 'lol'})

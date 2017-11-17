@@ -10,7 +10,7 @@ if (env === 'development' || env === 'test') {
 import {start} from './server'
 
 start().fork(
-  e => console.error('Failed to start the server!'),
+  e => console.error('Failed to start the server! ', e),
   app => {
     app.listen(app.get('port'), () => {
       console.info(('  App is running at http://localhost:%d in %s mode'), app.get('port'), app.get('env'))

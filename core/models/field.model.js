@@ -9,12 +9,6 @@ export default function (sequelize) {
   const Field = sequelize.define('Field', {
     title: Sequelize.STRING,
     properties: Sequelize.JSONB
-  }, {
-    classMethods: {
-      associate(models) {
-        Field.belongsTo(models.Payload)
-      }
-    }
   })
   return Field
 }

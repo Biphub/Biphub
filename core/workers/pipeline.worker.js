@@ -25,6 +25,7 @@ const processSequence = sequence => Future((rej, res) => {
         // TODO: Fix from here!
         nodeBridge.invokeAction(podName, actionName, null).fork(
           err => {
+            console.error('failed!')
             logger.error('Action has failed', err)
             rej(err)
           },
@@ -46,10 +47,7 @@ const processSequence = sequence => Future((rej, res) => {
     }),
     flattenSequence
   )
-  logger.info('before getting futures')
-  logger.info(getFutures(sequence))
   const futures = R.apply(R.pipeK)(getFutures(sequence))
-  logger.info('Futures', futures)
   futures(null)
     .fork(
       e => {

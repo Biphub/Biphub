@@ -3220,6 +3220,14 @@ gulp-babel@^7.0.0:
     through2 "^2.0.0"
     vinyl-sourcemaps-apply "^0.2.0"
 
+gulp-changed@^3.1.1:
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/gulp-changed/-/gulp-changed-3.1.1.tgz#7cdd5621bacd29c9da151e27a70a8865dffc4415"
+  dependencies:
+    gulp-util "^3.0.0"
+    pify "^3.0.0"
+    through2 "^2.0.0"
+
 gulp-clean@^0.3.2:
   version "0.3.2"
   resolved "https://registry.yarnpkg.com/gulp-clean/-/gulp-clean-0.3.2.tgz#a347d473acea40182f935587a451941671928102"

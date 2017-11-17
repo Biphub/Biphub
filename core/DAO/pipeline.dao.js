@@ -29,7 +29,6 @@ export const findAllPipelines = entryApp => Future((rej, res) => {
     }
   })
     .then(pipelines => {
-      logger.info('Found all pipes ', pipelines)
       if(R.isEmpty(pipelines)) {
         logger.error('Could not retrieve any pipelines of ', entryApp, 'did you run seeding?')
         return rej()

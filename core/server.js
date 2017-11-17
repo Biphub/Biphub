@@ -138,11 +138,10 @@ const setupQueue = app => Future((rej, res) => {
 const seedDb = app => Future((rej, res) => {
   const env = process.env.NODE_ENV
   if (env === 'development' || env === 'test') {
-    logger.info('It always run seeding in development')
     exec('sequelize db:seed:all', (err, stdout, stderr) => {
       if (err) {
-        logger.error(err)
-        rej(err)
+        logger.info('Skipping migration!')
+        return res(app)
       }
       logger.info(stdout)
       logger.info(stderr)
@@ -164,7 +163,7 @@ const connectDb = app => Future((rej, res) => {
   const syncOptions = {
     force: env !== 'production'
   }
-  sequelize.sync(syncOptions)
+  sequelize.authenticate(syncOptions)
     .then(migrator => {
       return res(app)
     })
@@ -194,7 +193,7 @@ export const start =
     R.chain(initializePods),
     R.chain(bootstrapExpress),
     R.chain(setupQueue),
-    R.chain(seedDb),
+    // R.chain(seedDb),
     R.chain(connectDb),
     R.chain(initiateExpress),
     () => {
