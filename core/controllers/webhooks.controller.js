@@ -1,5 +1,5 @@
 import * as R from 'ramda'
-import logger from '../logger'
+import { logger } from '../logger'
 
 /**
  * GET /webhooks*
@@ -28,10 +28,11 @@ export const postWebhooks = (req, res) => {
   req.queue.push({
     name: getPathComponents(req.path).pod,
     body: req.body
-  }, () => {
-    logger.info('End: Webhook Task', name, 'has finished')
-  })
-  res.json({
-    ok: getPathComponents(req.path)
+  }, (result) => {
+    logger.info('End: Webhook endpoint task', name, 'has finished')
+    res.json({
+      ok: getPathComponents(req.path),
+      result
+    })
   })
 }

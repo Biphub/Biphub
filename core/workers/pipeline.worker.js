@@ -10,7 +10,6 @@ const Future = fluture.Future
  * @param {JSON} sequence
  */
 const processSequence = sequence => Future((rej, res) => {
-  logger.info('Processing sequence! ', sequence)
   const getFutures = R.compose(
     R.map(node => {
       return (prev) => Future((rej, res) => {
@@ -25,7 +24,6 @@ const processSequence = sequence => Future((rej, res) => {
         // TODO: Fix from here!
         nodeBridge.invokeAction(podName, actionName, null).fork(
           err => {
-            console.error('failed!')
             logger.error('Action has failed', err)
             rej(err)
           },
@@ -96,7 +94,7 @@ const flattenPipelines = pipelines => Future((rej, res) => {
 export const executeTask = (task, cb) => {
   const podName = R.propOr(null, 'name', task)
   const body = R.propOr(null, 'body', task)
-  console.log('executing task', task)
+  console.log('executing task', task, ' checking cb ', cb)
   if (!podName || !body) {
     throw new Error('Invalid payload while executing queue task')
   }
@@ -114,7 +112,7 @@ export const executeTask = (task, cb) => {
         cb(e)
       },
       results => {
-        logger.info('End: Pipeline task has finished -', task.name)
+        logger.info('End: Pipeline worker task has finished -', task.name)
         cb(results)
       }
     )
