@@ -1,4 +1,4 @@
-import * as Sequelize from 'sequelize'
+import Sequelize from 'sequelize'
 
 /**
  * Pods' action such as onNewMessage, sendMessage, postTwit, and etc

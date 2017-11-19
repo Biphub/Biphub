@@ -1,6 +1,6 @@
 import R from 'ramda'
-import { logger } from '../logger'
-import { models } from '../models'
+import {logger} from '../logger'
+import {models} from '../models'
 import fluture from 'fluture'
 
 const Future = fluture.Future
@@ -29,7 +29,7 @@ export const findAllPipelines = entryApp => Future((rej, res) => {
     }
   })
     .then(pipelines => {
-      if(R.isEmpty(pipelines)) {
+      if (R.isEmpty(pipelines)) {
         logger.error('Could not retrieve any pipelines of ', entryApp, 'did you run seeding?')
         return rej()
       }

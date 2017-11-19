@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return Promise.all([
@@ -45,19 +45,19 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       title: {
-        type: Sequelize.STRING,
+        type: Sequelize.STRING
       },
       description: {
-        type: Sequelize.STRING,
+        type: Sequelize.STRING
       },
       entryApp: {
-        type: Sequelize.STRING,
+        type: Sequelize.STRING
       },
       entryType: {
-        type: Sequelize.STRING,
+        type: Sequelize.STRING
       },
       sequence: {
-        type: Sequelize.JSONB,
+        type: Sequelize.JSONB
       },
       createdAt: {
         allowNull: false,
@@ -76,22 +76,22 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       title: {
-        type: Sequelize.STRING,
+        type: Sequelize.STRING
       },
       description: {
-        type: Sequelize.STRING,
+        type: Sequelize.STRING
       },
       doc_ref: {
-        type: Sequelize.STRING,
+        type: Sequelize.STRING
       },
       trigger: {
-        type: Sequelize.ENUM('webhook', 'invoke', 'poll'),
+        type: Sequelize.ENUM('webhook', 'invoke', 'poll')
       },
       imports: {
-        type: Sequelize.JSONB,
+        type: Sequelize.JSONB
       },
       exports: {
-        type: Sequelize.JSONB,
+        type: Sequelize.JSONB
       },
       createdAt: {
         allowNull: false,
@@ -110,10 +110,10 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       title: {
-        type: Sequelize.STRING,
+        type: Sequelize.STRING
       },
       properties: {
-        type: Sequelize.JSONB,
+        type: Sequelize.JSONB
       },
       createdAt: {
         allowNull: false,
@@ -132,13 +132,13 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       strategyType: {
-        type: Sequelize.ENUM('issuer_token', 'oauth', 'none'),
+        type: Sequelize.ENUM('issuer_token', 'oauth', 'none')
       },
       username: {
-        type: Sequelize.STRING,
+        type: Sequelize.STRING
       },
       passport: {
-        type: Sequelize.STRING,
+        type: Sequelize.STRING
       },
       createdAt: {
         allowNull: false,

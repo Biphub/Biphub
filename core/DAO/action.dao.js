@@ -1,5 +1,5 @@
-import * as R from 'ramda'
-import * as fluture from 'fluture'
+import R from 'ramda'
+import fluture from 'fluture'
 import {models} from '../models'
 import {ActionInstance, ActionModel} from '../models/Action.model'
 import {PodInstance} from '../models/Pod.model'

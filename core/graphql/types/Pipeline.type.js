@@ -54,6 +54,7 @@ export const PipelineType = new GraphQLObjectType({
             flattenSequence
           )
           const names = getNames(x.get('sequence'))
+          console.log('got names ', names)
           if (!names) {
             rej(new Error('Name is invalid!'))
           }

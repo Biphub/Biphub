@@ -7,6 +7,11 @@ export default function (sequelize) {
     },
     username: Sequelize.STRING,
     password: Sequelize.STRING
+  }, {
+    associate(models) {
+      PodAuth.belongsTo(models.Pod)
+      // Create Action has Many action import
+    }
   })
   return PodAuth
 }

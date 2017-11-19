@@ -1,5 +1,5 @@
-import * as R from 'ramda'
-import * as fluture from 'fluture'
+import R from 'ramda'
+import fluture from 'fluture'
 import {models} from '../models'
 import {AppContext} from '../server'
 import {getAllManifests} from '../bridge/node2node'
@@ -51,11 +51,15 @@ export const installPods = app => Future((rej, res) => {
 })
 
 export const findPodsWithNames = names => Future((rej, res) => {
+  console.log('checking names ', names)
   models.Pod.findAll({
     where: {
       name: names
     }
   })
-    .then(res)
+    .then((x) => {
+      console.log('found pods', x)
+      return x
+    })
     .catch(rej)
 })

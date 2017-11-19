@@ -1,4 +1,4 @@
-import * as Sequelize from 'sequelize'
+import Sequelize from 'sequelize'
 
 // Conventional namespace used by all biphub pods
 const NAMESPACE = 'biphub-pod-'
@@ -32,7 +32,7 @@ export default function (sequelize) {
   }, {
     associate(models) {
       Pod.hasMany(models.Action)
-      Pod.belongsTo(models.PodAuth)
+      Pod.hasMany(models.PodAuth)
     }
   })
   return Pod

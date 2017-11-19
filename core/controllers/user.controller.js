@@ -2,10 +2,8 @@ import crypto from 'crypto'
 import async from 'async'
 import nodemailer from 'nodemailer'
 import passport from 'passport'
-import {Request, Response, NextFunction} from 'express'
-import {LocalStrategyInfo} from 'passport-local'
+// Import {LocalStrategyInfo} from 'passport-local'
 import {models} from '../models'
-import {UserInstance, UserModel} from '../models/User.model'
 
 export const getLogin = (req, res) => {
   if (req.user) {

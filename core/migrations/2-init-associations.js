@@ -1,10 +1,11 @@
-'use strict';
+'use strict'
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    const { sequelize } = queryInterface
+    const {sequelize} = queryInterface
     return Promise.all([
       // Pod hasMany Actions
-      sequelize.query('ALTER TABLE Actions ADD podId INTEGER; ADD FOREIGN KEY podId REFERENCES Pods(id);')
+      sequelize.query('ALTER TABLE Actions ADD podId INTEGER; ADD FOREIGN KEY podId REFERENCES Pods(id);'),
+      sequelize.query('ALTER TABLE PodAuths ADD podId INTEGER; ADD FOREIGN KEY podId REFERENCES Pods(id);')
     ])
   },
   down: (queryInterface, Sequelize) => {

@@ -1,4 +1,4 @@
-import { Router } from 'express'
+import {Router} from 'express'
 import passport from 'passport'
 import * as passportConfig from '../config/passport.config'
 import * as homeController from '../controllers/home.controller'

@@ -1,3 +1,5 @@
+import path from 'path'
+import {exec} from 'child_process'
 import R from 'ramda'
 import graphqlHTTP from 'express-graphql'
 import fluture from 'fluture'
@@ -11,14 +13,12 @@ import passport from 'passport'
 import errorHandler from 'errorhandler'
 import lusca from 'lusca'
 import flash from 'express-flash'
-import path from 'path'
-import { exec } from 'child_process'
+import expressValidator from 'express-validator'
 import {logger} from './logger'
 import * as passportConfig from './config/passport.config'
 import {installPods} from './DAO/pod.dao'
 import {default as config} from './config'
-import expressValidator from 'express-validator'
-import {models, sequelize} from './models'
+import {sequelize} from './models'
 import routes from './routes'
 import {executeTask} from './workers/pipeline.worker'
 import * as Queue from './queue'
@@ -103,7 +103,7 @@ const bootstrapExpress = app => Future((rej, res) => {
     schema: Schema,
     rootValue: root,
     pretty: true,
-    graphiql: true
+    graphiql: true,
   }))
 
   // Error Handler. Provides full stack - remove for production
@@ -202,7 +202,6 @@ export const start =
         config.setup()
         logger.info('Main config setup!')
         // 2. Set up passport
-        // TODO: Fix this
         passportConfig.setupPassport()
         logger.info('Passport setup!')
         res(null)

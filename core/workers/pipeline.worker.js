@@ -4,6 +4,7 @@ import {Task} from '../queue/index'
 import {findAllPipelines, flattenSequence} from '../DAO/pipeline.dao'
 import * as nodeBridge from '../bridge/node2node'
 import fluture from 'fluture'
+
 const Future = fluture.Future
 /**
  * Process sequences by turning them into a list of futures
@@ -12,7 +13,7 @@ const Future = fluture.Future
 const processSequence = sequence => Future((rej, res) => {
   const getFutures = R.compose(
     R.map(node => {
-      return (prev) => Future((rej, res) => {
+      return prev => Future((rej, res) => {
         const actionName = R.propOr(null, 'actionName', node)
         const podName = R.propOr(null, 'podName', node)
         // If either one of these is not provided, halt the process

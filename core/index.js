@@ -1,3 +1,5 @@
+import 'babel-polyfill'
+import {start} from './server'
 const PrettyError = require('pretty-error')
 
 const env = process.env.NODE_ENV
@@ -7,7 +9,6 @@ if (env === 'development' || env === 'test') {
   const pe = new PrettyError()
   pe.start()
 }
-import {start} from './server'
 
 start().fork(
   e => console.error('Failed to start the server! ', e),
