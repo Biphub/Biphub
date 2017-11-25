@@ -46,7 +46,7 @@ export const findAllPipelines = entryApp => Future((rej, res) => {
  * @param tasks
  * @returns {any}
  */
-export const flattenSequence = (currentSequence, tasks = []) => {
+export const flattenSequence = (currentSequence, nodes = [], edges = []) => {
   // Loop's dead end
   if (!currentSequence) {
     return null
@@ -61,10 +61,11 @@ export const flattenSequence = (currentSequence, tasks = []) => {
   )
 
   if (node && node.podName && node.graph) {
-    tasks.push(node)
+    nodes.push(node)
     // Getting edge. It can be { any } or null
     const next = R.propOr(null, 'next', currentSequence)
-    return flattenSequence(next, tasks)
+    console.log('parent: ', node, 'child', next)
+    return flattenSequence(next, nodes)
   }
 
   // Checking if edge exist. Next must be empty because it's an edge
@@ -76,8 +77,8 @@ export const flattenSequence = (currentSequence, tasks = []) => {
         R.propOr(null, key)
       )
       const nextNode = composeNextNode(currentSequence)
-      return flattenSequence(nextNode, tasks)
+      return flattenSequence(nextNode, nodes)
     }, keys)
   }
-  return tasks
+  return nodes
 }

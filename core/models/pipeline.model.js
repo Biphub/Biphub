@@ -54,6 +54,12 @@ export default function (sequelize) {
           return true
         }
       }
+    },
+    nodes: {
+      type: Sequelize.JSONB,
+    },
+    edges: {
+      type: Sequelize.JSONB,
     }
   })
 }

@@ -17,7 +17,7 @@ const Query = new GraphQLObjectType({
         return 'test test'
       }
     },
-    url: {
+    host: {
       type: GraphQLString,
       resolve(x, y, req) {
         return req.protocol + '://' + req.get('host')

@@ -56,6 +56,12 @@ module.exports = {
       entryType: {
         type: Sequelize.STRING
       },
+      nodes: {
+        type: Sequelize.JSONB
+      },
+      edges: {
+        type: Sequelize.JSONB
+      },
       sequence: {
         type: Sequelize.JSONB
       },

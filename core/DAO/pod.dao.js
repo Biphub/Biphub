@@ -57,9 +57,6 @@ export const findPodsWithNames = names => Future((rej, res) => {
       name: names
     }
   })
-    .then((x) => {
-      console.log('found pods', x)
-      return x
-    })
+    .then(res)
     .catch(rej)
 })

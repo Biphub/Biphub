@@ -41,6 +41,13 @@ export const PipelineType = new GraphQLObjectType({
         type: GraphQLJSON,
         resolve: x => x.get('sequence')
       },
+      nodes: {
+        type: GraphQLJSON,
+        resolve: x => x.get('nodes')
+      },
+      edges: {
+        type: GraphQLJSON
+      },
       // Flatten sequence (aka list of pods required to run this pipeline)
       flattenSequence: {
         type: GraphQLJSON,
