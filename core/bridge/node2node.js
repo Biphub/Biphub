@@ -8,6 +8,7 @@ import path from 'path'
 import requireAll from 'require-all'
 import changeCase from 'change-case'
 import fluture from 'fluture'
+import { logger } from '../logger'
 
 const stagingPods = requireAll(path.join(__dirname, '/../../pods/staging'))
 
@@ -52,13 +53,14 @@ export const getAllManifests = () => {
  * Invoke a pod's action by podname and actionName
  * @param {string} podName
  * @param {string} actionName
- * @param payload
+ * @param initialPayload
  */
-export const invokeAction = (podName, actionName, payload) => Future((rej, res) => {
+export const invokeAction = (podName, actionName, initialPayload) => Future((rej, res) => {
   // NOTE: skipping webhook, poll, and etc happens here!
   if (actionName === 'webhook') {
     // We don't have to invoke any action of type "webhook"
-    return res(null)
+    logger.info('Checking webhook action ', payload)
+    return res(initialPayload)
   }
   const env = process.env.NODE_ENV
   const camelActionName = changeCase.camelCase(actionName)

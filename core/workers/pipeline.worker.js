@@ -88,7 +88,7 @@ const flattenPipelines = pipelines => Future((rej, res) => {
   res(sequences)
 })
 
-const processPipeline = pipeline => Future((rej, res) => {
+const processPipeline = R.curry((initialPayload, pipeline) => Future((rej, res) => {
   const nodes = pipeline.nodes
   const edges = pipeline.edges
   const flatEdgeIds = R.reduce((acc, edge) => R.concat(acc, [edge.from, edge.to]), [], edges)
@@ -103,12 +103,13 @@ const processPipeline = pipeline => Future((rej, res) => {
       }
       logger.info('Init: Task', podName, ':', actionName)
       // Running action
-      nodeBridge.invokeAction(podName, actionName, null).fork(
-        err => {
+      nodeBridge.invokeAction(podName, actionName, initialPayload).fork(
+        (err) => {
           logger.error('Action has failed', err)
           rej(err)
         },
-        payload => {
+        (payload) => {
+
           /* const _prev = prev ? prev : []
           const result = R.concat(_prev,
             [{
@@ -127,14 +128,15 @@ const processPipeline = pipeline => Future((rej, res) => {
   })
   const futures = R.apply(R.pipeK)(getFutures(flatEdgeIds))
   futures(null).fork(rej, res)
-})
+}))
 
-const traversePipelines = pipelines => Future((rej, res) => {
+const traversePipelines = R.curry((initialPayload, pipelines) => Future((rej, res) => {
   if (R.isEmpty(pipelines)) {
     rej(new Error('Pipeline traverse failed because it is an empty list!'))
   }
+  console.log('checking intial payload', initialPayload)
   R.traverse(Future.of, processPipeline, pipelines).fork(rej, res)
-})
+}))
 
 /**
  * Execute single queue task
@@ -150,7 +152,7 @@ export const executeTask = (task, cb) => {
   const executeSequence = R.compose(
     // R.chain(traverseFlatSequence),
     // R.chain(flattenPipelines),
-    R.chain(traversePipelines),
+    R.chain(traversePipelines(body)),
     findAllPipelines
   )
 
