@@ -55,7 +55,7 @@ export const getAllManifests = () => {
  * @param payload
  */
 export const invokeAction = (podName, actionName, payload) => Future((rej, res) => {
-  // TODO: Should we check it here?
+  // NOTE: skipping webhook, poll, and etc happens here!
   if (actionName === 'webhook') {
     // We don't have to invoke any action of type "webhook"
     return res(null)

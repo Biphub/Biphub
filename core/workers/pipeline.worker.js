@@ -46,6 +46,7 @@ const processSequence = sequence => Future((rej, res) => {
     }),
     flattenSequence
   )
+  console.log('checking stuff')
   const futures = R.apply(R.pipeK)(getFutures(sequence))
   futures(null)
     .fork(
@@ -87,6 +88,54 @@ const flattenPipelines = pipelines => Future((rej, res) => {
   res(sequences)
 })
 
+const processPipeline = pipeline => Future((rej, res) => {
+  const nodes = pipeline.nodes
+  const edges = pipeline.edges
+  const flatEdgeIds = R.reduce((acc, edge) => R.concat(acc, [edge.from, edge.to]), [], edges)
+  const getFutures = R.map((id) => {
+    return results => Future((rej, res) => {
+      const fromNode = R.find(R.propEq('id', id), nodes)
+      const actionName = R.propOr(null, 'actionName', fromNode)
+      const podName = R.propOr(null, 'podName', fromNode)
+      // If either one of these is not provided, halt the process
+      if (!actionName || !podName) {
+        return rej(false)
+      }
+      logger.info('Init: Task', podName, ':', actionName)
+      // Running action
+      nodeBridge.invokeAction(podName, actionName, null).fork(
+        err => {
+          logger.error('Action has failed', err)
+          rej(err)
+        },
+        payload => {
+          /* const _prev = prev ? prev : []
+          const result = R.concat(_prev,
+            [{
+              actionName,
+              podName,
+              payload
+            }]
+          )
+          logger.info('Mid: task', podName, ':', actionName)
+          res(result) */
+          console.log('checking payload after invokation', payload)
+          res(payload)
+        }
+      )
+    })
+  })
+  const futures = R.apply(R.pipeK)(getFutures(flatEdgeIds))
+  futures(null).fork(rej, res)
+})
+
+const traversePipelines = pipelines => Future((rej, res) => {
+  if (R.isEmpty(pipelines)) {
+    rej(new Error('Pipeline traverse failed because it is an empty list!'))
+  }
+  R.traverse(Future.of, processPipeline, pipelines).fork(rej, res)
+})
+
 /**
  * Execute single queue task
  * @param task
@@ -95,16 +144,15 @@ const flattenPipelines = pipelines => Future((rej, res) => {
 export const executeTask = (task, cb) => {
   const podName = R.propOr(null, 'name', task)
   const body = R.propOr(null, 'body', task)
-  console.log('executing task', task, ' checking cb ', cb)
   if (!podName || !body) {
     throw new Error('Invalid payload while executing queue task')
   }
   const executeSequence = R.compose(
-    R.chain(traverseFlatSequence),
-    R.chain(flattenPipelines),
+    // R.chain(traverseFlatSequence),
+    // R.chain(flattenPipelines),
+    R.chain(traversePipelines),
     findAllPipelines
   )
-  console.log('checking execute seq ', executeSequence, Future)
 
   executeSequence(podName)
     .fork(
@@ -113,7 +161,7 @@ export const executeTask = (task, cb) => {
         cb(e)
       },
       results => {
-        logger.info('End: Pipeline worker task has finished -', task.name)
+        logger.info('End: Pipeline worker task has finished -', task.name, ' ', results)
         cb(results)
       }
     )

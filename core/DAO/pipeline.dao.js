@@ -22,7 +22,6 @@ export function create(pipeline) {
  * @param {string} entryApp
  */
 export const findAllPipelines = entryApp => Future((rej, res) => {
-  console.log('entryapp ', entryApp)
   models.Pipeline.findAll({
     where: {
       entryApp
