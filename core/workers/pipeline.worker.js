@@ -93,7 +93,7 @@ const processPipeline = R.curry((initialPayload, pipeline) => Future((rej, res) 
   const edges = pipeline.edges
   const flatEdgeIds = R.reduce((acc, edge) => R.concat(acc, [edge.from, edge.to]), [], edges)
   const getFutures = R.map((id) => {
-    return results => Future((rej, res) => {
+    return (results) => Future((rej, res) => {
       const fromNode = R.find(R.propEq('id', id), nodes)
       const actionName = R.propOr(null, 'actionName', fromNode)
       const podName = R.propOr(null, 'podName', fromNode)
@@ -101,7 +101,7 @@ const processPipeline = R.curry((initialPayload, pipeline) => Future((rej, res) 
       if (!actionName || !podName) {
         return rej(false)
       }
-      logger.info('Init: Task', podName, ':', actionName)
+      logger.info('Init: Task', podName, ':', actionName, ' checking init ', initialPayload)
       // Running action
       nodeBridge.invokeAction(podName, actionName, initialPayload).fork(
         (err) => {
@@ -109,19 +109,18 @@ const processPipeline = R.curry((initialPayload, pipeline) => Future((rej, res) 
           rej(err)
         },
         (payload) => {
-
-          /* const _prev = prev ? prev : []
-          const result = R.concat(_prev,
-            [{
-              actionName,
-              podName,
-              payload
-            }]
-          )
-          logger.info('Mid: task', podName, ':', actionName)
-          res(result) */
-          console.log('checking payload after invokation', payload)
-          res(payload)
+          console.log('yoyo')
+          const resIndex = R.findIndex(R.propEq('id', id), results)
+          const nextPayload = { id, payload }
+          console.log('checking results', results)
+          // Results does not contain any item with a given id
+          if (resIndex === -1) {
+            // Simply add the new result into results array
+            return res(R.concat(results, nextPayload))
+          } else {
+            results[resIndex] = nextPayload
+            res(results)
+          }
         }
       )
     })
@@ -134,8 +133,8 @@ const traversePipelines = R.curry((initialPayload, pipelines) => Future((rej, re
   if (R.isEmpty(pipelines)) {
     rej(new Error('Pipeline traverse failed because it is an empty list!'))
   }
-  console.log('checking intial payload', initialPayload)
-  R.traverse(Future.of, processPipeline, pipelines).fork(rej, res)
+  console.log('checking initial payload', initialPayload)
+  R.traverse(Future.of, processPipeline(initialPayload), pipelines).fork(rej, res)
 }))
 
 /**
