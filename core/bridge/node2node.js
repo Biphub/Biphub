@@ -57,9 +57,10 @@ export const getAllManifests = () => {
  */
 export const invokeAction = (podName, actionName, initialPayload) => Future((rej, res) => {
   // NOTE: skipping webhook, poll, and etc happens here!
+  console.log('checking invoke action args ', podName, ' ', actionName, ' ', initialPayload)
   if (actionName === 'webhook') {
     // We don't have to invoke any action of type "webhook"
-    logger.info('Checking webhook action ', payload)
+    logger.info('Checking webhook action ', initialPayload)
     return res(initialPayload)
   }
   const env = process.env.NODE_ENV

@@ -93,33 +93,37 @@ const processPipeline = R.curry((initialPayload, pipeline) => Future((rej, res) 
   const edges = pipeline.edges
   const flatEdgeIds = R.reduce((acc, edge) => R.concat(acc, [edge.from, edge.to]), [], edges)
   const getFutures = R.map((id) => {
-    return (results) => Future((rej, res) => {
+    return (results) => Future((frej, fres) => {
+      results = results ? results : []
       const fromNode = R.find(R.propEq('id', id), nodes)
       const actionName = R.propOr(null, 'actionName', fromNode)
       const podName = R.propOr(null, 'podName', fromNode)
       // If either one of these is not provided, halt the process
       if (!actionName || !podName) {
-        return rej(false)
+        return frej(new Error('Invalid node found in process pipeline. This is not permitted'))
       }
       logger.info('Init: Task', podName, ':', actionName, ' checking init ', initialPayload)
       // Running action
       nodeBridge.invokeAction(podName, actionName, initialPayload).fork(
         (err) => {
           logger.error('Action has failed', err)
-          rej(err)
+          frej(err)
         },
         (payload) => {
-          console.log('yoyo')
+          console.log('yoyo', id, results)
           const resIndex = R.findIndex(R.propEq('id', id), results)
-          const nextPayload = { id, payload }
-          console.log('checking results', results)
+          const nextPayload = [{ id, payload }]
+          console.log('checking results', results, ' ', resIndex)
           // Results does not contain any item with a given id
           if (resIndex === -1) {
+            const x = R.concat(results, nextPayload)
+            console.info(x)
+            console.log('checking shit! ', resIndex)
             // Simply add the new result into results array
-            return res(R.concat(results, nextPayload))
+            return fres(x)
           } else {
             results[resIndex] = nextPayload
-            res(results)
+            fres(results)
           }
         }
       )
