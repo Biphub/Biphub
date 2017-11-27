@@ -33,7 +33,6 @@ Thumbs.db
 
 # Ignore built ts files
 dist/**/*
-test/**/*.js
 
 
 # sqlite

@@ -110,19 +110,16 @@ const processPipeline = R.curry((initialPayload, pipeline) => Future((rej, res) 
           frej(err)
         },
         (payload) => {
-          console.log('yoyo', id, results)
           const resIndex = R.findIndex(R.propEq('id', id), results)
-          const nextPayload = [{ id, payload }]
-          console.log('checking results', results, ' ', resIndex)
-          // Results does not contain any item with a given id
+          const nextPayload = { id, payload }
+          // resIndex === -1 means it's a new result
           if (resIndex === -1) {
-            const x = R.concat(results, nextPayload)
-            console.info(x)
-            console.log('checking shit! ', resIndex)
+            const x = R.concat(results, [nextPayload])
             // Simply add the new result into results array
             return fres(x)
           } else {
             results[resIndex] = nextPayload
+            // Replaces existing index with nextPayload
             fres(results)
           }
         }

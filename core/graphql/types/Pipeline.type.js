@@ -43,7 +43,7 @@ export const PipelineType = new GraphQLObjectType({
       },
       nodes: {
         type: GraphQLJSON,
-        resolve: x => x.get('nodes')
+        resolve: (x) => x.get('nodes')
       },
       edges: {
         type: GraphQLJSON
