@@ -43,7 +43,37 @@ export const PipelineType = new GraphQLObjectType({
       },
       nodes: {
         type: GraphQLJSON,
-        resolve: (x) => x.get('nodes')
+        resolve: (x) => new Promise((res, rej) => {
+          const nodes = x.get('nodes')
+          // Get unique
+          const uniqueNames = R.compose(
+            R.map(R.last),
+            R.map(R.split('-')),
+            R.uniq,
+            R.map(x => x.podName)
+          )(nodes)
+          findPodsWithNames(uniqueNames)
+            .fork(
+              rej,
+              (pods) => {
+                // ORM found pods as json values
+                const values = R.map(x => x.toJSON(), pods)
+                // Loop each nodes and find icon of each node
+                const newPods = R.map(n => {
+                  const podName = R.compose(
+                    R.last,
+                    R.split('-'),
+                  )(n.podName)
+                  const icon = R.compose(
+                    R.prop('icon'),
+                    R.find(R.propEq('name', podName)),
+                  )(values)
+                  return R.assoc('icon', icon, n)
+                }, nodes)
+                res(newPods)
+              }
+            )
+        })
       },
       edges: {
         type: GraphQLJSON

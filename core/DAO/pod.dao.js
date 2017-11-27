@@ -51,7 +51,6 @@ export const installPods = app => Future((rej, res) => {
 })
 
 export const findPodsWithNames = names => Future((rej, res) => {
-  console.log('checking names ', names)
   models.Pod.findAll({
     where: {
       name: names
