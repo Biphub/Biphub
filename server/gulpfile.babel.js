@@ -8,17 +8,17 @@ import path from 'path'
 // Copy files other than JS
 gulp.task('others', () => {
   return gulp
-    .src(['core/**/*', '!core/**/*.js'])
+    .src(['src/**/*', '!src/**/*.js'])
     .pipe(gulp.dest('dist'))
 })
 
 const paths = {
-  sourceRoot: path.join(__dirname, 'core')
+  sourceRoot: path.join(__dirname, 'src')
 }
 
 // Babel JS files
 gulp.task('babel', () => {
-  return gulp.src('core/**/*.js')
+  return gulp.src('src/**/*.js')
     .pipe(sourcemaps.init())
     .pipe(babel())
     .pipe(sourcemaps.write('.', { sourceRoot: paths.sourceRoot }))

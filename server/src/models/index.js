@@ -4,7 +4,7 @@ import path from 'path'
 import Sequelize from 'sequelize'
 const getSeqConfig = (file) => R.compose(
   JSON.parse,
-  x => fs.readFileSync(`core/config/${x}`, 'utf8')
+  x => fs.readFileSync(`src/config/${x}`, 'utf8')
 )(file)
 // Fix any config type
 const seqConfig = R.memoize(getSeqConfig)('sequelize.config.json')

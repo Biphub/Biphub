@@ -11,10 +11,10 @@
   "scripts": {
     "start": "npm run build && npm run watch",
     "build:dev": "cross-env NODE_ENV=development gulp build",
-    "dev": "cross-env NODE_ENV=development nodemon --watch core --watch gulpfile.babel.js --exec \"gulp build && node\" ./dist/index.js",
+    "dev": "cross-env NODE_ENV=development nodemon --watch src --watch gulpfile.babel.js --exec \"gulp build && node\" ./dist/index.js",
     "test": "jest --forceExit",
-    "xo:lint": "npx xo core/**/*.js",
-    "xo:fix": "npx xo core/**/*.js --fix",
+    "xo:lint": "npx xo src/**/*.js",
+    "xo:fix": "npx xo src/**/*.js --fix",
     "sequelize": "npm run build:dev && npm run sequelize:clean && npm run sequelize:migrate && npm run sequelize:seed",
     "sequelize:clean": "node tools/sequelize/db_drop.js",
     "sequelize:migrate": "node tools/sequelize/db_migrate.js",

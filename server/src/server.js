@@ -88,8 +88,8 @@ const bootstrapExpress = app => Future((rej, res) => {
     maxAge: 31557600000
   }
   // Main statics
-  app.use(express.static(appRoot.resolve('/core/public'), staticConfig))
-  logger.info('main /core/public static is set!')
+  app.use(express.static(appRoot.resolve('/src/public'), staticConfig))
+  logger.info('main /src/public static is set!')
   app.use(express.static(appRoot.resolve('/pods'), staticConfig))
   logger.info('staging pod /pod/staging')
   // Routes!
