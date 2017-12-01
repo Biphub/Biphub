@@ -1,0 +1,18 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+  height: 100%;
+  width: 100%;
+  color: #323232;
+}
+
+* {
+  box-sizing: border-box !important;
+}
+
+#root {
+  height: 100%;
+  width: 100%;
+}

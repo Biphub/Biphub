@@ -19,10 +19,8 @@
     "sequelize:clean": "node tools/sequelize/db_drop.js",
     "sequelize:migrate": "node tools/sequelize/db_migrate.js",
     "sequelize:seed": "cross-env NODE_ENV=development node tools/sequelize/db_seed.js",
-    "copy-static-assets": "node copyStaticAssets.js",
     "debug": "npm run build && npm run watch-debug",
     "serve-debug": "nodemon --inspect dist/server.js",
-    "watch-debug": "concurrently -k -p \"[{name}]\" -n \"Sass,TypeScript,Node\" -c \"yellow.bold,cyan.bold,green.bold\" \"npm run watch-sass\" \"npm run watch-ts\" \"npm run serve-debug\""
   },
   "xo": {
     "space": true,

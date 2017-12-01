@@ -1,3 +1,4 @@
+# Various things
 lib-cov
 *.seed
 *.log
@@ -7,11 +8,11 @@ lib-cov
 *.pid
 *.gz
 *.swp
-
 pids
 logs
 results
 tmp
+yarn.lock
 
 #Build
 public/css/main.css
@@ -19,21 +20,24 @@ public/css/main.css
 # API keys and secrets
 .env
 
+
 # Dependency directory
 node_modules
-bower_components
+
+# dist
+dist
 
 # Editors
 .idea
 *.iml
 
-# OS metadata
+# Miscs
 .DS_Store
 Thumbs.db
-
-# Ignore built ts files
-dist/**/*
-
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 
 # sqlite
-core/database/sequelize/database.sqlite
+database.sqlite
