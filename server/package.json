@@ -20,7 +20,7 @@
     "sequelize:migrate": "node tools/sequelize/db_migrate.js",
     "sequelize:seed": "cross-env NODE_ENV=development node tools/sequelize/db_seed.js",
     "debug": "npm run build && npm run watch-debug",
-    "serve-debug": "nodemon --inspect dist/server.js",
+    "serve-debug": "nodemon --inspect dist/server.js"
   },
   "xo": {
     "space": true,
