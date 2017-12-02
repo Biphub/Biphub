@@ -9,9 +9,8 @@
   "author": "Jason Shin",
   "license": "MIT",
   "scripts": {
-    "start": "npm run build && npm run watch",
-    "build:dev": "cross-env NODE_ENV=development gulp build",
-    "dev": "cross-env NODE_ENV=development nodemon --watch src --watch gulpfile.babel.js --exec \"gulp build && node\" ./dist/index.js",
+    "build:dev": "npx cross-env NODE_ENV=development gulp build",
+    "start": "npx cross-env NODE_ENV=development nodemon --watch src --watch gulpfile.babel.js --exec \"gulp build && node\" ./dist/index.js",
     "test": "jest --forceExit",
     "xo:lint": "npx xo src/**/*.js",
     "xo:fix": "npx xo src/**/*.js --fix",
