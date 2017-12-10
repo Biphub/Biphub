@@ -12,6 +12,9 @@ COPY $SRC/package.json $SRC/yarn.lock /tmp/
 RUN cd /tmp && yarn
 RUN cp -a /tmp/node_modules $CORE
 
+# Global installs
+# RUN yarn global add pg
+
 WORKDIR $CORE
 
 CMD ["yarn", "start"]

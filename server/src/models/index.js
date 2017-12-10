@@ -2,32 +2,28 @@ import R from 'ramda'
 import fs from 'fs'
 import path from 'path'
 import Sequelize from 'sequelize'
-const getSeqConfig = (file) => R.compose(
-  JSON.parse,
-  x => fs.readFileSync(`src/config/${x}`, 'utf8')
-)(file)
-// Fix any config type
-const seqConfig = R.memoize(getSeqConfig)('sequelize.config.json')
-const config = R.propOr(null, process.env.NODE_ENV, seqConfig)
-
-if (!config) {
-  throw new Error('Invalid database config!')
-}
 
 class Database {
   constructor () {
     this._models = null
     this._sequelize = null
-    const options = {
-      dialect: config.dialect,
-      storage: config.storage,
-      logging: config.logging
-    }
+    console.log('checking envs ', process.env.DB_NAME, ' ', process.env.DB_USER, ' ', process.env.DB_PASS)
+    console.log(process.env.DB_TYPE, ' ', process.env.DB_HOST)
     this._sequelize = new Sequelize(
-      config.database,
-      config.username,
-      config.password,
-      options
+      process.env.DB_NAME,
+      process.env.DB_USER,
+      process.env.DB_PASS,
+      {
+        host: process.env.DB_HOST,
+        dialect: process.env.DB_TYPE,
+        pool: {
+          max: 5,
+          min: 0,
+          acquire: 30000,
+          idle: 10000
+        },
+        storage: process.env.DB_TYPE === 'sqlite' ? 'database.sqlite' : null
+      }
     )
 
     this._models = {}

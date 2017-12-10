@@ -16,7 +16,7 @@
     "xo:fix": "npx xo src/**/*.js --fix",
     "sequelize": "npm run build:dev && npm run sequelize:clean && npm run sequelize:migrate && npm run sequelize:seed",
     "sequelize:clean": "node tools/sequelize/db_drop.js",
-    "sequelize:migrate": "node tools/sequelize/db_migrate.js",
+    "sequelize:migrate": "node ./migrate.js up",
     "sequelize:seed": "cross-env NODE_ENV=development node tools/sequelize/db_seed.js",
     "debug": "npm run build && npm run watch-debug",
     "serve-debug": "nodemon --inspect dist/server.js"
@@ -88,6 +88,8 @@
     "passport": "0.3.2",
     "passport-facebook": "^2.1.1",
     "passport-local": "^1.0.0",
+    "pg": "6",
+    "pg-hstore": "^2.3.2",
     "pug": "^2.0.0-rc.4",
     "ramda": "^0.24.1",
     "ramda-fantasy": "^0.8.0",
@@ -97,7 +99,9 @@
     "sequelize": "^4.10.0",
     "source-map": "^0.6.1",
     "sqlite3": "^3.1.13",
-    "tracer": "^0.8.11"
+    "tracer": "^0.8.11",
+    "umzug": "^2.1.0",
+    "umzug-cli": "^2.0.0"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.0.0-beta.31",
