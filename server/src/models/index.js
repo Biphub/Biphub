@@ -3,12 +3,11 @@ import fs from 'fs'
 import path from 'path'
 import Sequelize from 'sequelize'
 
+// test
 class Database {
   constructor () {
     this._models = null
     this._sequelize = null
-    console.log('checking envs ', process.env.DB_NAME, ' ', process.env.DB_USER, ' ', process.env.DB_PASS)
-    console.log(process.env.DB_TYPE, ' ', process.env.DB_HOST)
     this._sequelize = new Sequelize(
       process.env.DB_NAME,
       process.env.DB_USER,
@@ -16,6 +15,7 @@ class Database {
       {
         host: process.env.DB_HOST,
         dialect: process.env.DB_TYPE,
+        logging: process.env.SEQUELIZE_LOGGING == 'true',
         pool: {
           max: 5,
           min: 0,

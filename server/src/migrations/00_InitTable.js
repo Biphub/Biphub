@@ -27,6 +27,9 @@ module.exports = {
         icon: {
           type: Sequelize.STRING
         },
+        styles: {
+          type: Sequelize.JSONB
+        },
         createdAt: {
           allowNull: false,
           type: Sequelize.DATE

@@ -9,12 +9,14 @@ import 'normalize.css'
 import 'vis/dist/vis.css'
 import './index.css'
 import PrimaryLayout from './layouts/PrimaryLayout'
-import HomePage from './pages/HomePage'
+import HomePage from './pages/HomePage/HomePage'
+import PodsPage from './pages/PodsPage'
 import PipelinePage from './pages/PipelinePage'
 import registerServiceWorker from './registerServiceWorker'
 
 const routes = [
   <Route path='/' name='home' exact component={HomePage} />,
+  <Route path='/pods' name='pods' component={PodsPage} />,
   <Route path='/pipeline' name='pipeline' component={PipelinePage} />,
   <Route path='/pipeline/:id' name='pipeline' component={PipelinePage} />,
 ]

@@ -189,7 +189,7 @@ const initiateExpress = () => Future((rej, res) => {
  */
 export const start =
   R.compose(
-    R.chain(initializePods),
+    // R.chain(initializePods),
     R.chain(bootstrapExpress),
     R.chain(setupQueue),
     // R.chain(seedDb),

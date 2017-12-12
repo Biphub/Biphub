@@ -10,7 +10,7 @@ import changeCase from 'change-case'
 import fluture from 'fluture'
 import { logger } from '../logger'
 
-const stagingPods = requireAll(path.join(__dirname, '/../../pods/staging'))
+const pods = requireAll(path.join(__dirname, '/../../pods'))
 
 const Future = fluture.Future
 
@@ -18,12 +18,7 @@ const Future = fluture.Future
  * Gets the current app root path
  * @returns {string}
  */
-const getFolderPath = () => {
-  if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
-    return appRoot.resolve('/pods/staging')
-  }
-  return null
-}
+const getFolderPath = () => appRoot.resolve('/pods')
 
 /**
  * Get all pods according to current ENV
@@ -57,7 +52,6 @@ export const getAllManifests = () => {
  */
 export const invokeAction = (podName, actionName, initialPayload) => Future((rej, res) => {
   // NOTE: skipping webhook, poll, and etc happens here!
-  console.log('checking invoke action args ', podName, ' ', actionName, ' ', initialPayload)
   if (actionName === 'webhook') {
     // We don't have to invoke any action of type "webhook"
     logger.info('Checking webhook action ', initialPayload)
@@ -66,7 +60,7 @@ export const invokeAction = (podName, actionName, initialPayload) => Future((rej
   const env = process.env.NODE_ENV
   const camelActionName = changeCase.camelCase(actionName)
   if (env === 'development' || env === 'test') {
-    const stagingPodMethod = R.pathOr(null, [podName, 'index', camelActionName], stagingPods)
+    const stagingPodMethod = R.pathOr(null, [podName, 'index', camelActionName], pods)
     // If found method is a promise
     if (stagingPodMethod) {
       stagingPodMethod({text: 'lol'})

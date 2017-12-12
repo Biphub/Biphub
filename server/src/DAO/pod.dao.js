@@ -13,13 +13,11 @@ const Future = fluture.Future
  * @param {JSON} manifesto
  */
 const createPod = manifesto => Future((rej, res) => {
-  const podProps = R.pick(['name', 'title', 'description', 'url', 'icon', 'stage'], manifesto)
   const actions = R.propOr([], 'actions', manifesto)
   const formatActions = R.compose(
     ({keys, x}) => {
       return R.reduce((acc, key) => {
         const action = R.merge({name: key}, R.propOr({}, key, x))
-        // Const actionWithPod = R.merge({ podId: pod.get('id') }, action)
         return R.append(action, acc)
       }, [], keys)
     },
@@ -28,7 +26,8 @@ const createPod = manifesto => Future((rej, res) => {
       return {keys, x}
     }
   )
-  const fullPod = R.merge({Actions: formatActions(actions)}, podProps)
+  // Merging manifesto and Actions
+  const fullPod = R.merge({Actions: formatActions(actions)}, manifesto)
   models.Pod.create(
     fullPod,
     {

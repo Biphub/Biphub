@@ -37,6 +37,7 @@ services:
     environment:
       - DB_NAME=biphub
       - DB_TYPE=sqlite
+      - SEQUELIZE_LOGGING=false
     ports:
       - "3000:3000"
     depends_on:

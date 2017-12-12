@@ -10,7 +10,7 @@
   "license": "MIT",
   "scripts": {
     "build:dev": "npx cross-env NODE_ENV=development gulp build",
-    "start": "npx cross-env NODE_ENV=development nodemon --watch src --watch gulpfile.babel.js --exec \"gulp build && node\" ./dist/index.js",
+    "start": "npx cross-env NODE_ENV=development nodemon -L --watch src --watch gulpfile.babel.js --watch .env --exec \"gulp build && node\" ./dist/index.js",
     "test": "jest --forceExit",
     "xo:lint": "npx xo src/**/*.js",
     "xo:fix": "npx xo src/**/*.js --fix",
@@ -97,6 +97,7 @@
     "request": "^2.82.0",
     "require-all": "^2.2.0",
     "sequelize": "^4.10.0",
+    "slack": "^9.1.1",
     "source-map": "^0.6.1",
     "sqlite3": "^3.1.13",
     "tracer": "^0.8.11",

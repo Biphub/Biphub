@@ -4,7 +4,7 @@ import {
   GraphQLInt,
   GraphQLList
 } from 'graphql'
-import * as GraphQLJSON from 'graphql-type-json'
+import GraphQLJSON from 'graphql-type-json'
 
 import {models} from '../../models'
 
@@ -40,6 +40,10 @@ export const PodType = new GraphQLObjectType({
       stage: {
         type: GraphQLString,
         resolve: x => x.get('stage')
+      },
+      styles: {
+        type: GraphQLJSON,
+        resolve: x => x.get('styles')
       }
     }
   }

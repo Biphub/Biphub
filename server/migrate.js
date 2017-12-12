@@ -19,7 +19,8 @@ const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASS, {
     max: 5,
     min: 0,
     idle: 10000
-  }
+  },
+  storage: DB_TYPE === 'sqlite' ? 'database.sqlite' : null
 })
 
 const umzug = new Umzug({

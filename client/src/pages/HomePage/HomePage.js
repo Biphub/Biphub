@@ -3,8 +3,8 @@ import styled from 'styled-components'
 import React, { Component }  from 'react'
 import { graphql } from 'react-apollo'
 import gql from 'graphql-tag'
-import SequenceRow from '../components/SequenceRow'
-import logo from '../assets/logo.svg'
+import SequenceRow from '../../components/SequenceRow'
+import logo from '../../assets/logo.svg'
 
 const App = styled.div`
   width: 100%;
@@ -54,7 +54,6 @@ class HomePage extends Component {
       if (!z) {
         return null
       }
-      console.log('checking z ', z)
       return R.map(x => (
           <SequenceRowsStyled
             key={`SequenceRow-${x.id}`}
