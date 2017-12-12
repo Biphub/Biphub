@@ -33,13 +33,24 @@ const getAllPods = () => fs.readdirSync(getFolderPath())
  */
 export const getAllManifests = () => {
   const pods = getAllPods()
+  const blacklists = ['.placeholder']
   // Change below to get staging pods
   const getManifests = R.compose(
     // Filter empty ones
     R.filter(R.identity),
+    // Try to parse into JSON
     R.map(R.tryCatch(JSON.parse, R.F)),
+    // Read each manifest
     R.map(man => fs.readFileSync(man, 'utf8')),
-    R.map(pod => `${getFolderPath()}/${pod}/manifest.json`)
+    // Append full manifest path to each pod name
+    R.map(pod => `${getFolderPath()}/${pod}/manifest.json`),
+    // Filter blacklist items
+    R.filter(x => {
+      if (blacklists.indexOf(x) === -1) {
+        return true
+      }
+      return false
+    })
   )
   return getManifests(pods)
 }

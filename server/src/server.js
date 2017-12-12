@@ -16,7 +16,6 @@ import flash from 'express-flash'
 import expressValidator from 'express-validator'
 import {logger} from './logger'
 import * as passportConfig from './config/passport.config'
-import {installPods} from './DAO/pod.dao'
 import {default as config} from './config'
 import {sequelize} from './models'
 import routes from './routes'
@@ -25,17 +24,6 @@ import * as Queue from './queue'
 import Schema from './graphql/schema'
 
 const Future = fluture.Future
-
-/**
- *
- * @param {e.Application} app
- */
-const initializePods = app => Future((rej, res) => {
-  installPods(app).fork(
-    rej,
-    () => res(app)
-  )
-})
 
 /**
  * Bootstrap express app context with various things
@@ -189,10 +177,8 @@ const initiateExpress = () => Future((rej, res) => {
  */
 export const start =
   R.compose(
-    // R.chain(initializePods),
     R.chain(bootstrapExpress),
     R.chain(setupQueue),
-    // R.chain(seedDb),
     R.chain(connectDb),
     R.chain(initiateExpress),
     () => {

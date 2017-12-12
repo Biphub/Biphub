@@ -28,6 +28,9 @@ export default function (sequelize) {
         const icon = this.getDataValue('icon')
         return `/${stage}/${NAMESPACE}${name}/images/${icon}`
       }
+    },
+    styles: {
+      type: Sequelize.JSONB
     }
   }, {
     associate(models) {
