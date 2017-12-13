@@ -1,3 +1,27 @@
 {
+  "name": "slack",
+  "title": "Slack",
+  "description": "Slack realtime messaging system",
+  "url": "https://slack.com",
+  "icon": "app_icon.png",
+  "styles": {
+    "background-color": "#4c364a"
+  },
+  "actions": {
+    "postMessage": {
+      "inputs": {
+        "channel": {
+          "name": "channel",
+          "type": "string"
+        },
+        "text": {
+          "name": "text",
+          "type": "string"
+        }
+      }
+    }
+  },
+  "events": {
 
+  }
 }

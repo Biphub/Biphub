@@ -77,7 +77,7 @@ const bootstrapExpress = app => Future((rej, res) => {
   // Main statics
   app.use(express.static(appRoot.resolve('/src/public'), staticConfig))
   logger.info('main /src/public static is set!')
-  app.use(express.static(appRoot.resolve('/pods'), staticConfig))
+  app.use('/pods', express.static(appRoot.resolve('/pods'), staticConfig))
   logger.info('staging pod /pod/staging')
   // Routes!
   app.use(routes())

@@ -4,7 +4,6 @@
   "description": "Fake realtime messaging application! Only exist in Biphub!",
   "url": "https://fake1.com",
   "icon": "app_icon.jpg",
-  "stage": "staging",
   "styles": {
     "background-color": "rgb(30, 32, 35)"
   },

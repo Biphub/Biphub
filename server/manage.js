@@ -30,6 +30,13 @@ program
   })
 
 program
+  .command('invoke <POD_METHOD> [attributes...]')
+  .description('Invoke a method of pod')
+  .action((env, options) => {
+    console.log('invoking pod method ', options)
+  })
+
+program
   .command('uninstallAll')
   .alias('ua')
   .description('Command to uninstall all installed pods')

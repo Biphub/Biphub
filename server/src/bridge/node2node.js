@@ -55,6 +55,22 @@ export const getAllManifests = () => {
   return getManifests(pods)
 }
 
+export const invokeAction2 = (podName, actionName, attributes) => Future((rej, res) => {
+  const podMethod = R.pathOr(null, [podName, 'index', actionName], pods)
+  if (podMethod.then) {
+    podMethod(attributes)
+      .then(res)
+      .catch(rej)
+  } else if (typeof podMethod === "function"){
+    const results = podMethod(attributes)
+    if (results) {
+      return res(results)
+    }
+    return rej(`Failed to invoke a pod method ${actionName} of ${podName}`)
+  }
+  return rej(`Invalid pod method ${actionName} of ${podName} found`)
+})
+
 /**
  * Invoke a pod's action by podname and actionName
  * @param {string} podName

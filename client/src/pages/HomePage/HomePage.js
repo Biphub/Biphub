@@ -1,9 +1,10 @@
 import * as R from 'ramda'
+import { getOr } from 'lodash/fp'
 import styled from 'styled-components'
 import React, { Component }  from 'react'
 import { graphql } from 'react-apollo'
 import gql from 'graphql-tag'
-import SequenceRow from '../../components/SequenceRow'
+import PodCard from '../../components/PodCard'
 import logo from '../../assets/logo.svg'
 
 const App = styled.div`
@@ -36,33 +37,24 @@ const PageIntro = styled.div`
   flex: 1;
 `
 
-const SequenceRowsStyled = styled(SequenceRow)`
-  margin-top: 10px;
-  margin-bottom: 10px;
+const PodCardList = styled.div`
+  display: flex;
+  flex-direction: row;
 `
 
 class HomePage extends Component {
-  componentDidMount() {
 
-  }
-  _onRowClick = (x) => {
-    this.props.history.push(`/pipeline/${x.id}`)
-  }
   render() {
-    const { allPipelines, host } = this.props.data
-    const getRows = (z) => {
-      if (!z) {
-        return null
-      }
-      return R.map(x => (
-          <SequenceRowsStyled
-            key={`SequenceRow-${x.id}`}
-            host={host}
-            onClick={() => this._onRowClick(x)}
-            title={x.title}
-          />
-      ), z)
-    }
+    const { allPods = [] } = this.props.data
+
+    // Build pod cards
+    const podCards = R.map(x => <PodCard
+      key={`PodCard-${x.id}`}
+      name={x.title}
+      id={x.id}
+      icon={x.icon}
+      background={getOr(undefined, 'styles.background-color', x)}
+    />, allPods)
 
     return (
       <App>
@@ -71,7 +63,9 @@ class HomePage extends Component {
           <h1>Welcome to Biphub</h1>
         </Jumbo>
         <PageIntro>
-          {getRows(allPipelines)}
+          <PodCardList>
+            {podCards}
+          </PodCardList>
         </PageIntro>
       </App>
     );
@@ -80,14 +74,11 @@ class HomePage extends Component {
 
 const HomepageQuery = gql`
   query {
-    host
-    allPipelines {
+    allPods {
       id
       title
-      description
-      entryApp
-      entryType
-      nodes
+      icon
+      styles
     }
   }
 `

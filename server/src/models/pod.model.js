@@ -23,10 +23,9 @@ export default function (sequelize) {
     icon: {
       type: Sequelize.STRING,
       get() {
-        const stage = this.getDataValue('stage')
         const name = this.getDataValue('name')
         const icon = this.getDataValue('icon')
-        return `/${stage}/${NAMESPACE}${name}/images/${icon}`
+        return `pods/${NAMESPACE}${name}/images/${icon}`
       }
     },
     styles: {

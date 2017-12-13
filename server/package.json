@@ -10,7 +10,7 @@
   "license": "MIT",
   "scripts": {
     "build:dev": "npx cross-env NODE_ENV=development gulp build",
-    "start": "npx cross-env NODE_ENV=development nodemon -L --watch src --watch gulpfile.babel.js --watch .env --exec \"gulp build && node\" ./dist/index.js",
+    "start": "npx cross-env NODE_ENV=development nodemon -L --watch src --watch pods --watch gulpfile.babel.js --watch .env --exec \"gulp build && node\" ./dist/index.js",
     "test": "jest --forceExit",
     "xo:lint": "npx xo src/**/*.js",
     "xo:fix": "npx xo src/**/*.js --fix",

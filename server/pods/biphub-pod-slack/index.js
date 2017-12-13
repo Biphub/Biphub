@@ -1,5 +1,5 @@
 module.exports = {
-  init: () => {
-
+  postMessage: function ({channel, text}) {
+    console.log('received channel', channel, 'text', text)
   }
 }
