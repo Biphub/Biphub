@@ -16,7 +16,6 @@ import registerServiceWorker from './registerServiceWorker'
 
 const routes = [
   <Route path='/' name='home' exact component={HomePage} />,
-  <Route path='/pods' name='pods' component={PodsPage} />,
   <Route path='/pipeline' name='pipeline' component={PipelinePage} />,
   <Route path='/pipeline/:id' name='pipeline' component={PipelinePage} />,
 ]

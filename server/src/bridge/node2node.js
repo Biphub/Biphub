@@ -57,8 +57,8 @@ export const getAllManifests = () => {
 
 export const invokeAction2 = (podName, actionName, attributes) => Future((rej, res) => {
   const podMethod = R.pathOr(null, [podName, 'index', actionName], pods)
-  if (podMethod.then) {
-    podMethod(attributes)
+  if (podMethod && podMethod.then) {
+    return podMethod(attributes)
       .then(res)
       .catch(rej)
   } else if (typeof podMethod === "function"){

@@ -54,8 +54,6 @@ const Nav = styled(Link)`
 const Main = styled.main`
   flex: 1;
   overflow: hidden;
-  padding-left: 50px;
-  padding-right: 50px;
 `
 
 const PrimaryLayout = (props) => (
