@@ -20,7 +20,7 @@ export default function defineUser(sequelize) {
     exports: Sequelize.JSONB
   }, {
     associate(models) {
-      PodAction.belongsTo(models.Pod)
+      PodAction.belongsTo(models.Pod, { onDelete: 'cascade', hooks: true })
       // Create Action has Many action import
     }
   })

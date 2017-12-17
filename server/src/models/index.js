@@ -15,6 +15,7 @@ class Database {
       {
         host: process.env.DB_HOST,
         dialect: process.env.DB_TYPE,
+        // TODO: Fix it: == is not ideal
         logging: process.env.SEQUELIZE_LOGGING == 'true',
         pool: {
           max: 5,

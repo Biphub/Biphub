@@ -1,8 +1,13 @@
+#!/usr/bin/env node
+require('babel-register')
+require('babel-polyfill')
+const fs = require('fs')
 const path = require('path')
 const child_process = require('child_process')
 const Promise = require('bluebird')
 const Sequelize = require('sequelize')
 const Umzug = require('umzug')
+const models = require('./src/models')
 
 const DB_TYPE = process.env.DB_TYPE
 const DB_HOST = process.env.DB_HOST
@@ -89,6 +94,26 @@ function cmdStatus() {
     })
 }
 
+/**
+ * Create initial sql for init table migration
+ */
+function cmdInit() {
+  let sqlLines = []
+  models.sequelize.sync({
+    force: true,
+    logging: (message) => {
+      let line = message.replace('Executing (default): ', '').trim()
+      if (line.substr(-1) !== ';') {
+        line += ';';
+      }
+      sqlLines.push(line)
+    }
+  }).then(() => {
+    const sql = sqlLines.join('\n')
+    fs.writeFile('./src/migrations/00_initial-tables.sql', sql)
+  })
+}
+
 function cmdMigrate() {
   return umzug.up();
 }
@@ -144,6 +169,9 @@ switch(cmd) {
   case 'status':
     executedCmd = cmdStatus();
     break;
+
+  case 'init':
+    executedCmd = cmdInit()
 
   case 'up':
   case 'migrate':

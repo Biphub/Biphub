@@ -23,6 +23,7 @@ const EditorContent = styled.div`
   border: 1px solid black;
   width: 100%;
   height: 100%;
+  overflow-y: scroll;
 `
 
 class PipelinePage extends Component {
@@ -32,6 +33,9 @@ class PipelinePage extends Component {
       step: 'choosePod'
     }
   }
+  _onClickSelectPod = (id) => {
+    console.log('selected a pod', id)
+  }
   /**
    * @param type
    * @param step
@@ -39,11 +43,11 @@ class PipelinePage extends Component {
    */
   _renderEditorContent = (type, step) => {
     const { allPods = [] } = this.props.data
-    console.log('checking ', type, step)
     if (type === 'trigger' && step === 'choosePod') {
       return (
         <PodCardList
           allPods={allPods}
+          onClick={this._onClickSelectPod}
         />
       )
     }
