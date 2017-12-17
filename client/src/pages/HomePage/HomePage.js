@@ -1,10 +1,8 @@
-import * as R from 'ramda'
-import { getOr } from 'lodash/fp'
 import styled from 'styled-components'
 import React, { Component }  from 'react'
 import { graphql } from 'react-apollo'
 import gql from 'graphql-tag'
-import PodCard from '../../components/PodCard'
+import _PodCardList from '../../components/PodCardList'
 import logo from '../../assets/logo.svg'
 
 const App = styled.div`
@@ -37,25 +35,10 @@ const PageIntro = styled.div`
   flex: 1;
 `
 
-const PodCardList = styled.div`
-  display: flex;
-  flex-direction: row;
-`
-
 class HomePage extends Component {
 
   render() {
     const { allPods = [] } = this.props.data
-
-    // Build pod cards
-    const podCards = R.map(x => <PodCard
-      key={`PodCard-${x.id}`}
-      name={x.title}
-      id={x.id}
-      icon={x.icon}
-      background={getOr(undefined, 'styles.background-color', x)}
-    />, allPods)
-
     return (
       <App>
         <Jumbo>
@@ -63,9 +46,7 @@ class HomePage extends Component {
           <h1>Welcome to Biphub</h1>
         </Jumbo>
         <PageIntro>
-          <PodCardList>
-            {podCards}
-          </PodCardList>
+          <_PodCardList allPods={allPods} />
         </PageIntro>
       </App>
     );

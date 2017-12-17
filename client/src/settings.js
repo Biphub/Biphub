@@ -1,4 +1,5 @@
 export default {
+  theme: 'default',
   STEP_TRIGGER: [
     { name: 'choosePod', title: 'Choose Pod' },
     { name: 'chooseTrigger', title: 'Choose Trigger' },

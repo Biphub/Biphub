@@ -3,7 +3,8 @@ import React, { Component } from 'react'
 import styled from 'styled-components'
 import TextField from 'material-ui/TextField'
 import _Icon from '../Icon'
-import strings from './PipelineSteps.string'
+import settings from '../../settings'
+import theme from '../../theme'
 const mapIndexed = R.addIndex(R.map);
 
 const Container = styled.div`
@@ -32,8 +33,8 @@ const StepButtonActive = styled.div`
   flex-direction: row;
   align-items: center;
   cursor: pointer;
-  background-color: #f0f7fe;
-  color: #499DF3;
+  background-color: ${theme.tabActiveBg};
+  color: ${theme.tabActiveColor};
   padding: 5px 10px;
 `
 
@@ -53,17 +54,18 @@ class PipelineSteps extends Component {
   state = {
     active: {
       type: 'trigger',
-      index: 0,
+      step: 'choosePod'
     }
   }
   /**
    *
-   * @param stepIndex
-   * @param buttonIndex
+   * @param type = type to activate
+   * @param step = step to activate
    * @private
    */
-  _onStepClick = (stepIndex, buttonIndex) => {
-    console.log('clicked step index ', stepIndex, ' ', buttonIndex)
+  _onStepClick = (type, step) => {
+    const { onChange } = this.props
+    onChange(type, step)
   }
 
   /**
@@ -74,9 +76,9 @@ class PipelineSteps extends Component {
    * @private
    */
   _renderStep = (givenType, steps) => {
-    const { type, index } = this.state.active
+    const { active } = this.props
     const rendered = mapIndexed((x, givenIndex) => {
-      if (givenType === type && givenIndex === index) {
+      if (givenType === active.type && x.name === active.step) {
         return (
           <StepButtonActive
             key={`${givenIndex}_${x.name}`}
@@ -109,9 +111,9 @@ class PipelineSteps extends Component {
     const actionSteps = mapIndexed((x, index) => {
       if (index === 0) {
         // Index 0 is always trigger step
-        return this._renderStep('trigger', strings.STEP_TRIGGER)
+        return this._renderStep('trigger', settings.STEP_TRIGGER)
       }
-      return this._renderStep('action', strings.STEP_ACTION)
+      return this._renderStep('action', settings.STEP_ACTION)
     }, new Array(numberOfActions + 1))
     return (
       <Container>

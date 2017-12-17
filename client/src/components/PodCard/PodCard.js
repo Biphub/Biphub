@@ -10,6 +10,7 @@ const Wrapper = styled.div`
   height: 240px;
   color: white;
   font-size: 20px;
+  cursor: pointer;
 `
 
 const Icon = styled.img`
@@ -22,11 +23,18 @@ const PodName = styled.div`
 `
 
 class PodCard extends Component {
+  _onClick = (id) => {
+    const { onClick } = this.props
+    onClick(id)
+  }
   render() {
     const { icon, name, id, background } = this.props
     console.log('bg', background)
     return (
-      <Wrapper style={{ background }}>
+      <Wrapper
+        style={{ background }}
+        onClick={() => this._onClick(id)}
+      >
         <Icon src={icon} />
         <PodName>{name}</PodName>
       </Wrapper>
