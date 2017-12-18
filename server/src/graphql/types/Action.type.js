@@ -7,8 +7,6 @@ import {
   GraphQLID
 } from 'graphql'
 import GraphQLJSON from 'graphql-type-json'
-import {findPodsWithNames} from '../../DAO/pod.dao'
-import {flattenSequence} from '../../DAO/pipeline.dao'
 import {models} from '../../models'
 
 export const ActionType = new GraphQLObjectType({
@@ -20,18 +18,22 @@ export const ActionType = new GraphQLObjectType({
         type: GraphQLInt,
         resolve: x => x.get('id')
       },
+      title: {
+        type: GraphQLString,
+        resolve: x => x.get('title')
+      }
     }
   }
 })
 
 export const ActionList = {
-  type: new GraphQLList(ActionList),
+  type: new GraphQLList(ActionType),
   args: {
     test: {
       type: GraphQLInt
     }
   },
   resolve(root, args) {
-    return models.Pipeline.findAll(args)
+    return models.Action.findAll(args)
   }
 }

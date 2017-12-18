@@ -6,6 +6,7 @@ import {
 
 import {PipelineList, Pipeline} from './types/Pipeline.type'
 import {PodList} from './types/Pod.type'
+import { ActionList } from './types/Action.type'
 
 const Query = new GraphQLObjectType({
   name: 'Query',
@@ -25,7 +26,8 @@ const Query = new GraphQLObjectType({
     },
     pipeline: Pipeline,
     allPipelines: PipelineList,
-    allPods: PodList
+    allPods: PodList,
+    allActions: ActionList,
   }
 })
 

@@ -1,3 +1,4 @@
+import { merge } from 'ramda'
 import {
   GraphQLObjectType,
   GraphQLString,
@@ -5,6 +6,7 @@ import {
   GraphQLList
 } from 'graphql'
 import GraphQLJSON from 'graphql-type-json'
+import { ActionType } from './Action.type'
 
 import {models} from '../../models'
 
@@ -44,6 +46,10 @@ export const PodType = new GraphQLObjectType({
       styles: {
         type: GraphQLJSON,
         resolve: x => x.get('styles')
+      },
+      actions: {
+        type: new GraphQLList(ActionType),
+        resolve: x => x.get('Actions')
       }
     }
   }
@@ -57,6 +63,9 @@ export const PodList = {
     }
   },
   resolve(root, args) {
-    return models.Pod.findAll(args)
+    const newArgs = merge(args, {
+      include: [models.Action]
+    })
+    return models.Pod.findAll(newArgs)
   }
 }
