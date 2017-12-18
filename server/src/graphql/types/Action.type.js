@@ -21,6 +21,10 @@ export const ActionType = new GraphQLObjectType({
       title: {
         type: GraphQLString,
         resolve: x => x.get('title')
+      },
+      trigger: {
+        type: GraphQLString,
+        resolve: x => x.get('trigger')
       }
     }
   }
@@ -29,11 +33,21 @@ export const ActionType = new GraphQLObjectType({
 export const ActionList = {
   type: new GraphQLList(ActionType),
   args: {
-    test: {
+    podId: {
       type: GraphQLInt
     }
   },
   resolve(root, args) {
-    return models.Action.findAll(args)
+    const podId = R.prop('podId', args)
+    // If podId is specified, search of that one
+    if (podId) {
+      return models.Action.findAll({
+        where: {
+          podId: args.podId
+        }
+      })
+    }
+    // Otherwise return full
+    return models.Action.findAll()
   }
 }

@@ -1,7 +1,7 @@
 import * as R from 'ramda'
 import styled from 'styled-components'
 import React, { Component } from 'react'
-import { graphql } from 'react-apollo'
+import { graphql, withApollo } from 'react-apollo'
 import gql from 'graphql-tag'
 import PipelineSteps from '../../components/PipelineSteps'
 import PodCardList from '../../components/PodCardList'
@@ -26,6 +26,16 @@ const EditorContent = styled.div`
   overflow-y: scroll;
 `
 
+const SearchActionsByPodQuery = gql`
+  query ActionsByPod($id: Int) {
+      allActions(podId: $id) {
+        id
+        title
+        trigger
+      }
+    }
+`
+
 class PipelinePage extends Component {
   state = {
     activeStep: {
@@ -34,7 +44,14 @@ class PipelinePage extends Component {
     }
   }
   _onClickSelectPod = (id) => {
-    console.log('selected a pod', id)
+    this.props.client.query({
+      query: SearchActionsByPodQuery,
+      variables: {
+        id
+      }
+    }).then((res) => {
+      console.log('checking res ', res)
+    })
   }
   /**
    * @param type
@@ -93,4 +110,5 @@ const PipelinePageQuery = gql`
     }
 `
 
-export default graphql(PipelinePageQuery)(PipelinePage)
+const ApolloPipelinePage = withApollo(PipelinePage)
+export default graphql(PipelinePageQuery)(ApolloPipelinePage)
