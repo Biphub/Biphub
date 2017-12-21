@@ -5,7 +5,7 @@ import TextField from 'material-ui/TextField'
 import _Icon from '../Icon'
 import settings from '../../settings'
 import theme from '../../theme'
-const mapIndexed = R.addIndex(R.map);
+const mapIndexed = R.addIndex(R.map)
 
 const Container = styled.div`
   width: 400px;
@@ -52,37 +52,45 @@ const StepButtonLabel = styled.div`
  */
 class PipelineSteps extends Component {
   state = {
+    // Currently active step
     active: {
+      index: 0,
       type: 'trigger',
       step: 'choosePod'
     }
   }
   /**
    *
+   * @param givenIndex
    * @param type = type to activate
    * @param step = step to activate
    * @private
    */
-  _onStepClick = (type, step) => {
+  _onStepClick = (givenIndex, type, step) => {
     const { onChange } = this.props
-    onChange(type, step)
+    onChange(givenIndex, type, step)
   }
 
   /**
-   * Render given steps from strings file
+   * Render givenIndex steps from strings file
+   * @param givenIndex
    * @param givenType = current steps type trigger | action
    * @param steps
    * @returns {XML}
    * @private
    */
-  _renderStep = (givenType, steps) => {
+  _renderStep = (givenIndex, givenType, steps) => {
     const { active } = this.props
-    const rendered = mapIndexed((x, givenIndex) => {
-      if (givenType === active.type && x.name === active.step) {
+    const rendered = mapIndexed((x, index) => {
+      if (
+        givenIndex === active.index &&
+        givenType === active.type &&
+        x.name === active.step
+      ) {
         return (
           <StepButtonActive
-            key={`${givenIndex}_${x.name}`}
-            onClick={() => this._onStepClick(givenType, x.name)}
+            key={`${index}_${x.name}`}
+            onClick={() => this._onStepClick(givenIndex, givenType, x.name)}
           >
             <_Icon type='pencil' />
             <StepButtonLabel>{x.title}</StepButtonLabel>
@@ -91,8 +99,8 @@ class PipelineSteps extends Component {
       }
       return (
         <StepButtonInactive
-          key={`${givenIndex}_${x.name}`}
-          onClick={() => this._onStepClick(givenType, x.name)}
+          key={`${index}_${x.name}`}
+          onClick={() => this._onStepClick(givenIndex, givenType, x.name)}
         >
           <_Icon type='lock' />
           <StepButtonLabel>{x.title}</StepButtonLabel>
@@ -111,9 +119,9 @@ class PipelineSteps extends Component {
     const actionSteps = mapIndexed((x, index) => {
       if (index === 0) {
         // Index 0 is always trigger step
-        return this._renderStep('trigger', settings.STEP_TRIGGER)
+        return this._renderStep(index, 'trigger', settings.STEP_TRIGGER)
       }
-      return this._renderStep('action', settings.STEP_ACTION)
+      return this._renderStep(index, 'action', settings.STEP_ACTION)
     }, new Array(numberOfActions + 1))
     return (
       <Container>
@@ -124,6 +132,9 @@ class PipelineSteps extends Component {
         </div>
         <div>
           {actionSteps}
+        </div>
+        <div>
+          add step
         </div>
       </Container>
     )

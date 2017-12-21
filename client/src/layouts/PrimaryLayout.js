@@ -63,10 +63,18 @@ const PrimaryLayout = (props) => (
         <img src={BiphubLogo} alt='Biphub Logo' />
       </LogoImg>
       <HeaderNav>
-        <Nav to='/pods'>Pods</Nav>
-        <Nav to='/'>Auth</Nav>
-        <Nav to={{pathname: 'pipeline'}}>
-          <Button raised color='primary'>Create Pipeline</Button>
+        <Nav
+          key='primary-nav-pod'
+          to='/pods'>Pods</Nav>
+        <Nav
+          key='primary-nav-auth'
+          to='/'>Auth</Nav>
+        <Nav
+          key='primary-nav-pipeline'
+          to={{pathname: 'pipeline'}}>
+          <Button raised color='primary'>
+            Create Pipeline
+          </Button>
         </Nav>
       </HeaderNav>
     </Header>
