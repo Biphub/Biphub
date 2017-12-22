@@ -1,29 +1,27 @@
-import { getOr } from 'lodash/fp'
 import * as R from 'ramda'
 import styled from 'styled-components'
 import React, { Component } from 'react'
 import { graphql, withApollo } from 'react-apollo'
 import gql from 'graphql-tag'
+import PipelineEditor from '../../components/PipelineEditor'
 import PipelineSteps from '../../components/PipelineSteps'
-import PodCardList from '../../components/PodCardList'
-import settings from '../../settings'
+import settings from "../../settings";
 const mapIndexed = R.addIndex(R.map)
 
-const Page = styled.div`
+const _Page = styled.div`
   height: 100%;
   display: flex;
   flex-direction: row;
 `
 
-const Editor = styled.div`
+const _Editor = styled.div`
   display: flex;
   box-sizing: border-box;
-  padding: 40px 160px;
+  padding: 40px 120px;
   width: 100%;
 `
 
-const EditorContent = styled.div`
-  border: 1px solid black;
+const _EditorContent = styled.div`
   width: 100%;
   height: 100%;
   overflow-y: scroll;
@@ -42,15 +40,31 @@ const SearchActionsByPodQuery = gql`
 class PipelinePage extends Component {
   state = {
     numberOfActions: 1,
+    // Currently active step
     activeStep: {
       index: 0,
-      type: 'trigger',
+      type: 'event',
       step: 'choosePod'
     },
+    // Stores values
     steps: []
   }
   componentWillMount() {
-    const steps = mapIndexed((x, index) => {
+    const steps = this._initSteps(this.state.numberOfActions + 1)
+    this.setState({ steps })
+  }
+
+  _activeStep = (index, type, step) => ({
+    index, type, step
+  })
+  /**
+   * Create initial steps according to number of steps
+   * @param number
+   * @returns {*}
+   * @private
+   */
+  _initSteps = (number) => {
+    return mapIndexed((x, index) => {
       // If x is not empty, simply return it back
       // TODO: Handle payload merge
       if (x) {
@@ -73,12 +87,8 @@ class PipelinePage extends Component {
         setupTemplates: '',
         testSetup: '',
       }
-    }, new Array(this.state.numberOfActions + 1))
-    this.setState({
-      steps
-    })
+    }, new Array(number))
   }
-
   /**
    * Set step value
    * @param index
@@ -96,43 +106,56 @@ class PipelinePage extends Component {
     )
     return R.set(iLens, getStep(steps))(steps)
   }
-  _onClickSelectPod = R.curry((index, type, step, id) => {
+  _getNextStep = (index, type, step) => {
+    const getType = (X) => {
+      if (X === 'event') {
+        return settings.STEP_EVENT
+      }
+      return settings.STEP_ACTION
+    }
+    const currentType = getType(type)
+    const currentStepIdx = R.findIndex(
+      R.propEq('name', step), currentType
+    )
+    // If this is undefined it should increase type index
+    const nextStep = currentType[currentStepIdx + 1]
+    // handle max length
+
+    // Return the next step of current type
+    return this._activeStep(index, type, nextStep.name)
+  }
+  /**
+   * Generate next step value, if next step is undefined
+   * it returns null
+   * @param index
+   * @param type
+   * @param step
+   * @private
+   */
+  _moveNextStep = (index, type, step) => {
+    const nextStep = this._getNextStep(index, type, step)
+    this.setState({
+      activeStep: {
+        index: nextStep.index,
+        type: nextStep.type,
+        step: nextStep.step
+      }
+    })
+  }
+
+  _onClickPodCard = (index, type, step, id) => {
     this.props.client.query({
       query: SearchActionsByPodQuery,
       variables: {
         id
       }
     }).then((res) => {
-      const { steps } = this.state
-      const xLens = R.lens(R.prop(step), R.assoc(step))
-      const iLens = R.lensIndex(index)
-      const getStep = R.compose(
-        x => R.set(xLens, id, x),
-        x => x[index]
-      )
-      const newSteps = R.set(iLens, getStep(steps))(steps)
-      console.log(newSteps)
+      const stepData = this._setStep(index, step, id)
+      console.log(stepData)
+      console.log('onclick step data')
       // const nextStep = this._getNextStep(index, type, step)
-      console.log('checking res ', res, index, type, step, id)
-
+      this._moveNextStep(index, type, step)
     })
-  })
-  /**
-   * @param index
-   * @param type
-   * @param step
-   * @private
-   */
-  _renderEditorContent = (index, type, step) => {
-    const { allPods = [] } = this.props.data
-    if (type === 'trigger' && step === 'choosePod') {
-      return (
-        <PodCardList
-          allPods={allPods}
-          onClick={this._onClickSelectPod(index, type, step)}
-        />
-      )
-    }
   }
   /**
    * Change currently active step
@@ -147,25 +170,27 @@ class PipelinePage extends Component {
     })
   }
   render() {
-    const { activeStep, numberOfActions, steps } = this.state
-    console.log('checking active step ', steps)
+    const { activeStep, numberOfActions } = this.state
+    const { allPods = [] } = this.props.data
     return (
-      <Page>
+      <_Page>
         <PipelineSteps
           numberOfActions={numberOfActions}
           active={activeStep}
           onChange={this._onStepChange}
         />
-        <Editor>
-          <EditorContent>
-            {this._renderEditorContent(
-              activeStep.index,
-              activeStep.type,
-              activeStep.step
-            )}
-          </EditorContent>
-        </Editor>
-      </Page>
+        <_Editor>
+          <_EditorContent>
+            <PipelineEditor
+              allPods={allPods}
+              index={activeStep.index}
+              type={activeStep.type}
+              step={activeStep.step}
+              onClickPodCard={this._onClickPodCard}
+            />
+          </_EditorContent>
+        </_Editor>
+      </_Page>
     )
   }
 }

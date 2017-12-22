@@ -2,7 +2,7 @@ import * as R from 'ramda'
 import React, { Component } from 'react'
 import styled from 'styled-components'
 import TextField from 'material-ui/TextField'
-import _Icon from '../Icon'
+import Icon from '../Icon'
 import settings from '../../settings'
 import theme from '../../theme'
 const mapIndexed = R.addIndex(R.map)
@@ -55,7 +55,7 @@ class PipelineSteps extends Component {
     // Currently active step
     active: {
       index: 0,
-      type: 'trigger',
+      type: 'event',
       step: 'choosePod'
     }
   }
@@ -90,9 +90,11 @@ class PipelineSteps extends Component {
         return (
           <StepButtonActive
             key={`${index}_${x.name}`}
-            onClick={() => this._onStepClick(givenIndex, givenType, x.name)}
+            onClick={
+              () => this._onStepClick(givenIndex, givenType, x.name)
+            }
           >
-            <_Icon type='pencil' />
+            <Icon type='pencil' />
             <StepButtonLabel>{x.title}</StepButtonLabel>
           </StepButtonActive>
         )
@@ -102,7 +104,7 @@ class PipelineSteps extends Component {
           key={`${index}_${x.name}`}
           onClick={() => this._onStepClick(givenIndex, givenType, x.name)}
         >
-          <_Icon type='lock' />
+          <Icon type='lock' />
           <StepButtonLabel>{x.title}</StepButtonLabel>
         </StepButtonInactive>
       )
@@ -119,7 +121,7 @@ class PipelineSteps extends Component {
     const actionSteps = mapIndexed((x, index) => {
       if (index === 0) {
         // Index 0 is always trigger step
-        return this._renderStep(index, 'trigger', settings.STEP_TRIGGER)
+        return this._renderStep(index, 'event', settings.STEP_EVENT)
       }
       return this._renderStep(index, 'action', settings.STEP_ACTION)
     }, new Array(numberOfActions + 1))

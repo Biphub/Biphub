@@ -4,7 +4,6 @@ import gql from 'graphql-tag'
 
 class PodsPage extends Component {
   render() {
-    const { allPods } = this.props.data
     return (
       <div>
         pods
