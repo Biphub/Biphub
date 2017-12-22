@@ -2,7 +2,6 @@ import crypto from 'crypto'
 import async from 'async'
 import nodemailer from 'nodemailer'
 import passport from 'passport'
-// Import {LocalStrategyInfo} from 'passport-local'
 import {models} from '../models'
 
 export const getLogin = (req, res) => {
@@ -62,7 +61,9 @@ export const postSignup = (req, res, next) => {
   req.assert('email', 'Email is not valid').isEmail()
   req.assert('password', 'Password must be at least 4 characters long').len({min: 4})
   req.assert('confirmPassword', 'Passwords do not match').equals(req.body.password)
-  req.sanitize('email').normalizeEmail({gmail_remove_dots: false})
+  req.sanitize('email').normalizeEmail({
+    gmail_remove_dots: false
+  })
 
   const errors = req.validationErrors()
 
@@ -218,7 +219,7 @@ export const postReset = (req, res, next) => {
   }
 
   async.waterfall([
-    function resetPassword(done) {
+    (done) => {
       models.User
         .findOne({passwordResetToken: req.params.token})
         .where('passwordResetExpires').gt(Date.now())
@@ -243,7 +244,7 @@ export const postReset = (req, res, next) => {
           })
         })
     },
-    function sendResetPasswordEmail(user, done) {
+    (user, done) => {
       const transporter = nodemailer.createTransport({
         service: 'SendGrid',
         auth: {
@@ -291,13 +292,13 @@ export const postForgot = (req, res, next) => {
   }
 
   async.waterfall([
-    function createRandomToken(done) {
+    (done) => {
       crypto.randomBytes(16, (err, buf) => {
         const token = buf.toString('hex')
         done(err, token)
       })
     },
-    function setRandomToken(token, done) {
+    (token, done) => {
       models.User.findOne({email: req.body.email}, (err, user) => {
         if (err) {
           return done(err)
@@ -313,7 +314,7 @@ export const postForgot = (req, res, next) => {
         })
       })
     },
-    function sendForgotPasswordEmail(token, user, done) {
+    (token, user, done) => {
       const transporter = nodemailer.createTransport({
         service: 'SendGrid',
         auth: {

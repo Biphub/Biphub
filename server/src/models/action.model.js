@@ -11,7 +11,7 @@ export default function defineUser(sequelize) {
     /** Description of the action */
     description: Sequelize.STRING,
     /** Reference to action's documentation. Typically an URL. */
-    doc_ref: Sequelize.STRING,
+    docRef: Sequelize.STRING,
     /** Type of trigger */
     trigger: Sequelize.ENUM('webhook', 'invoke', 'poll'),
     /** Inputs required to execute the action. Webhook and poll do not require this */
@@ -20,7 +20,7 @@ export default function defineUser(sequelize) {
     exports: Sequelize.JSONB
   }, {
     associate(models) {
-      PodAction.belongsTo(models.Pod, { onDelete: 'cascade', hooks: true })
+      PodAction.belongsTo(models.Pod, {onDelete: 'cascade', hooks: true})
       // Create Action has Many action import
     }
   })

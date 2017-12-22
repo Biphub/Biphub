@@ -5,7 +5,10 @@ import { graphql, withApollo } from 'react-apollo'
 import gql from 'graphql-tag'
 import PipelineEditor from '../../components/PipelineEditor'
 import PipelineSteps from '../../components/PipelineSteps'
-import settings from "../../settings";
+import {
+
+} from '../../settings'
+import settings from '../../settings'
 const mapIndexed = R.addIndex(R.map)
 
 const _Page = styled.div`
@@ -106,6 +109,13 @@ class PipelinePage extends Component {
     )
     return R.set(iLens, getStep(steps))(steps)
   }
+  /**
+   * Get next step from settings type
+   * @param index
+   * @param type
+   * @param step
+   * @private
+   */
   _getNextStep = (index, type, step) => {
     const getType = (X) => {
       if (X === 'event') {
@@ -125,8 +135,7 @@ class PipelinePage extends Component {
     return this._activeStep(index, type, nextStep.name)
   }
   /**
-   * Generate next step value, if next step is undefined
-   * it returns null
+   * Set state according to getNextStep value
    * @param index
    * @param type
    * @param step
@@ -151,10 +160,19 @@ class PipelinePage extends Component {
       }
     }).then((res) => {
       const stepData = this._setStep(index, step, id)
-      console.log(stepData)
-      console.log('onclick step data')
-      // const nextStep = this._getNextStep(index, type, step)
-      this._moveNextStep(index, type, step)
+      const nextStep = this._getNextStep(index, type, step)
+      this.setState({
+        activeStep: {
+          index: nextStep.index,
+          type: nextStep.type,
+          step: nextStep.step
+        },
+        step: stepData
+      }, () => {
+        const { activeStep, step } = this.state
+        console.log('checking active step after ss', activeStep)
+        console.log('checking step value ', step)
+      })
     })
   }
   /**

@@ -1,14 +1,14 @@
 /**
  * General utilities required for node pods to node hub integration
  */
-import R from 'ramda'
-import appRoot from 'app-root-path'
 import fs from 'fs'
 import path from 'path'
+import R from 'ramda'
+import appRoot from 'app-root-path'
 import requireAll from 'require-all'
 import changeCase from 'change-case'
 import fluture from 'fluture'
-import { logger } from '../logger'
+import {logger} from '../logger'
 
 const pods = requireAll(path.join(__dirname, '/../../pods'))
 
@@ -61,7 +61,7 @@ export const invokeAction2 = (podName, actionName, attributes) => Future((rej, r
     return podMethod(attributes)
       .then(res)
       .catch(rej)
-  } else if (typeof podMethod === "function"){
+  } else if (typeof podMethod === 'function') {
     const results = podMethod(attributes)
     if (results) {
       return res(results)

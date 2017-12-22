@@ -1,4 +1,3 @@
-import path from 'path'
 import {exec} from 'child_process'
 import R from 'ramda'
 import graphqlHTTP from 'express-graphql'
@@ -14,13 +13,13 @@ import errorHandler from 'errorhandler'
 import lusca from 'lusca'
 import flash from 'express-flash'
 import expressValidator from 'express-validator'
-import {logger} from './logger'
+import logger from './logger'
 import * as passportConfig from './config/passport.config'
 import {default as config} from './config'
 import {sequelize} from './models'
 import routes from './routes'
-import {executeTask} from './workers/pipeline.worker'
-import * as Queue from './queue'
+import pipelineWorker from './workers/pipeline.worker'
+import Queue from './queue'
 import Schema from './graphql/schema'
 
 const Future = fluture.Future
@@ -101,11 +100,11 @@ const bootstrapExpress = app => Future((rej, res) => {
 
 /**
  * Binds queue to the current app context
- * @param {e.Application} app
+ * @param app
  */
 const setupQueue = app => Future((rej, res) => {
   logger.info('START - Queue setup')
-  const q = Queue.createQueue(executeTask)
+  const q = Queue.createQueue(pipelineWorker.executeTask)
   console.log('setting up', Queue)
   if (!q) {
     return rej(false)

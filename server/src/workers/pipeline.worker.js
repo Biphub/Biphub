@@ -1,15 +1,15 @@
 import R from 'ramda'
-import {logger} from '../logger'
-import {Task} from '../queue/index'
+import fluture from 'fluture'
+import logger from '../logger'
 import {findAllPipelines, flattenSequence} from '../DAO/pipeline.dao'
 import * as nodeBridge from '../bridge/node2node'
-import fluture from 'fluture'
 
 const Future = fluture.Future
 /**
  * Process sequences by turning them into a list of futures
  * @param {JSON} sequence
  */
+/*
 const processSequence = sequence => Future((rej, res) => {
   const getFutures = R.compose(
     R.map(node => {
@@ -21,8 +21,7 @@ const processSequence = sequence => Future((rej, res) => {
           return rej(false)
         }
         logger.info('Init: Task', podName, ':', actionName)
-        // Running action
-        // TODO: Fix from here!
+        // Running an action
         nodeBridge.invokeAction(podName, actionName, null).fork(
           err => {
             logger.error('Action has failed', err)
@@ -60,11 +59,8 @@ const processSequence = sequence => Future((rej, res) => {
       }
     )
 })
-
-/**
- * Processing all seq
- * @param {Array<JSON>} sequence
- */
+*/
+/*
 const traverseFlatSequence = sequence => Future((rej, res) => {
   // Sequence looks like [ { webhook: { podName: 'biphub-pod-fake1', graph: [Object], next: [Object] } } ]
   // Technically it does not need traverse, but we will just receive it here as a backward compatibility
@@ -74,11 +70,13 @@ const traverseFlatSequence = sequence => Future((rej, res) => {
       results => res(results)
     )
 })
+*/
 
 /**
  * Flattens Sequelize retrieved pipeline data
  * @param {Array<PipelineInstance>} pipelines
  */
+/*
 const flattenPipelines = pipelines => Future((rej, res) => {
   if (R.isEmpty(pipelines)) {
     rej(new Error('Flatten pipelines received empty an empty list'))
@@ -92,8 +90,8 @@ const processPipeline = R.curry((initialPayload, pipeline) => Future((rej, res) 
   const nodes = pipeline.nodes
   const edges = pipeline.edges
   const flatEdgeIds = R.reduce((acc, edge) => R.concat(acc, [edge.from, edge.to]), [], edges)
-  const getFutures = R.map((id) => {
-    return (results) => Future((frej, fres) => {
+  const getFutures = R.map(id => {
+    return results => Future((frej, fres) => {
       results = results ? results : []
       const fromNode = R.find(R.propEq('id', id), nodes)
       const actionName = R.propOr(null, 'actionName', fromNode)
@@ -105,23 +103,22 @@ const processPipeline = R.curry((initialPayload, pipeline) => Future((rej, res) 
       logger.info('Init: Task', podName, ':', actionName, ' checking init ', initialPayload)
       // Running action
       nodeBridge.invokeAction(podName, actionName, initialPayload).fork(
-        (err) => {
+        err => {
           logger.error('Action has failed', err)
           frej(err)
         },
-        (payload) => {
+        payload => {
           const resIndex = R.findIndex(R.propEq('id', id), results)
-          const nextPayload = { id, payload }
-          // resIndex === -1 means it's a new result
+          const nextPayload = {id, payload}
+          // ResIndex === -1 means it's a new result
           if (resIndex === -1) {
             const x = R.concat(results, [nextPayload])
             // Simply add the new result into results array
             return fres(x)
-          } else {
-            results[resIndex] = nextPayload
-            // Replaces existing index with nextPayload
-            fres(results)
           }
+          results[resIndex] = nextPayload
+            // Replaces existing index with nextPayload
+          fres(results)
         }
       )
     })
@@ -129,7 +126,7 @@ const processPipeline = R.curry((initialPayload, pipeline) => Future((rej, res) 
   const futures = R.apply(R.pipeK)(getFutures(flatEdgeIds))
   futures(null).fork(rej, res)
 }))
-
+*/
 const traversePipelines = R.curry((initialPayload, pipelines) => Future((rej, res) => {
   if (R.isEmpty(pipelines)) {
     rej(new Error('Pipeline traverse failed because it is an empty list!'))
@@ -143,7 +140,7 @@ const traversePipelines = R.curry((initialPayload, pipelines) => Future((rej, re
  * @param task
  * @param cb
  */
-export const executeTask = (task, cb) => {
+const executeTask = (task, cb) => {
   const podName = R.propOr(null, 'name', task)
   const body = R.propOr(null, 'body', task)
   if (!podName || !body) {
@@ -167,4 +164,8 @@ export const executeTask = (task, cb) => {
         cb(results)
       }
     )
+}
+
+export default {
+  executeTask
 }

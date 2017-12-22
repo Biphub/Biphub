@@ -1,11 +1,10 @@
-import { logger } from '../logger'
 import queue from 'async/queue'
+import logger from '../logger'
 
 /**
  * Async queue for inmemory messaging system
  */
-export class AsyncQueue {
-  count = 0
+class AsyncQueue {
   constructor(worker) {
     this.queue = queue(worker, 1)
     this.queue.drain = () => {
@@ -25,3 +24,5 @@ export class AsyncQueue {
     this.queue.push(task, callback)
   }
 }
+
+export default AsyncQueue

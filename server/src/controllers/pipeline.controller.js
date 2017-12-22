@@ -1,7 +1,6 @@
-import {logger} from '../logger'
 import * as pipelineDao from '../DAO/pipeline.dao'
 
-export const create = (req, res) => {
+export default (req, res) => {
   req.checkBody({
     title: {
       notEmpty: true

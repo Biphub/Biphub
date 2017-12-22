@@ -1,11 +1,11 @@
-import R from 'ramda'
 import fs from 'fs'
 import path from 'path'
+import R from 'ramda'
 import Sequelize from 'sequelize'
 
-// test
+// Test
 class Database {
-  constructor () {
+  constructor() {
     this._models = null
     this._sequelize = null
     this._sequelize = new Sequelize(
@@ -15,8 +15,7 @@ class Database {
       {
         host: process.env.DB_HOST,
         dialect: process.env.DB_TYPE,
-        // TODO: Fix it: == is not ideal
-        logging: process.env.SEQUELIZE_LOGGING == 'true',
+        logging: process.env.SEQUELIZE_LOGGING === 'true',
         pool: {
           max: 5,
           min: 0,
@@ -31,22 +30,24 @@ class Database {
 
     const files = fs.readdirSync(__dirname)
     files
-      .filter((file) => {
+      .filter(file => {
         return !R.isEmpty(R.match(/\.model\.js$/g, file))
       })
-      .forEach((file) => {
+      .forEach(file => {
         const model = this._sequelize.import(path.join(__dirname, file))
-        this._models[model['name']] = model
+        this._models[model.name] = model
       })
 
-    // invoke associations on each of the models
-    Object.keys(this._models).forEach((modelName) => {
-      if (this._models[modelName].options.hasOwnProperty('associate')) {
+    // Invoke associations on each of the models
+    Object.keys(this._models).forEach(modelName => {
+      if (R.has('associate', this._models[modelName].options)) {
         this._models[modelName].options.associate(this._models)
       }
     })
   }
-  getModels = () => this._models
+  getModels() {
+    return this._models
+  }
   getSequelize = () => this._sequelize
 }
 

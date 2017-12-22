@@ -1,7 +1,7 @@
 import R from 'ramda'
-import {logger} from '../logger'
-import {models} from '../models'
 import fluture from 'fluture'
+import logger from '../logger'
+import {models} from '../models'
 
 const Future = fluture.Future
 /**
@@ -13,7 +13,7 @@ export function create(pipeline) {
   return fluture.Future((rej, res) => {
     models.Pipeline.create(pipeline)
       .then(value => res(value))
-      .catch(e => rej(e))
+      .catch(err => rej(err))
   })
 }
 
@@ -34,7 +34,7 @@ export const findAllPipelines = entryApp => Future((rej, res) => {
       }
       res(pipelines)
     })
-    .catch(e => rej(e))
+    .catch(err => rej(err))
 })
 
 /**
@@ -42,10 +42,10 @@ export const findAllPipelines = entryApp => Future((rej, res) => {
  * edge => "action1"
  * node => "podName, graph, next"
  * @param {JSON} currentSequence
- * @param tasks
+ * @param nodes
  * @returns {any}
  */
-export const flattenSequence = (currentSequence, nodes = [], edges = []) => {
+export const flattenSequence = (currentSequence, nodes = []) => {
   // Loop's dead end
   if (!currentSequence) {
     return null

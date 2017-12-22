@@ -128,7 +128,6 @@ export const isAuthenticated = (req, res, next) => {
 export const isAuthorized = (req, res, next) => {
   const provider = req.path.split('/').slice(-1)[0]
 
-  // TODO: Replace below with lodash
   if (_.find(req.user.tokens, {kind: provider})) {
     next()
   } else {

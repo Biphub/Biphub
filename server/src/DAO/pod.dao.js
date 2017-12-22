@@ -1,22 +1,20 @@
 import R from 'ramda'
 import fluture from 'fluture'
 import {models} from '../models'
-import {AppContext} from '../server'
 import {getAllManifests} from '../bridge/node2node'
-import {PodModel} from '../models/Pod.model'
-import {Applicative} from 'ramda'
+
+const {Pod} = models
 const Future = fluture.Future
 
-
-//**************
-// READ
+//* *************
+// READ METHODS
 // ************
 /**
  * Find all pods with given list of names
  * @param names
  */
 export const findPodsWithNames = names => Future((rej, res) => {
-  models.Pod.findAll({
+  Pod.findAll({
     where: {
       name: names
     }
@@ -29,13 +27,12 @@ export const findPodsWithNames = names => Future((rej, res) => {
  * Simply grabs all the pods
  */
 const findAllPods = () => Future((rej, res) => {
-  models.Pod.findAll().then(res).catch(rej)
+  Pod.findAll().then(res).catch(rej)
 })
 
-
-//****************
-// WRITE
-//****************
+//* ***************
+// WRITE METHODS
+//* ***************
 /**
  * Create a single pod using a manifesto or custom JSON
  * @param {JSON} manifesto
@@ -56,7 +53,7 @@ const createPod = manifesto => Future((rej, res) => {
   )
   // Merging manifesto and Actions
   const fullPod = R.merge({Actions: formatActions(actions)}, manifesto)
-  models.Pod.create(
+  Pod.create(
     fullPod,
     {
       include: [models.Action]
@@ -70,9 +67,9 @@ const createPod = manifesto => Future((rej, res) => {
  * Delete all pods with ids
  * @param ids
  */
-export const deletePods = (ids) => Future((rej, res) => {
-  models.Pod.destroy({ where: { id: ids } })
-    .then((result) => {
+export const deletePods = ids => Future((rej, res) => {
+  Pod.destroy({where: {id: ids}})
+    .then(result => {
       res(`Deletes all pods! ${ids} ${result}`)
     })
     .catch(rej)
@@ -82,7 +79,7 @@ export const deletePods = (ids) => Future((rej, res) => {
  * Install all pods
  * @param app
  */
-export const installPods = app => Future((rej, res) => {
+export const installPods = () => Future((rej, res) => {
   R.traverse(Future.of, createPod, getAllManifests())
     .fork(
       e => rej(e),
@@ -95,7 +92,7 @@ export const installPods = app => Future((rej, res) => {
  */
 export const uninstallPods = () => Future((rej, res) => {
   // Flatten pods as array of ids
-  const flatPods = (pods) => Future((rej, res) => {
+  const flatPods = pods => Future((rej, res) => {
     const ids = R.compose(
       R.map(x => x.id),
       R.map(x => x.toJSON())

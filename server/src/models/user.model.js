@@ -23,18 +23,18 @@ export default function defineUser(sequelize) {
     }
   })
   UserSchema.beforeCreate(user => {
-    return new Promise((res, rej) => {
+    return new Promise((resolve, reject) => {
       bcrypt.genSalt(10, (err, salt) => {
         if (err) {
           console.error('Error while executing genSalt!')
-          return rej(err)
+          return reject(err)
         }
         bcrypt.hash(user.password, salt, undefined, (err, hash) => {
           if (err) {
             console.error('Error while exeucing password hash!')
           }
           user.password = hash
-          return res(null)
+          return resolve(null)
         })
       })
     })

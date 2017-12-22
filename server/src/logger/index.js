@@ -6,39 +6,40 @@ import tracer from 'tracer'
 
 class SourceMapManager {
   static sourceMapCache = new Map()
-  static getOriginalLineFor (pathToJsFile, line, col) {
-    let sourceMapFile = pathToJsFile + '.map'
+  static getOriginalLineFor(pathToJsFile, line, col) {
+    const sourceMapFile = pathToJsFile + '.map'
     let sourceMapAsJson = SourceMapManager.sourceMapCache.get(sourceMapFile)
     if (!sourceMapAsJson) {
       try {
         sourceMapAsJson = fs.readJsonSync(sourceMapFile)
         SourceMapManager.sourceMapCache.set(sourceMapFile, sourceMapAsJson)
-      } catch (e) {
+      } catch (err) {
+        // console.error('Failed to get logging file sourcemap', err)
         return null
       }
     }
 
-    let smc = new sourceMap.SourceMapConsumer(sourceMapAsJson)
+    const smc = new sourceMap.SourceMapConsumer(sourceMapAsJson)
     return smc.originalPositionFor({
-      column: +col,
-      line: +line
+      column: Number(col),
+      line: Number(line)
     })
   }
 }
 
-let logger = tracer.console(
+const logger = tracer.console(
   {
     dateformat: 'HH:MM:ss',
-    format : [
+    format: [
       '{{timestamp}} {{icon}} {{message}} (in {{method}}@{{file}}:{{line}})',
       {
         error: '{{timestamp}} {{icon}} {{message}} (in {{method}}@{{file}}:{{line}})\nCall Stack:\n{{stack}}',
         info: '{{timestamp}} {{icon}} {{message}} (in {{method}}@{{file}}:{{line}})'
       }
     ],
-    preprocess: (data) => {
+    preprocess: data => {
       if (data.title === 'info') {
-        const { args } = data
+        const {args} = data
         const head = R.propOr('', '0', args)
         if (R.test(/^init:/gi, head)) {
           data.icon = chalk.yellow('👶')
@@ -54,14 +55,14 @@ let logger = tracer.console(
       } else {
         data.icon = chalk.red('✖')
       }
-      let originalLoc = SourceMapManager.getOriginalLineFor(data.path, data.line, data.pos)
+      const originalLoc = SourceMapManager.getOriginalLineFor(data.path, data.line, data.pos)
       if (originalLoc) {
         data.line = originalLoc.line || data.line
         data.method = originalLoc.name || data.method
 
         if (originalLoc.source) {
-          let paths = originalLoc.source.split('/')
-          let filteredPaths = paths.filter((path) => {
+          const paths = originalLoc.source.split('/')
+          const filteredPaths = paths.filter(path => {
             return path !== '..'
           })
           data.file = filteredPaths.join('/')
@@ -71,4 +72,4 @@ let logger = tracer.console(
   }
 )
 
-export { logger }
+export default logger

@@ -1,7 +1,7 @@
 'use strict'
 
 module.exports = {
-  up: (queryInterface, Sequelize) => {
+  up: (queryInterface) => {
     return queryInterface.bulkInsert(
       'Pipelines',
       [{
@@ -45,14 +45,14 @@ module.exports = {
           }
         ]),
         edges: JSON.stringify([
-          { from: 1, to: 3 },
-          { from: 1, to: 4 },
-          { from: 1, to: 6 },
-          { from: 2, to: 3 },
-          { from: 4, to: 5 }
+          {from: 1, to: 3},
+          {from: 1, to: 4},
+          {from: 1, to: 6},
+          {from: 2, to: 3},
+          {from: 4, to: 5}
         ])
         /*
-        sequence: JSON.stringify({
+        Sequence: JSON.stringify({
           webhook: {
             id: 1,
             podName: 'biphub-pod-fake1',
