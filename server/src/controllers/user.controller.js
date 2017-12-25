@@ -59,8 +59,10 @@ export const getSignup = (req, res) => {
 
 export const postSignup = (req, res, next) => {
   req.assert('email', 'Email is not valid').isEmail()
-  req.assert('password', 'Password must be at least 4 characters long').len({min: 4})
-  req.assert('confirmPassword', 'Passwords do not match').equals(req.body.password)
+  req.assert('password', 'Password must be at least 4 characters long')
+    .len({min: 4})
+  req.assert('confirmPassword', 'Passwords do not match')
+    .equals(req.body.password)
   req.sanitize('email').normalizeEmail({
     gmail_remove_dots: false
   })
@@ -120,7 +122,8 @@ export const postUpdateProfile = (req, res, next) => {
     user.save(err => {
       if (err) {
         if (err.code === 11000) {
-          req.flash('errors', {msg: 'The email address you have entered is already associated with an account.'})
+          req.flash('errors', {msg: `The email address you have entered is
+           already associated with an account.`})
           return res.redirect('/account')
         }
         return next(err)
@@ -132,8 +135,10 @@ export const postUpdateProfile = (req, res, next) => {
 }
 
 export const postUpdatePassword = (req, res, next) => {
-  req.assert('password', 'Password must be at least 4 characters long').len({min: 4})
-  req.assert('confirmPassword', 'Passwords do not match').equals(req.body.password)
+  req.assert('password', 'Password must be at least 4 characters long')
+    .len({min: 4})
+  req.assert('confirmPassword', 'Passwords do not match')
+    .equals(req.body.password)
 
   const errors = req.validationErrors()
 
@@ -198,7 +203,8 @@ export const getReset = (req, res, next) => {
         return next(err)
       }
       if (!user) {
-        req.flash('errors', {msg: 'Password reset token is invalid or has expired.'})
+        req.flash('errors', {msg: `Password reset token is invalid or
+         has expired.`})
         return res.redirect('/forgot')
       }
       res.render('account/reset', {
@@ -208,7 +214,8 @@ export const getReset = (req, res, next) => {
 }
 
 export const postReset = (req, res, next) => {
-  req.assert('password', 'Password must be at least 4 characters long.').len({min: 4})
+  req.assert('password', 'Password must be at least 4 characters long.')
+    .len({min: 4})
   req.assert('confirm', 'Passwords must match.').equals(req.body.password)
 
   const errors = req.validationErrors()
@@ -219,7 +226,7 @@ export const postReset = (req, res, next) => {
   }
 
   async.waterfall([
-    (done) => {
+    done => {
       models.User
         .findOne({passwordResetToken: req.params.token})
         .where('passwordResetExpires').gt(Date.now())
@@ -228,7 +235,8 @@ export const postReset = (req, res, next) => {
             return next(err)
           }
           if (!user) {
-            req.flash('errors', {msg: 'Password reset token is invalid or has expired.'})
+            req.flash('errors', {msg: `Password reset token is invalid or
+             has expired.`})
             return res.redirect('back')
           }
           user.password = req.body.password
@@ -256,10 +264,12 @@ export const postReset = (req, res, next) => {
         to: user.email,
         from: 'express-ts@starter.com',
         subject: 'Your password has been changed',
-        text: `Hello,\n\nThis is a confirmation that the password for your account ${user.email} has just been changed.\n`
+        text: `Hello,\n\nThis is a confirmation that the password
+         for your account ${user.email} has just been changed.\n`
       }
       transporter.sendMail(mailOptions, err => {
-        req.flash('success', {msg: 'Success! Your password has been changed.'})
+        req.flash('success', {msg: `Success! Your password has been
+         changed.`})
         done(err)
       })
     }
@@ -292,7 +302,7 @@ export const postForgot = (req, res, next) => {
   }
 
   async.waterfall([
-    (done) => {
+    done => {
       crypto.randomBytes(16, (err, buf) => {
         const token = buf.toString('hex')
         done(err, token)
@@ -304,7 +314,8 @@ export const postForgot = (req, res, next) => {
           return done(err)
         }
         if (!user) {
-          req.flash('errors', {msg: 'Account with that email address does not exist.'})
+          req.flash('errors', {msg: `Account with that email address does
+           not exist.`})
           return res.redirect('/forgot')
         }
         user.passwordResetToken = token
@@ -326,13 +337,17 @@ export const postForgot = (req, res, next) => {
         to: user.email,
         from: 'hackathon@starter.com',
         subject: 'Reset your password on Hackathon Starter',
-        text: `You are receiving this email because you (or someone else) have requested the reset of the password for your account.\n\n
-          Please click on the following link, or paste this into your browser to complete the process:\n\n
+        text: `You are receiving this email because you (or someone else)
+          have requested the reset of the password for your account.\n\n
+          Please click on the following link, or paste this into your
+          browser to complete the process:\n\n
           http://${req.headers.host}/reset/${token}\n\n
-          If you did not request this, please ignore this email and your password will remain unchanged.\n`
+          If you did not request this, please ignore this email and your
+          password will remain unchanged.\n`
       }
       transporter.sendMail(mailOptions, err => {
-        req.flash('info', {msg: `An e-mail has been sent to ${user.email} with further instructions.`})
+        req.flash('info', {msg: `An e-mail has been sent to ${user.email}
+         with further instructions.`})
         done(err)
       })
     }

@@ -24,6 +24,9 @@
       "title": "Post to Channel",
       "description": "Posts a Message to a Channel",
       "trigger": "invoke",
+      "styles": {
+        "background-color": "#3b579d"
+      },
       "config": {
         "properties": {
           "channel": {

@@ -1,6 +1,3 @@
-/**
- * General utilities required for node pods to node hub integration
- */
 import fs from 'fs'
 import path from 'path'
 import R from 'ramda'
@@ -8,7 +5,7 @@ import appRoot from 'app-root-path'
 import requireAll from 'require-all'
 import changeCase from 'change-case'
 import fluture from 'fluture'
-import {logger} from '../logger'
+import logger from '../logger'
 
 const pods = requireAll(path.join(__dirname, '/../../pods'))
 
@@ -55,21 +52,23 @@ export const getAllManifests = () => {
   return getManifests(pods)
 }
 
-export const invokeAction2 = (podName, actionName, attributes) => Future((rej, res) => {
-  const podMethod = R.pathOr(null, [podName, 'index', actionName], pods)
-  if (podMethod && podMethod.then) {
-    return podMethod(attributes)
-      .then(res)
-      .catch(rej)
-  } else if (typeof podMethod === 'function') {
-    const results = podMethod(attributes)
-    if (results) {
-      return res(results)
+export const invokeAction2 = (podName, actionName, attributes) =>
+  Future((rej, res) => {
+    const podMethod = R.pathOr(null, [podName, 'index', actionName], pods)
+    if (podMethod && podMethod.then) {
+      return podMethod(attributes)
+        .then(res)
+        .catch(rej)
+    } else if (typeof podMethod === 'function') {
+      const results = podMethod(attributes)
+      if (results) {
+        return res(results)
+      }
+      return rej(`Failed to invoke a pod method
+       ${actionName} of ${podName}`)
     }
-    return rej(`Failed to invoke a pod method ${actionName} of ${podName}`)
-  }
-  return rej(`Invalid pod method ${actionName} of ${podName} found`)
-})
+    return rej(`Invalid pod method ${actionName} of ${podName} found`)
+  })
 
 /**
  * Invoke a pod's action by podname and actionName
@@ -77,27 +76,36 @@ export const invokeAction2 = (podName, actionName, attributes) => Future((rej, r
  * @param {string} actionName
  * @param initialPayload
  */
-export const invokeAction = (podName, actionName, initialPayload) => Future((rej, res) => {
-  // NOTE: skipping webhook, poll, and etc happens here!
-  if (actionName === 'webhook') {
-    // We don't have to invoke any action of type "webhook"
-    logger.info('Checking webhook action ', initialPayload)
-    return res(initialPayload)
-  }
-  const env = process.env.NODE_ENV
-  const camelActionName = changeCase.camelCase(actionName)
-  if (env === 'development' || env === 'test') {
-    const stagingPodMethod = R.pathOr(null, [podName, 'index', camelActionName], pods)
-    // If found method is a promise
-    if (stagingPodMethod) {
-      stagingPodMethod({text: 'lol'})
-        .then(result => {
-          console.info('podMethod was successfully invoked', camelActionName, 'result of podMethod', result)
-          res(result)
-        })
-        .catch(err => rej(err))
-    } else {
-      rej(new Error(`Pod method does not exist ${podName} of ${camelActionName}`))
+export const invokeAction = (podName, actionName, initialPayload) =>
+  Future((rej, res) => {
+    // NOTE: skipping webhook, poll, and etc happens here!
+    if (actionName === 'webhook') {
+      // We don't have to invoke any action of type "webhook"
+      logger.info('Checking webhook action ', initialPayload)
+      return res(initialPayload)
     }
-  }
-})
+    const env = process.env.NODE_ENV
+    const camelActionName = changeCase.camelCase(actionName)
+    if (env === 'development' || env === 'test') {
+      const stagingPodMethod = R.pathOr(
+        null,
+        [podName, 'index', camelActionName],
+        pods
+      )
+      // If found method is a promise
+      if (stagingPodMethod) {
+        stagingPodMethod({text: 'lol'})
+          .then(result => {
+            console.info(`podMethod was successfully invoked
+             ${camelActionName} result of podMethod ${result}`)
+            res(result)
+          })
+          .catch(err => rej(err))
+      } else {
+        rej(
+          new Error(`Pod method does not exist
+           ${podName} of ${camelActionName}`)
+        )
+      }
+    }
+  })

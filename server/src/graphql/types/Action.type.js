@@ -22,6 +22,14 @@ export const ActionType = new GraphQLObjectType({
         type: GraphQLString,
         resolve: x => x.get('title')
       },
+      description: {
+        type: GraphQLString,
+        resolve: x => x.get('description')
+      },
+      styles: {
+        type: GraphQLJSON,
+        resolve: x => x.get('styles')
+      },
       trigger: {
         type: GraphQLString,
         resolve: x => x.get('trigger')

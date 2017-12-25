@@ -8,7 +8,7 @@ export const SETUP_TEMPLATES = 'setupTemplates'
 
 export default {
   theme: 'default',
-
+  defaultCardBg: 'rgb(59, 87, 157)',
   STEP_EVENT: [
     { name: CHOOSE_POD, title: 'Choose Pod' },
     { name: CHOOSE_EVENT, title: 'Choose Event' },

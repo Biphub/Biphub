@@ -2,8 +2,9 @@
 const fs = require('fs')
 const path = require('path')
 const R = require('ramda')
+
 module.exports = {
-  up: (queryInterface) => {
+  up: queryInterface => {
     // Split sql query by newlines and compose raw sqls
     const getRawQueries = R.compose(
       sql => R.map(x => queryInterface.sequelize.query(x), sql),
@@ -16,7 +17,7 @@ module.exports = {
     console.log(rqs)
     return Promise.all(rqs)
   },
-  down: (queryInterface) => {
+  down: queryInterface => {
     return queryInterface.dropTable('Pods')
   }
 }

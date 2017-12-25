@@ -9,6 +9,7 @@ import GraphQLJSON from 'graphql-type-json'
 import { ActionType } from './Action.type'
 
 import {models} from '../../models'
+import R from "ramda";
 
 export const PodType = new GraphQLObjectType({
   name: 'Pod',
@@ -58,14 +59,24 @@ export const PodType = new GraphQLObjectType({
 export const PodList = {
   type: new GraphQLList(PodType),
   args: {
-    test: {
+    id: {
       type: GraphQLInt
     }
   },
   resolve(root, args) {
+    const id = R.prop('id', args)
     const newArgs = merge(args, {
       include: [models.Action]
     })
+    console.log('checking id ', id)
+    if (id) {
+      const argsWithId = merge(newArgs, {
+        where: {
+          id: id
+        }
+      })
+      return models.Pod.findAll(argsWithId)
+    }
     return models.Pod.findAll(newArgs)
   }
 }

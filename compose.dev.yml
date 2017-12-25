@@ -1,15 +1,6 @@
 version: "3"
 
 services:
-  db:
-    image: postgres
-    restart: always
-    environment:
-      POSTGRES_USER: biphub
-      POSTGRES_DB: biphub
-      POSTGRES_PASSWORD: password
-    ports:
-      - "5432:5432"
   nginx:
     image: nginx
     build:
@@ -42,8 +33,6 @@ services:
       - SEQUELIZE_LOGGING=false
     ports:
       - "3000:3000"
-    depends_on:
-      - db
   frontend:
     image: client
     container_name: biphub_frontend

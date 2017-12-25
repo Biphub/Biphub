@@ -2,6 +2,8 @@ import 'babel-polyfill'
 import {start} from './server'
 const PrettyError = require('pretty-error')
 
+require('source-map-support').install()
+
 const env = process.env.NODE_ENV
 // Pretty error
 if (env === 'development' || env === 'test') {

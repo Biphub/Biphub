@@ -22,7 +22,11 @@ class Database {
           acquire: 30000,
           idle: 10000
         },
-        storage: process.env.DB_TYPE === 'sqlite' ? 'database.sqlite' : null
+        storage: (
+          process.env.DB_TYPE === 'sqlite'
+            ? 'database.sqlite'
+            : null
+        )
       }
     )
 

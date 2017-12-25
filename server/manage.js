@@ -12,7 +12,7 @@ program
   .command('install <podName>')
   .alias('i')
   .description('Command to install a pod')
-  .action(function(env, options) {
+  .action((env, options) => {
     console.log('migrate!!', env, ' ', options)
   })
 
@@ -20,9 +20,9 @@ program
   .command('installAll')
   .alias('ia')
   .description('Command to install all pods in the current directory')
-  .action(function(env, options) {
+  .action(() => {
     podPao.installPods(null).fork(
-      (e) => {
+      e => {
         console.error('Install all pods failed!', e)
       },
       () => {
@@ -37,7 +37,8 @@ program
   .action((env, options) => {
     const [pod, action] = R.split('.', env)
     if (!pod || !action) {
-      throw new Error('Invalid pod or action name! Please pass it in like slack.postMessage')
+      throw new Error(`Invalid pod or action name!
+       Please pass it in like slack.postMessage`)
     }
     // Check if pod name does not start with biphub-pod
     // else prepend it to pod variable
@@ -60,7 +61,7 @@ program
   .command('uninstallAll')
   .alias('ua')
   .description('Command to uninstall all installed pods')
-  .action(function(env, options) {
+  .action(() => {
     podPao.uninstallPods().fork(
       console.error,
       console.info
@@ -69,7 +70,7 @@ program
 
 program
   .command('*')
-  .action(function(env){
+  .action(env => {
     console.error(`Command ${env} was not found!`)
   })
 

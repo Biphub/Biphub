@@ -29,7 +29,10 @@ export const findAllPipelines = entryApp => Future((rej, res) => {
   })
     .then(pipelines => {
       if (R.isEmpty(pipelines)) {
-        logger.error('Could not retrieve any pipelines of ', entryApp, 'did you run seeding?')
+        logger.error(
+          `Could not retrieve any pipelines of 
+          ${entryApp}, did you run node manage installAll?`
+        )
         return rej()
       }
       res(pipelines)

@@ -4,7 +4,6 @@ require('babel-polyfill')
 const fs = require('fs')
 const path = require('path')
 const child_process = require('child_process')
-const Promise = require('bluebird')
 const Sequelize = require('sequelize')
 const Umzug = require('umzug')
 const models = require('./src/models')
@@ -31,66 +30,69 @@ const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASS, {
 const umzug = new Umzug({
   storage: 'sequelize',
   storageOptions: {
-    sequelize: sequelize
+    sequelize
   },
   migrations: {
     params: [
       sequelize.getQueryInterface(),
       sequelize.constructor,
-      function() {
-        throw new Error('Migration tried to use old style "done" callback. Please upgrade to "umzug" and return a promise instead.');
+      function () {
+        throw new Error(
+          `Migration tried to use old style "done" callback. Please
+           upgrade to "umzug" and return a promise instead.`
+        )
       }
     ],
     path: './src/migrations',
-    pattern: /\.js$/,
+    pattern: /\.js$/
   },
-  logging: function() {
+  logging() {
     console.log.apply(null, arguments)
   }
 })
 
-
 function logUmzugEvent(eventName) {
-  return function(name, migration) {
-    console.log(`${ name } ${ eventName }`);
+  return function (name) {
+    console.log(`${name} ${eventName}`)
   }
 }
-umzug.on('migrating', logUmzugEvent('migrating'));
-umzug.on('migrated',  logUmzugEvent('migrated'));
-umzug.on('reverting', logUmzugEvent('reverting'));
-umzug.on('reverted',  logUmzugEvent('reverted'));
+umzug.on('migrating', logUmzugEvent('migrating'))
+umzug.on('migrated', logUmzugEvent('migrated'))
+umzug.on('reverting', logUmzugEvent('reverting'))
+umzug.on('reverted', logUmzugEvent('reverted'))
 
 function cmdStatus() {
-  let result = {};
+  const result = {}
 
   return umzug.executed()
     .then(executed => {
-      result.executed = executed;
-      return umzug.pending();
+      result.executed = executed
+      return umzug.pending()
     }).then(pending => {
-      result.pending = pending;
-      return result;
-    }).then(({ executed, pending }) => {
-
+      result.pending = pending
+      return result
+    }).then(({executed, pending}) => {
       executed = executed.map(m => {
-        m.name = path.basename(m.file, '.js');
-        return m;
-      });
+        m.name = path.basename(m.file, '.js')
+        return m
+      })
       pending = pending.map(m => {
-        m.name = path.basename(m.file, '.js');
-        return m;
-      });
+        m.name = path.basename(m.file, '.js')
+        return m
+      })
 
-      const current = executed.length > 0 ? executed[0].file : '<NO_MIGRATIONS>';
+      const current = executed.length > 0 ?
+        executed[0].file :
+        '<NO_MIGRATIONS>'
       const status = {
-        current: current,
+        current,
         executed: executed.map(m => m.file),
-        pending: pending.map(m => m.file),
+        pending: pending.map(m => m.file)
       }
 
       console.log(JSON.stringify(status, null, 2))
 
-      return { executed, pending };
+      return {executed, pending}
     })
 }
 
@@ -98,13 +100,13 @@ function cmdStatus() {
  * Create initial sql for init table migration
  */
 function cmdInit() {
-  let sqlLines = []
-  models.sequelize.sync({
+  const sqlLines = []
+  return models.sequelize.sync({
     force: true,
-    logging: (message) => {
+    logging: message => {
       let line = message.replace('Executing (default): ', '').trim()
       if (line.substr(-1) !== ';') {
-        line += ';';
+        line += ';'
       }
       sqlLines.push(line)
     }
@@ -115,32 +117,32 @@ function cmdInit() {
 }
 
 function cmdMigrate() {
-  return umzug.up();
+  return umzug.up()
 }
 
 function cmdMigrateNext() {
   return cmdStatus()
-    .then(({ executed, pending }) => {
+    .then(({pending}) => {
       if (pending.length === 0) {
-        return Promise.reject(new Error('No pending migrations'));
+        return Promise.reject(new Error('No pending migrations'))
       }
-      const next = pending[0].name;
-      return umzug.up({ to: next });
+      const next = pending[0].name
+      return umzug.up({to: next})
     })
 }
 
 function cmdReset() {
-  return umzug.down({ to: 0 });
+  return umzug.down({to: 0})
 }
 
 function cmdResetPrev() {
   return cmdStatus()
-    .then(({ executed, pending }) => {
+    .then(({executed}) => {
       if (executed.length === 0) {
-        return Promise.reject(new Error('Already at initial state'));
+        return Promise.reject(new Error('Already at initial state'))
       }
-      const prev = executed[executed.length - 1].name;
-      return umzug.down({ to: prev });
+      const prev = executed[executed.length - 1].name
+      return umzug.down({to: prev})
     })
 }
 
@@ -148,77 +150,80 @@ function cmdHardReset() {
   return new Promise((resolve, reject) => {
     setImmediate(() => {
       try {
-        console.log(`dropdb ${ DB_NAME }`);
-        child_process.spawnSync(`dropdb ${ DB_NAME }`);
-        console.log(`createdb ${ DB_NAME } --username ${ DB_USER }`);
-        child_process.spawnSync(`createdb ${ DB_NAME } --username ${ DB_USER }`);
-        resolve();
-      } catch (e) {
-        console.log(e);
-        reject(e);
+        console.log(`dropdb ${DB_NAME}`)
+        child_process.spawnSync(`dropdb ${DB_NAME}`)
+        console.log(`createdb ${DB_NAME} --username ${DB_USER}`)
+        child_process.spawnSync(
+          `createdb ${DB_NAME} --username ${DB_USER}`
+        )
+        resolve()
+      } catch (err) {
+        console.log(err)
+        reject(err)
       }
-    });
-  });
+    })
+  })
 }
 
-const cmd = process.argv[2].trim();
-let executedCmd;
+const cmd = process.argv[2].trim()
+let executedCmd
 
-console.log(`${ cmd.toUpperCase() } BEGIN`);
-switch(cmd) {
+console.log(`${cmd.toUpperCase()} BEGIN`)
+switch (cmd) {
   case 'status':
-    executedCmd = cmdStatus();
-    break;
+    executedCmd = cmdStatus()
+    break
 
   case 'init':
     executedCmd = cmdInit()
+    break
 
   case 'up':
   case 'migrate':
-    executedCmd = cmdMigrate();
-    break;
+    executedCmd = cmdMigrate()
+    break
 
   case 'next':
   case 'migrate-next':
-    executedCmd = cmdMigrateNext();
-    break;
+    executedCmd = cmdMigrateNext()
+    break
 
   case 'down':
   case 'reset':
-    executedCmd = cmdReset();
-    break;
+    executedCmd = cmdReset()
+    break
 
   case 'prev':
   case 'reset-prev':
-    executedCmd = cmdResetPrev();
-    break;
+    executedCmd = cmdResetPrev()
+    break
 
   case 'reset-hard':
-    executedCmd = cmdHardReset();
-    break;
+    executedCmd = cmdHardReset()
+    break
 
   default:
-    console.log(`invalid cmd: ${ cmd }`);
-    process.exit(1);
+    console.log(`invalid cmd: ${cmd}`)
+    process.exit(1)
 }
 
 executedCmd
-  .then((result) => {
-    const doneStr = `${ cmd.toUpperCase() } DONE`;
-    console.log(doneStr);
-    console.log("=".repeat(doneStr.length));
+  .then(() => {
+    const doneStr = `${cmd.toUpperCase()} DONE`
+    console.log(doneStr)
+    console.log('='.repeat(doneStr.length))
   })
   .catch(err => {
-    const errorStr = `${ cmd.toUpperCase() } ERROR`;
-    console.log(errorStr);
-    console.log("=".repeat(errorStr.length));
-    console.log(err);
-    console.log("=".repeat(errorStr.length));
+    const errorStr = `${cmd.toUpperCase()} ERROR`
+    console.log(errorStr)
+    console.log('='.repeat(errorStr.length))
+    console.log(err)
+    console.log('='.repeat(errorStr.length))
   })
   .then(() => {
     if (cmd !== 'status' && cmd !== 'reset-hard') {
       return cmdStatus()
     }
-    return Promise.resolve();
+    return Promise.resolve()
   })
   .then(() => process.exit(0))

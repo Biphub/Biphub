@@ -12,9 +12,12 @@ export default function defineUser(sequelize) {
     description: Sequelize.STRING,
     /** Reference to action's documentation. Typically an URL. */
     docRef: Sequelize.STRING,
+    /** Stores styles JSON data */
+    styles: Sequelize.JSONB,
     /** Type of trigger */
     trigger: Sequelize.ENUM('webhook', 'invoke', 'poll'),
-    /** Inputs required to execute the action. Webhook and poll do not require this */
+    /** Inputs required to execute the action.
+        Webhook and poll do not require this */
     imports: Sequelize.JSONB,
     /** Output format after executing the action */
     exports: Sequelize.JSONB

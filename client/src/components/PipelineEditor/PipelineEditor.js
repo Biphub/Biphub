@@ -1,7 +1,7 @@
-import * as R from 'ramda'
 import React, { Component } from 'react'
 import styled from 'styled-components'
 import PodCardList from '../../components/PodCardList'
+import ActionCardList from '../../components/ActionCardList'
 import { CHOOSE_POD, CHOOSE_EVENT } from '../../settings'
 
 const Container = styled.div`
@@ -17,7 +17,14 @@ class PipelineEditor extends Component {
    * @private
    */
   _renderEditor = () => {
-    const { allPods, index, type, step } = this.props
+    const {
+      allPods,
+      selectedPod,
+      allActions,
+      index,
+      type,
+      step
+    } = this.props
     if (step === CHOOSE_POD) {
       return (
         <PodCardList
@@ -27,7 +34,11 @@ class PipelineEditor extends Component {
       )
     } else if (step === CHOOSE_EVENT) {
       return (
-        <div>Pick an event</div>
+        <ActionCardList
+          pod={selectedPod}
+          allActions={allActions}
+          onClick={(id) => console.log('clicked an action ', id)}
+        />
       )
     }
   }

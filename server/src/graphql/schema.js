@@ -12,12 +12,6 @@ const Query = new GraphQLObjectType({
   name: 'Query',
   description: 'Root query object',
   fields: {
-    hello: {
-      type: GraphQLString,
-      resolve() {
-        return 'test test'
-      }
-    },
     host: {
       type: GraphQLString,
       resolve(x, y, req) {

@@ -1,11 +1,11 @@
 import R from 'ramda'
-import {logger} from '../logger'
+import logger from '../logger'
 
 /**
  * GET /webhooks*
  * List of API examples.
  */
-export const postWebhooks = (req, res) => {
+const postWebhooks = (req, res) => {
   const getPathComponents = R.memoize(R.compose(
     comps => ({
       root: comps[0],
@@ -19,7 +19,10 @@ export const postWebhooks = (req, res) => {
   const name = R.propOr(null, 'pod', getPathComponents(req.path))
   const body = R.propOr(null, 'body', req)
   if (!name || !body) {
-    logger.error('Incorrect approach to webhook endpoint name:', name, 'body:', body)
+    logger.error(
+      'Incorrect approach to webhook endpoint name:',
+      name, 'body:', body
+    )
     return res.json({
       ok: false
     })
@@ -34,4 +37,8 @@ export const postWebhooks = (req, res) => {
       result
     })
   })
+}
+
+export default {
+  postWebhooks
 }

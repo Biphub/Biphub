@@ -5,10 +5,8 @@ import { graphql, withApollo } from 'react-apollo'
 import gql from 'graphql-tag'
 import PipelineEditor from '../../components/PipelineEditor'
 import PipelineSteps from '../../components/PipelineSteps'
-import {
-
-} from '../../settings'
 import settings from '../../settings'
+import ACTION_QUERY from '../../graphql/ActionsByPodQuery'
 const mapIndexed = R.addIndex(R.map)
 
 const _Page = styled.div`
@@ -30,16 +28,6 @@ const _EditorContent = styled.div`
   overflow-y: scroll;
 `
 
-const SearchActionsByPodQuery = gql`
-  query ActionsByPod($id: Int) {
-      allActions(podId: $id) {
-        id
-        title
-        trigger
-      }
-    }
-`
-
 class PipelinePage extends Component {
   state = {
     numberOfActions: 1,
@@ -50,7 +38,10 @@ class PipelinePage extends Component {
       step: 'choosePod'
     },
     // Stores values
-    steps: []
+    steps: [],
+    // Current states
+    selectedPod: {},
+    allActions: [],
   }
   componentWillMount() {
     const steps = this._initSteps(this.state.numberOfActions + 1)
@@ -152,14 +143,46 @@ class PipelinePage extends Component {
     })
   }
 
+  /**
+   * Clicking on a pod results in fetching
+   * actions by pod id
+   * @param index
+   * @param type
+   * @param step
+   * @param id
+   * @private
+   */
   _onClickPodCard = (index, type, step, id) => {
+    this._fetchActionByPodId(index, type, step, id)
+  }
+  /**
+   * On click action
+   * @param index
+   * @param type
+   * @param step
+   * @param id
+   * @private
+   */
+  _onClickAction = (index, type, step, id) => {
+    console.log('checking click action ', index, type, step, id)
+  }
+  /**
+   * Fetches actions by pod id. It results in changing current navigation
+   * context
+   * @param index
+   * @param type
+   * @param step
+   * @param podId
+   * @private
+   */
+  _fetchActionByPodId = (index, type, step, podId) => {
     this.props.client.query({
-      query: SearchActionsByPodQuery,
+      query: ACTION_QUERY,
       variables: {
-        id
+        podId
       }
     }).then((res) => {
-      const stepData = this._setStep(index, step, id)
+      const stepData = this._setStep(index, step, podId)
       const nextStep = this._getNextStep(index, type, step)
       this.setState({
         activeStep: {
@@ -169,9 +192,15 @@ class PipelinePage extends Component {
         },
         step: stepData
       }, () => {
-        const { activeStep, step } = this.state
-        console.log('checking active step after ss', activeStep)
-        console.log('checking step value ', step)
+        const podPath = R.lensPath(['data', 'allPods'])
+        const actionsPath = R.lensPath(['data', 'allActions'])
+        const selectedPod = R.view(podPath, res)
+        const allActions = R.view(actionsPath, res)
+        console.log('checking selected pod ', selectedPod)
+        this.setState({
+          selectedPod,
+          allActions
+        })
       })
     })
   }
@@ -188,8 +217,16 @@ class PipelinePage extends Component {
     })
   }
   render() {
-    const { activeStep, numberOfActions } = this.state
-    const { allPods = [] } = this.props.data
+    const {
+      activeStep,
+      numberOfActions,
+      allActions = [],
+      selectedPod = {},
+    } = this.state
+    const {
+      allPods = [],
+    } = this.props.data
+    console.log('rendering selected pod ', selectedPod)
     return (
       <_Page>
         <PipelineSteps
@@ -201,10 +238,13 @@ class PipelinePage extends Component {
           <_EditorContent>
             <PipelineEditor
               allPods={allPods}
+              selectedPod={selectedPod}
+              allActions={allActions}
               index={activeStep.index}
               type={activeStep.type}
               step={activeStep.step}
               onClickPodCard={this._onClickPodCard}
+              onClickAction={this._onClickAction}
             />
           </_EditorContent>
         </_Editor>
@@ -214,14 +254,14 @@ class PipelinePage extends Component {
 }
 
 const PipelinePageQuery = gql`
-    query {
-        allPods {
-            id
-            title
-            icon
-            styles
-        }
+  query {
+    allPods {
+      id
+      title
+      icon
+      styles
     }
+  }
 `
 
 const ApolloPipelinePage = withApollo(PipelinePage)

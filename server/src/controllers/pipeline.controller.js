@@ -19,7 +19,7 @@ export default (req, res) => {
         console.error('failed to create a pipeline ', e)
         throw e
       },
-      pipeline => {
+      () => {
         return res.json({
           test: 1
         })

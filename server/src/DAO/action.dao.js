@@ -1,5 +1,6 @@
 /*
-Const createAction = (action: ActionInstance, pod: PodInstance) => Future((rej, res) => {
+Const createAction = (action: ActionInstance, pod: PodInstance)
+   => Future((rej, res) => {
   models.Action.create(action)
     .then((action: ActionModel) => {
       action.setPod(pod)
@@ -8,7 +9,8 @@ Const createAction = (action: ActionInstance, pod: PodInstance) => Future((rej, 
     .catch(rej)
 })
 
-const createManyActions = (data: JSON, pod: PodInstance) => Future((rej, res) => {
+const createManyActions = (data: JSON, pod: PodInstance) =>
+ Future((rej, res) => {
   const formatActions = R.compose(
     ({ keys, x }) => {
       return R.reduce((acc, key: string) => {

@@ -2,7 +2,7 @@ import R from 'ramda'
 import fluture from 'fluture'
 import logger from '../logger'
 import {findAllPipelines, flattenSequence} from '../DAO/pipeline.dao'
-import * as nodeBridge from '../bridge/node2node'
+// import * as nodeBridge from '../bridge/node2node'
 
 const Future = fluture.Future
 /**
@@ -62,8 +62,10 @@ const processSequence = sequence => Future((rej, res) => {
 */
 /*
 const traverseFlatSequence = sequence => Future((rej, res) => {
-  // Sequence looks like [ { webhook: { podName: 'biphub-pod-fake1', graph: [Object], next: [Object] } } ]
-  // Technically it does not need traverse, but we will just receive it here as a backward compatibility
+  // Sequence looks like [ { webhook: { podName: 'biphub-pod-fake1',
+   g raph: [Object], next: [Object] } } ]
+  // Technically it does not need traverse, but we will
+  // just receive it here as a backward compatibility
   R.traverse(Future.of, processSequence, sequence)
     .fork(
       e => rej(e),
@@ -86,10 +88,12 @@ const flattenPipelines = pipelines => Future((rej, res) => {
   res(sequences)
 })
 
-const processPipeline = R.curry((initialPayload, pipeline) => Future((rej, res) => {
+const processPipeline = R.curry((initialPayload, pipeline) =>
+ Future((rej, res) => {
   const nodes = pipeline.nodes
   const edges = pipeline.edges
-  const flatEdgeIds = R.reduce((acc, edge) => R.concat(acc, [edge.from, edge.to]), [], edges)
+  const flatEdgeIds = R.reduce((acc, edge) => R.concat(acc,
+   [edge.from, edge.to]), [], edges)
   const getFutures = R.map(id => {
     return results => Future((frej, fres) => {
       results = results ? results : []
@@ -98,9 +102,11 @@ const processPipeline = R.curry((initialPayload, pipeline) => Future((rej, res) 
       const podName = R.propOr(null, 'podName', fromNode)
       // If either one of these is not provided, halt the process
       if (!actionName || !podName) {
-        return frej(new Error('Invalid node found in process pipeline. This is not permitted'))
+        return frej(new Error(`Invalid node found in process pipeline.
+         This is not permitted`))
       }
-      logger.info('Init: Task', podName, ':', actionName, ' checking init ', initialPayload)
+      logger.info('Init: Task', podName, ':', actionName,
+       ' checking init ', initialPayload)
       // Running action
       nodeBridge.invokeAction(podName, actionName, initialPayload).fork(
         err => {
@@ -127,13 +133,18 @@ const processPipeline = R.curry((initialPayload, pipeline) => Future((rej, res) 
   futures(null).fork(rej, res)
 }))
 */
-const traversePipelines = R.curry((initialPayload, pipelines) => Future((rej, res) => {
-  if (R.isEmpty(pipelines)) {
-    rej(new Error('Pipeline traverse failed because it is an empty list!'))
-  }
-  console.log('checking initial payload', initialPayload)
-  R.traverse(Future.of, processPipeline(initialPayload), pipelines).fork(rej, res)
-}))
+const traversePipelines = R.curry((initialPayload, pipelines) =>
+  Future((rej, res) => {
+    if (R.isEmpty(pipelines)) {
+      rej(
+        new Error('Pipeline traverse failed because it is an empty list!')
+      )
+    }
+    console.log('checking initial payload', initialPayload)
+    R.traverse(Future.of, processPipeline(initialPayload), pipelines)
+      .fork(rej, res)
+  })
+)
 
 /**
  * Execute single queue task
@@ -160,7 +171,8 @@ const executeTask = (task, cb) => {
         cb(e)
       },
       results => {
-        logger.info('End: Pipeline worker task has finished -', task.name, ' ', results)
+        logger.info('End: Pipeline worker task has finished -',
+          task.name, ' ', results)
         cb(results)
       }
     )

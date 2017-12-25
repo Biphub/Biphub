@@ -12,8 +12,8 @@
     "build:dev": "npx cross-env NODE_ENV=development gulp build",
     "start": "npx cross-env NODE_ENV=development nodemon -L --watch src --watch pods --watch gulpfile.babel.js --watch .env --exec \"gulp build && node\" ./dist/index.js",
     "test": "jest --forceExit",
-    "xo:lint": "npx xo src/**/*.js",
-    "xo:fix": "npx xo src/**/*.js --fix",
+    "xo:lint": "npx xo src/**/*.js ./manage.js ./migrate.js",
+    "xo:fix": "npx xo src/**/*.js ./manage.js ./migrate.js --fix",
     "sequelize": "npm run build:dev && npm run sequelize:clean && npm run sequelize:migrate && npm run sequelize:seed",
     "sequelize:clean": "node tools/sequelize/db_drop.js",
     "sequelize:migrate": "node ./migrate.js up",
@@ -30,7 +30,14 @@
         "never"
       ],
       "new-cap": 0,
-      "camelcase": 0
+      "camelcase": 0,
+      "max-len": [
+        "error",
+        {
+          "code": 74
+        }
+      ],
+      "import/no-unassigned-import": 0
     }
   },
   "jest": {
@@ -60,13 +67,16 @@
     "babel-plugin-transform-es2015-parameters": "^6.24.1",
     "babel-polyfill": "^6.26.0",
     "babel-preset-env": "^1.6.1",
+    "babel-register": "^6.26.0",
     "bcrypt-nodejs": "^0.0.3",
     "body-parser": "^1.18.2",
     "chalk": "^2.1.0",
     "change-case": "^3.0.1",
+    "commander": "^2.12.2",
     "compression": "^1.7.0",
     "connect-mongo": "^1.3.2",
     "cors": "^2.8.4",
+    "cross-env": "^5.1.3",
     "dotenv": "^2.0.0",
     "errorhandler": "^1.4.3",
     "express": "^4.15.4",
