@@ -26,8 +26,7 @@ manifest.json
 Example of StepScript
 
 Specs:
-- StepScript must be in JSON format
-- Start of the script always be in JSON Array format
+- StepScript must be in JSON array format
 
 ```
 [
@@ -44,6 +43,9 @@ Specs:
   },
   {
     // Parallel step
+    id: <uuid> or <user defined: unique within this StepScript>,
+    description: 'Description about the step',
+    tasks: [<uuid>, <uuid>] // these tasks will be executed in parallel. These ids must be visible immediately after this step
   }
 ]
 ```
