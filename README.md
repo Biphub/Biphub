@@ -32,7 +32,18 @@ Specs:
 ```
 [
   {
-
+    // Ordinary step
+    id: <uuid> or <user defined: unique within this StepScript>,
+    description: 'Description about the step',
+    trigger: 'event', // type of trigger <event|poll|invoke>. First step must be either event or poll
+    triggerId: <triggerId>,
+    options: {}, // any options
+    templates: {},
+    editing: <boolean>, // flag to tell if user is currently editing this step
+    lastEditingStep: <index>, // index of last editing step
+  },
+  {
+    // Parallel step
   }
 ]
 ```
