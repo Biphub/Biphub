@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import styled from 'styled-components'
 import PodCardList from '../../components/PodCardList'
 import ActionCardList from '../../components/ActionCardList'
+import StepScript from '../../StepScript'
 import { CHOOSE_POD, CHOOSE_EVENT } from '../../settings'
 
 const Container = styled.div`
@@ -18,6 +19,7 @@ class PipelineEditor extends Component {
    */
   _renderEditor = () => {
     const {
+      stepScript,
       allPods,
       selectedPod,
       allActions,
@@ -25,14 +27,17 @@ class PipelineEditor extends Component {
       type,
       step
     } = this.props
-    if (step === CHOOSE_POD) {
+    const [x, y] = stepScript.editing
+    const stepName = StepScript.getStepName(x, y)
+    console.log('checking step name', stepName)
+    if (stepName === CHOOSE_POD) {
       return (
         <PodCardList
           allPods={allPods}
-          onClick={(id) => this.props.onClickPodCard(index, type, step, id)}
+          onClick={(id) => this.props.onClickPodCard(x, id)}
         />
       )
-    } else if (step === CHOOSE_EVENT) {
+    } else if (stepName === CHOOSE_EVENT) {
       return (
         <ActionCardList
           pod={selectedPod}
@@ -42,6 +47,7 @@ class PipelineEditor extends Component {
       )
     }
   }
+
   render() {
     return (
       <Container>

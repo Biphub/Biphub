@@ -61,37 +61,36 @@ class PipelineSteps extends Component {
   }
   /**
    *
-   * @param givenIndex
-   * @param type = type to activate
-   * @param step = step to activate
+   * @param groupIndex
+   * @param stepIndex
    * @private
    */
-  _onStepClick = (givenIndex, type, step) => {
+  _onStepClick = (groupIndex, stepIndex) => {
     const { onChange } = this.props
-    onChange(givenIndex, type, step)
+    onChange(groupIndex, stepIndex)
   }
 
   /**
    * Render givenIndex steps from strings file
-   * @param givenIndex
+   * @param groupIndex
    * @param givenType = current steps type trigger | action
    * @param steps
    * @returns {XML}
    * @private
    */
-  _renderStep = (givenIndex, givenType, steps) => {
-    const { active } = this.props
-    const rendered = mapIndexed((x, index) => {
+  _renderStep = (groupIndex, givenType, steps) => {
+    const { stepScript } = this.props
+    const rendered = mapIndexed((x, stepIndex) => {
+      const [xGroupIndex, yStepIndex] = stepScript.editing
       if (
-        givenIndex === active.index &&
-        givenType === active.type &&
-        x.name === active.step
+        groupIndex === xGroupIndex &&
+        stepIndex === yStepIndex
       ) {
         return (
           <StepButtonActive
-            key={`${index}_${x.name}`}
+            key={`${groupIndex}_${stepIndex}_${x.name}`}
             onClick={
-              () => this._onStepClick(givenIndex, givenType, x.name)
+              () => this._onStepClick(groupIndex, stepIndex)
             }
           >
             <Icon type='pencil' />
@@ -101,8 +100,8 @@ class PipelineSteps extends Component {
       }
       return (
         <StepButtonInactive
-          key={`${index}_${x.name}`}
-          onClick={() => this._onStepClick(givenIndex, givenType, x.name)}
+          key={`${groupIndex}_${stepIndex}_${x.name}`}
+          onClick={() => this._onStepClick(groupIndex, stepIndex)}
         >
           <Icon type='lock' />
           <StepButtonLabel>{x.title}</StepButtonLabel>

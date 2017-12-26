@@ -1,12 +1,11 @@
 import * as R from 'ramda'
-import { getOr } from 'lodash/fp'
 import React, { Component }  from 'react'
 import styled from 'styled-components'
 import TextField from 'material-ui/TextField'
 import PodCard from '../PodCard'
 import theme from '../../theme'
 
-const SearchContainer = styled.div`
+const _SearchContainer = styled.div`
   width: 100%;
   height: 80px;
   display: flex;
@@ -15,7 +14,7 @@ const SearchContainer = styled.div`
   align-items: center;
 `
 
-const SearchText = styled(TextField)`
+const _SearchText = styled(TextField)`
   > div {
     box-sizing: border-box;
     border: 3px solid ${theme.tabActiveColor};
@@ -24,12 +23,12 @@ const SearchText = styled(TextField)`
   }
 `
 
-const Container = styled.div`
+const _Container = styled.div`
   display: flex;
   flex-direction: column;
 `
 
-const PodCardsContainer = styled.div`
+const _PodCardsContainer = styled.div`
   display: flex;
   flex-direction: row;
 `
@@ -59,6 +58,7 @@ class PodCardList extends Component {
     const {
       search
     } = this.state
+    const bgPath = R.lensPath(['styles', 'background-color'])
     // Build pod cards
     const getPodCards = R.compose(
       R.map(x => <PodCard
@@ -66,7 +66,7 @@ class PodCardList extends Component {
         name={x.title}
         id={x.id}
         icon={x.icon}
-        background={getOr(undefined, 'styles.background-color', x)}
+        background={R.view(bgPath, x)}
         onClick={this._onClickPodCard}
       />),
       R.filter((x) => {
@@ -81,9 +81,9 @@ class PodCardList extends Component {
     )
 
     return (
-      <Container>
-        <SearchContainer>
-          <SearchText
+      <_Container>
+        <_SearchContainer>
+          <_SearchText
             placeholder='Search a pod...'
             InputProps={{
               disableUnderline: true,
@@ -93,11 +93,11 @@ class PodCardList extends Component {
             }}
             onChange={this._onSearch}
           />
-        </SearchContainer>
-        <PodCardsContainer>
+        </_SearchContainer>
+        <_PodCardsContainer>
           {getPodCards(allPods)}
-        </PodCardsContainer>
-      </Container>
+        </_PodCardsContainer>
+      </_Container>
     )
   }
 }

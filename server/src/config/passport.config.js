@@ -1,7 +1,7 @@
 import passport from 'passport'
 // Import * as passportLocal from 'passport-local'
 // import * as passportFacebook from 'passport-facebook'
-import _ from 'lodash'
+// import _ from 'lodash'
 // Const LocalStrategy = passportLocal.Strategy
 // const FacebookStrategy = passportFacebook.Strategy
 
@@ -146,10 +146,11 @@ export const isAuthenticated = (req, res, next) => {
  */
 export const isAuthorized = (req, res, next) => {
   const provider = req.path.split('/').slice(-1)[0]
-
+  /*
   if (_.find(req.user.tokens, {kind: provider})) {
     next()
   } else {
     res.redirect(`/auth/${provider}`)
   }
+  */
 }

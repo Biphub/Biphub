@@ -6,6 +6,7 @@ import gql from 'graphql-tag'
 import PipelineEditor from '../../components/PipelineEditor'
 import PipelineSteps from '../../components/PipelineSteps'
 import settings from '../../settings'
+import StepScript from '../../StepScript'
 import ACTION_QUERY from '../../graphql/ActionsByPodQuery'
 const mapIndexed = R.addIndex(R.map)
 
@@ -32,6 +33,7 @@ class PipelinePage extends Component {
   state = {
     numberOfActions: 1,
     // Currently active step
+    stepScript: StepScript.init(),
     activeStep: {
       index: 0,
       type: 'event',
@@ -45,6 +47,7 @@ class PipelinePage extends Component {
   }
   componentWillMount() {
     const steps = this._initSteps(this.state.numberOfActions + 1)
+    console.log('checking stepscript ', this.state.stepScript)
     this.setState({ steps })
   }
 
@@ -146,14 +149,12 @@ class PipelinePage extends Component {
   /**
    * Clicking on a pod results in fetching
    * actions by pod id
-   * @param index
-   * @param type
-   * @param step
+   * @param groupIndex
    * @param id
    * @private
    */
-  _onClickPodCard = (index, type, step, id) => {
-    this._fetchActionByPodId(index, type, step, id)
+  _onClickPodCard = (groupIndex, id) => {
+    this._fetchActionByPodId(groupIndex, id)
   }
   /**
    * On click action
@@ -169,34 +170,36 @@ class PipelinePage extends Component {
   /**
    * Fetches actions by pod id. It results in changing current navigation
    * context
-   * @param index
-   * @param type
-   * @param step
+   * @param groupIndex
    * @param podId
    * @private
    */
-  _fetchActionByPodId = (index, type, step, podId) => {
+  _fetchActionByPodId = (groupIndex, podId) => {
     this.props.client.query({
       query: ACTION_QUERY,
       variables: {
         podId
       }
     }).then((res) => {
-      const stepData = this._setStep(index, step, podId)
-      const nextStep = this._getNextStep(index, type, step)
+      const { stepScript } = this.state
+      const newStepScript = R.compose(
+        x => StepScript.setNextStep(groupIndex, 0, x),
+        x => StepScript.setGroupValue(
+          groupIndex,
+          'podId',
+          podId,
+          x
+        )
+      )(stepScript)
+      // Setting stepscript
       this.setState({
-        activeStep: {
-          index: nextStep.index,
-          type: nextStep.type,
-          step: nextStep.step
-        },
-        step: stepData
+        stepScript: newStepScript
       }, () => {
         const podPath = R.lensPath(['data', 'allPods'])
         const actionsPath = R.lensPath(['data', 'allActions'])
         const selectedPod = R.view(podPath, res)
         const allActions = R.view(actionsPath, res)
-        console.log('checking selected pod ', selectedPod)
+        // Setting selected pod and allActions of the pod
         this.setState({
           selectedPod,
           allActions
@@ -205,15 +208,19 @@ class PipelinePage extends Component {
     })
   }
   /**
-   * Change currently active step
-   * @param index
-   * @param type
-   * @param step
+   * Change currently editing step
+   * @param groupIndex
+   * @param stepIndex
    * @private
    */
-  _onStepChange = (index, type, step) => {
+  _onStepChange = (groupIndex, stepIndex) => {
+    const { stepScript } = this.state
+    const newEdit = {
+      editing: [groupIndex, stepIndex]
+    }
+    const newScript = R.merge(stepScript, newEdit)
     this.setState({
-      activeStep: { index, type, step }
+      stepScript: newScript
     })
   }
   render() {
@@ -222,6 +229,7 @@ class PipelinePage extends Component {
       numberOfActions,
       allActions = [],
       selectedPod = {},
+      stepScript,
     } = this.state
     const {
       allPods = [],
@@ -230,6 +238,7 @@ class PipelinePage extends Component {
     return (
       <_Page>
         <PipelineSteps
+          stepScript={stepScript}
           numberOfActions={numberOfActions}
           active={activeStep}
           onChange={this._onStepChange}
@@ -238,6 +247,7 @@ class PipelinePage extends Component {
           <_EditorContent>
             <PipelineEditor
               allPods={allPods}
+              stepScript={stepScript}
               selectedPod={selectedPod}
               allActions={allActions}
               index={activeStep.index}

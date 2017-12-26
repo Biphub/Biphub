@@ -93,7 +93,6 @@
     "graphql-type-json": "^0.1.4",
     "gulp-changed": "^3.1.1",
     "gulp-sourcemaps": "^2.6.1",
-    "lodash": "^4.17.4",
     "lusca": "^1.5.1",
     "mongoose": "^4.11.12",
     "morgan": "^1.7.0",

@@ -40,6 +40,7 @@ Specs:
     templates: {},
     editing: <boolean>, // flag to tell if user is currently editing this step
     lastEditingStep: <index>, // index of last editing step
+    nextStep: <uuid> or <user defined: unique id>
   },
   {
     // Parallel step

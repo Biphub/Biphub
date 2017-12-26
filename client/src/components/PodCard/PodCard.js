@@ -29,7 +29,6 @@ class PodCard extends Component {
   }
   render() {
     const { icon, name, id, background } = this.props
-    console.log('bg', background)
     return (
       <Wrapper
         style={{ background }}

@@ -1,8 +1,10 @@
 import * as R from 'ramda'
 import styled from 'styled-components'
 import React, { Component } from 'react'
+import TextField from 'material-ui/TextField'
 import ActionCard from '../ActionCard'
 import settings from '../../settings'
+import theme from "../../theme"
 
 const _CardList = styled.div`
   display: flex;
@@ -14,7 +16,32 @@ const _CardList = styled.div`
   }
 `
 
+const _SearchContainer = styled.div`
+  width: 100%;
+  height: 80px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+`
+
+const _SearchText = styled(TextField)`
+  > div {
+    box-sizing: border-box;
+    border: 3px solid ${theme.tabActiveColor};
+    border-radius: 20px;
+    padding: 10px 20px;
+  }
+`
+
 class ActionCardList extends Component {
+  state = {
+    search: ''
+  }
+  _onSearch = (event) => {
+    const search = event.target.value
+    this.setState({ search })
+  }
   /**
    * Get action's bg color
    * If action styles.background-color is empty,
@@ -57,9 +84,23 @@ class ActionCardList extends Component {
       )
     }, allActions)
     return (
-      <_CardList>
-        {cards}
-      </_CardList>
+      <div>
+        <_SearchContainer>
+          <_SearchText
+            placeholder='Search a pod...'
+            InputProps={{
+              disableUnderline: true,
+            }}
+            InputLabelProps={{
+              shrink: true
+            }}
+            onChange={this._onSearch}
+          />
+        </_SearchContainer>
+        <_CardList>
+          {cards}
+        </_CardList>
+      </div>
     )
   }
 }
