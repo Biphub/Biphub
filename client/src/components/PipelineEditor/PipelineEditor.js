@@ -43,7 +43,6 @@ class PipelineEditor extends Component {
         />
       )
     } else if (stepName === AUTHENTICATION) {
-      console.log('auth!!')
       return (
         <Authentication />
       )

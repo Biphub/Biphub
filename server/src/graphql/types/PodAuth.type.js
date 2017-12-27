@@ -1,15 +1,12 @@
-import { merge } from 'ramda'
+import * as R from 'ramda'
 import {
   GraphQLObjectType,
   GraphQLString,
-  GraphQLInt,
-  GraphQLList
+  GraphQLList,
+  GraphQLInt
 } from 'graphql'
 import GraphQLJSON from 'graphql-type-json'
-import { ActionType } from './Action.type'
-
 import {models} from '../../models'
-import R from 'ramda'
 
 export const PodAuth = new GraphQLObjectType({
   name: 'PodAuth',
@@ -31,10 +28,19 @@ export const PodAuth = new GraphQLObjectType({
 })
 
 export const PodAuthList = {
-  type: new GraphQLList(PodType),
+  type: new GraphQLList(PodAuth),
   args: {
+    podId: {
+      type: GraphQLInt
+    }
   },
   resolve(root, args) {
+    const podId = R.prop('podId', args)
+    if (podId) {
+      return models.PodAuth.findAll({
+        where: { podId }
+      })
+    }
     return models.PodAuth.findAll()
   }
 }
