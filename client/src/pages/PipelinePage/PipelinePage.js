@@ -8,6 +8,7 @@ import PipelineSteps from '../../components/PipelineSteps'
 import settings from '../../settings'
 import StepScript from '../../StepScript'
 import ACTION_QUERY from '../../graphql/ActionsByPodQuery'
+import AUTH_QUERY from '../../graphql/AuthByPodQuery'
 const mapIndexed = R.addIndex(R.map)
 
 const _Page = styled.div`
@@ -44,6 +45,7 @@ class PipelinePage extends Component {
     // Current states
     selectedPod: {},
     allActions: [],
+    allPodAuths: []
   }
 
   /**
@@ -102,14 +104,24 @@ class PipelinePage extends Component {
    * @private
    */
   _onClickTriggerCard = (groupIndex, triggerId) => {
-    const { stepScript } = this.state
-    const newStepScript = R.compose(
-      x => StepScript.setNextStep(groupIndex, 1, x),
-      x => StepScript.setGroupValue(groupIndex, 'triggerId', triggerId, x)
-    )(stepScript)
-    this.setState({
-      stepScript: newStepScript
-    }, () => console.log('checking step scr ', this.state.stepScript))
+    const { stepScript, selectedPod } = this.state
+    this.props.client.query({
+      query: AUTH_QUERY,
+      variables: {
+        podId: selectedPod.id
+      }
+    }).then((res) => {
+      const authLens = R.lensPath(['data', 'allPodAuths'])
+      const allPodAuths = R.view(authLens, res)
+      const newStepScript = R.compose(
+        x => StepScript.setNextStep(groupIndex, 1, x),
+        x => StepScript.setGroupValue(groupIndex, 'triggerId', triggerId, x)
+      )(stepScript)
+      this.setState({
+        stepScript: newStepScript,
+        allPodAuths
+      }, () => console.log('checking step scr ', this.state.stepScript))
+    })
   }
 
   /**
@@ -134,6 +146,7 @@ class PipelinePage extends Component {
       numberOfActions,
       allActions = [],
       selectedPod = {},
+      allPodAuths = [],
       stepScript,
     } = this.state
     const {
@@ -155,6 +168,7 @@ class PipelinePage extends Component {
               stepScript={stepScript}
               selectedPod={selectedPod}
               allActions={allActions}
+              allPodAuths={allPodAuths}
               index={activeStep.index}
               type={activeStep.type}
               step={activeStep.step}

@@ -24,6 +24,7 @@ class PipelineEditor extends Component {
       allPods,
       selectedPod,
       allActions,
+      allPodAuths,
     } = this.props
     const [x, y] = stepScript.editing
     const stepName = StepScript.getStepName(x, y)
@@ -44,7 +45,9 @@ class PipelineEditor extends Component {
       )
     } else if (stepName === AUTHENTICATION) {
       return (
-        <Authentication />
+        <Authentication
+          allPodAuths={allPodAuths}
+        />
       )
     }
   }

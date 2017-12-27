@@ -50,3 +50,8 @@ Specs:
   }
 ]
 ```
+
+- Available Pod Authentications
+
+strategyType: token | oauth
+properties: 
