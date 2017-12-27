@@ -2,8 +2,9 @@ import React, { Component } from 'react'
 import styled from 'styled-components'
 import PodCardList from '../../components/PodCardList'
 import ActionCardList from '../../components/ActionCardList'
+import Authentication from '../../components/Authentication'
 import StepScript from '../../StepScript'
-import { CHOOSE_POD, CHOOSE_EVENT } from '../../settings'
+import { CHOOSE_POD, CHOOSE_EVENT, AUTHENTICATION } from '../../settings'
 
 const Container = styled.div`
   width: 100%;
@@ -23,13 +24,9 @@ class PipelineEditor extends Component {
       allPods,
       selectedPod,
       allActions,
-      index,
-      type,
-      step
     } = this.props
     const [x, y] = stepScript.editing
     const stepName = StepScript.getStepName(x, y)
-    console.log('checking step name', stepName)
     if (stepName === CHOOSE_POD) {
       return (
         <PodCardList
@@ -42,8 +39,13 @@ class PipelineEditor extends Component {
         <ActionCardList
           pod={selectedPod}
           allActions={allActions}
-          onClick={(id) => console.log('clicked an action ', id)}
+          onClick={(id) => this.props.onClickTriggerCard(x, id)}
         />
+      )
+    } else if (stepName === AUTHENTICATION) {
+      console.log('auth!!')
+      return (
+        <Authentication />
       )
     }
   }

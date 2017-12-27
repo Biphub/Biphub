@@ -45,106 +45,6 @@ class PipelinePage extends Component {
     selectedPod: {},
     allActions: [],
   }
-  componentWillMount() {
-    const steps = this._initSteps(this.state.numberOfActions + 1)
-    console.log('checking stepscript ', this.state.stepScript)
-    this.setState({ steps })
-  }
-
-  _activeStep = (index, type, step) => ({
-    index, type, step
-  })
-  /**
-   * Create initial steps according to number of steps
-   * @param number
-   * @returns {*}
-   * @private
-   */
-  _initSteps = (number) => {
-    return mapIndexed((x, index) => {
-      // If x is not empty, simply return it back
-      // TODO: Handle payload merge
-      if (x) {
-        return x
-      }
-      // 0 is always a trigger
-      if (index === 0) {
-        return {
-          choosePod: '',
-          chooseTrigger: '',
-          authentication: '',
-          setupOptions: '',
-          testSetup: '',
-        }
-      }
-      return {
-        choosePod: '',
-        chooseAction: '',
-        authentication: '',
-        setupTemplates: '',
-        testSetup: '',
-      }
-    }, new Array(number))
-  }
-  /**
-   * Set step value
-   * @param index
-   * @param step
-   * @param value
-   * @private
-   */
-  _setStep = (index, step, value) => {
-    const { steps } = this.state
-    const xLens = R.lens(R.prop(step), R.assoc(step))
-    const iLens = R.lensIndex(index)
-    const getStep = R.compose(
-      x => R.set(xLens, value, x),
-      x => x[index]
-    )
-    return R.set(iLens, getStep(steps))(steps)
-  }
-  /**
-   * Get next step from settings type
-   * @param index
-   * @param type
-   * @param step
-   * @private
-   */
-  _getNextStep = (index, type, step) => {
-    const getType = (X) => {
-      if (X === 'event') {
-        return settings.STEP_EVENT
-      }
-      return settings.STEP_ACTION
-    }
-    const currentType = getType(type)
-    const currentStepIdx = R.findIndex(
-      R.propEq('name', step), currentType
-    )
-    // If this is undefined it should increase type index
-    const nextStep = currentType[currentStepIdx + 1]
-    // handle max length
-
-    // Return the next step of current type
-    return this._activeStep(index, type, nextStep.name)
-  }
-  /**
-   * Set state according to getNextStep value
-   * @param index
-   * @param type
-   * @param step
-   * @private
-   */
-  _moveNextStep = (index, type, step) => {
-    const nextStep = this._getNextStep(index, type, step)
-    this.setState({
-      activeStep: {
-        index: nextStep.index,
-        type: nextStep.type,
-        step: nextStep.step
-      }
-    })
-  }
 
   /**
    * Clicking on a pod results in fetching
@@ -155,17 +55,6 @@ class PipelinePage extends Component {
    */
   _onClickPodCard = (groupIndex, id) => {
     this._fetchActionByPodId(groupIndex, id)
-  }
-  /**
-   * On click action
-   * @param index
-   * @param type
-   * @param step
-   * @param id
-   * @private
-   */
-  _onClickAction = (index, type, step, id) => {
-    console.log('checking click action ', index, type, step, id)
   }
   /**
    * Fetches actions by pod id. It results in changing current navigation
@@ -191,7 +80,6 @@ class PipelinePage extends Component {
           x
         )
       )(stepScript)
-      // Setting stepscript
       this.setState({
         stepScript: newStepScript
       }, () => {
@@ -207,6 +95,23 @@ class PipelinePage extends Component {
       })
     })
   }
+  /**
+   * On click action
+   * @param groupIndex
+   * @param triggerId
+   * @private
+   */
+  _onClickTriggerCard = (groupIndex, triggerId) => {
+    const { stepScript } = this.state
+    const newStepScript = R.compose(
+      x => StepScript.setNextStep(groupIndex, 1, x),
+      x => StepScript.setGroupValue(groupIndex, 'triggerId', triggerId, x)
+    )(stepScript)
+    this.setState({
+      stepScript: newStepScript
+    }, () => console.log('checking step scr ', this.state.stepScript))
+  }
+
   /**
    * Change currently editing step
    * @param groupIndex
@@ -234,7 +139,7 @@ class PipelinePage extends Component {
     const {
       allPods = [],
     } = this.props.data
-    console.log('rendering selected pod ', selectedPod)
+    console.log('Checking stepscript', stepScript)
     return (
       <_Page>
         <PipelineSteps
@@ -254,7 +159,7 @@ class PipelinePage extends Component {
               type={activeStep.type}
               step={activeStep.step}
               onClickPodCard={this._onClickPodCard}
-              onClickAction={this._onClickAction}
+              onClickTriggerCard={this._onClickTriggerCard}
             />
           </_EditorContent>
         </_Editor>

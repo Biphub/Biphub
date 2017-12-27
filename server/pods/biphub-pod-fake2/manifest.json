@@ -11,15 +11,17 @@
   "preparedConfig": {
     "token": ""
   },
-  "auth": {
-    "strategy": "token",
-    "properties": {
-      "access_token": {
-        "type": "string",
-        "title": "Access Token"
+  "podAuths": [
+    {
+      "strategyType": "token",
+      "properties": {
+        "access_token": {
+          "type": "string",
+          "title": "Access Token"
+        }
       }
     }
-  },
+  ],
   "rpcs": {
     "channels_list": {
       "contentType": "application/json",

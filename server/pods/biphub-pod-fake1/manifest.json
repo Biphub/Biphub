@@ -10,8 +10,8 @@
   "preparedConfig": {
     "token": ""
   },
-  "auth": {
-    "strategy": "token",
+  "podAuth": {
+    "strategyType": "token",
     "properties": {
       "access_token": {
         "type": "string",

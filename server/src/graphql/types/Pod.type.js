@@ -9,7 +9,7 @@ import GraphQLJSON from 'graphql-type-json'
 import { ActionType } from './Action.type'
 
 import {models} from '../../models'
-import R from "ramda";
+import R from 'ramda'
 
 export const PodType = new GraphQLObjectType({
   name: 'Pod',
@@ -68,7 +68,6 @@ export const PodList = {
     const newArgs = merge(args, {
       include: [models.Action]
     })
-    console.log('checking id ', id)
     if (id) {
       const argsWithId = merge(newArgs, {
         where: {

@@ -60,6 +60,11 @@ const init = (number = 2) => {
   }
 }
 
+/**
+ * Get step name by x, y
+ * @param x
+ * @param y
+ */
 const getStepName = (x, y) => {
   if (x === 0) {
     return settings.STEP_EVENT[y].name
@@ -67,31 +72,16 @@ const getStepName = (x, y) => {
   return settings.STEP_ACTION[y].name
 }
 
-const appendStep = (options, script) => {
+/**
+ * Append a new step
+ * @param step
+ * @param script
+ */
+const appendStep = (step, script) => {
   if (R.type(script) === 'Array') {
     return R.append(options, script)
   }
   throw new Error('Script is not an array!')
-}
-
-const getGroupByIndex = (x) => {
-  if (x === 0) {
-    return settings.STEP_EVENT
-  }
-  return settings.STEP_ACTION
-}
-
-const getNextStep = (x, y, stepScript) => {
-  const newY = y + 1
-  const nextStepLens = R.lensIndex(newY)
-  const step = R.view(nextStepLens, getGroupByIndex(x))
-  if (step) {
-    return {
-      step,
-      groupIndex: x,
-      stepIndex: newY
-    }
-  }
 }
 
 /**
@@ -109,11 +99,23 @@ const setNextStep = (groupIndex, stepIndex, stepScript) => {
   )
 }
 
+/**
+ * Set group value by key
+ * @param groupIndex
+ * @param key
+ * @param value
+ * @param stepScript
+ */
 const setGroupValue = (groupIndex, key, value, stepScript) => {
-  const stepLens = R.lensPath([groupIndex, key])
+  const stepLens = R.lensPath(['steps', groupIndex, key])
   return R.set(stepLens, value, stepScript)
 }
 
+/**
+ * Validate if stepscript is valid
+ * @param script
+ * @returns {boolean}
+ */
 const valiedateStepScript = (script) => {
   return true
 }

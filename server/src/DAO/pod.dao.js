@@ -39,7 +39,8 @@ const findAllPods = () => Future((rej, res) => {
  */
 const createPod = manifesto => Future((rej, res) => {
   const actions = R.propOr([], 'actions', manifesto)
-  const formatActions = R.compose(
+  const podAuths = R.propOr([], 'podAuths', manifesto)
+  const formatProp = R.compose(
     ({keys, x}) => {
       return R.reduce((acc, key) => {
         const action = R.merge({name: key}, R.propOr({}, key, x))
@@ -52,11 +53,15 @@ const createPod = manifesto => Future((rej, res) => {
     }
   )
   // Merging manifesto and Actions
-  const fullPod = R.merge({Actions: formatActions(actions)}, manifesto)
+  const fullPod = R.merge({
+    Actions: formatProp(actions),
+    PodAuths: formatProp(podAuths)
+  }, manifesto)
+  console.log('checking full pod ', fullPod)
   Pod.create(
     fullPod,
     {
-      include: [models.Action]
+      include: [models.Action, models.PodAuth]
     }
   )
     .then(res)
