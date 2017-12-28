@@ -15,7 +15,7 @@ class PipelineEditor extends Component {
 
   /**
    * Renders editor according to given condition
-   * @returns {XML}
+   * @returns {XML} | undefined
    * @private
    */
   _renderEditor = () => {
