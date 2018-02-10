@@ -8,8 +8,7 @@ export default () => {
   api.get('/pipeline', (req, res) => {
     res.json({test: 'test success'})
   })
-  // TODO: We may not need this
-  api.post('/pipeline', pipelineController)
+  api.post('/pipeline', pipelineController.create)
 
   // Webhooks
   api.post('/webhooks*', webhooksContoller.postWebhooks)
