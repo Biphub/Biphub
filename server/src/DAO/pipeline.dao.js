@@ -66,7 +66,6 @@ export const flattenSequence = (currentSequence, nodes = []) => {
     nodes.push(node)
     // Getting edge. It can be { any } or null
     const next = R.propOr(null, 'next', currentSequence)
-    console.log('parent: ', node, 'child', next)
     return flattenSequence(next, nodes)
   }
 

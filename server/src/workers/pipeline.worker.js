@@ -2,11 +2,13 @@ import R from 'ramda'
 import fluture from 'fluture'
 import logger from '../logger'
 import {findAllPipelines, flattenSequence} from '../DAO/pipeline.dao'
-// import * as nodeBridge from '../bridge/node2node'
+import * as nodeBridge from '../bridge/node2node'
 
 const Future = fluture.Future
 /**
  * Process sequences by turning them into a list of futures
+ * NOTE: Leaving below comments as a recording keeping.
+ * Please delete them later on.
  * @param {JSON} sequence
  */
 /*
@@ -59,11 +61,10 @@ const processSequence = sequence => Future((rej, res) => {
       }
     )
 })
-*/
-/*
+
+
 const traverseFlatSequence = sequence => Future((rej, res) => {
-  // Sequence looks like [ { webhook: { podName: 'biphub-pod-fake1',
-   g raph: [Object], next: [Object] } } ]
+  // Sequence looks like [ { webhook: { podName: 'biphub-pod-fake1', graph: [Object], next: [Object] } } ]
   // Technically it does not need traverse, but we will
   // just receive it here as a backward compatibility
   R.traverse(Future.of, processSequence, sequence)
@@ -87,6 +88,7 @@ const flattenPipelines = pipelines => Future((rej, res) => {
   logger.info('flatten sequences ', sequences)
   res(sequences)
 })
+*/
 
 const processPipeline = R.curry((initialPayload, pipeline) =>
  Future((rej, res) => {
@@ -106,7 +108,7 @@ const processPipeline = R.curry((initialPayload, pipeline) =>
          This is not permitted`))
       }
       logger.info('Init: Task', podName, ':', actionName,
-       ' checking init ', initialPayload)
+       ' ; initial payload ', initialPayload)
       // Running action
       nodeBridge.invokeAction(podName, actionName, initialPayload).fork(
         err => {
@@ -132,7 +134,7 @@ const processPipeline = R.curry((initialPayload, pipeline) =>
   const futures = R.apply(R.pipeK)(getFutures(flatEdgeIds))
   futures(null).fork(rej, res)
 }))
-*/
+
 const traversePipelines = R.curry((initialPayload, pipelines) =>
   Future((rej, res) => {
     if (R.isEmpty(pipelines)) {

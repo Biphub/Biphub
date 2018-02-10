@@ -5,7 +5,7 @@ import logger from '../logger'
  * GET /webhooks*
  * List of API examples.
  */
-const postWebhooks = (req, res) => {
+const handleWebhook = (req, res) => {
   const getPathComponents = R.memoize(R.compose(
     comps => ({
       root: comps[0],
@@ -27,6 +27,7 @@ const postWebhooks = (req, res) => {
       ok: false
     })
   }
+  // Pushing new message to the queue
   req.queue.push({
     name: getPathComponents(req.path).pod,
     body: req.body
@@ -40,5 +41,5 @@ const postWebhooks = (req, res) => {
 }
 
 export default {
-  postWebhooks
+  handleWebhook
 }

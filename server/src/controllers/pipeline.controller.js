@@ -1,28 +1,43 @@
+import logger from '../logger'
 import * as pipelineDao from '../DAO/pipeline.dao'
 
-export default (req, res) => {
+const create = (req, res) => {
   req.checkBody({
     title: {
+      notEmpty: true
+    },
+    entryApp: {
+      notEmpty: true
+    },
+    entryType: {
       notEmpty: true
     },
     description: {
       notEmpty: true
     },
-    sequence: {
+    nodes: {
+      notEmpty: true
+    },
+    edges: {
       notEmpty: true
     }
   })
-  const {title, description, sequence} = req.body
-  pipelineDao.create({title, description, sequence})
+  const {title, entryApp, entryType, description, nodes, edges} = req.body
+  pipelineDao.create({ title, entryApp, entryType, description, nodes, edges })
     .fork(
-      e => {
-        console.error('failed to create a pipeline ', e)
-        throw e
+      (error) => {
+        logger.error('failed to create a pipeline ', error)
+        throw error
       },
-      () => {
+      (result) => {
+        logger.info('Saved a pipeline!')
         return res.json({
-          test: 1
+          result: `Successfully created a pipeline ! ${result.get('id')}`
         })
       }
     )
+}
+
+export default {
+  create,
 }
