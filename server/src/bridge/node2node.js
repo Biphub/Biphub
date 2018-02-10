@@ -81,7 +81,8 @@ export const invokeAction = (podName, actionName, initialPayload) =>
     // NOTE: skipping webhook, poll, and etc happens here!
     if (actionName === 'webhook') {
       // We don't have to invoke any action of type "webhook"
-      logger.info('Checking webhook action ', initialPayload)
+      logger.info(`Webhook as initial action detected,
+                  returning original payload`)
       return res(initialPayload)
     }
     const env = process.env.NODE_ENV

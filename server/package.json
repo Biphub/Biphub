@@ -37,7 +37,11 @@
           "code": 74
         }
       ],
-      "import/no-unassigned-import": 0
+      "import/no-unassigned-import": 0,
+      "max-nested-callbacks": [
+        "error",
+        5
+      ]
     }
   },
   "jest": {
@@ -92,6 +96,7 @@
     "graphql-errors": "^2.1.0",
     "graphql-type-json": "^0.1.4",
     "gulp-changed": "^3.1.1",
+    "gulp-eslint": "^4.0.2",
     "gulp-sourcemaps": "^2.6.1",
     "lusca": "^1.5.1",
     "mongoose": "^4.11.12",

@@ -3,6 +3,7 @@ import babel from 'gulp-babel'
 import clean from 'gulp-clean'
 import runSequence from 'run-sequence'
 import sourcemaps from 'gulp-sourcemaps'
+import xo from 'gulp-xo'
 import path from 'path'
 
 // Copy files other than JS

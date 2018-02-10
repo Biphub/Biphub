@@ -3,7 +3,7 @@ import * as Sequelize from 'sequelize'
 export default function (sequelize) {
   const PodAuth = sequelize.define('PodAuth', {
     strategyType: {
-      type: Sequelize.ENUM('issuer_token', 'oauth', 'none'),
+      type: Sequelize.ENUM('issuer_token', 'oauth', 'none')
     },
     properties: Sequelize.JSONB
   }, {

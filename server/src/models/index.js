@@ -23,9 +23,9 @@ class Database {
           idle: 10000
         },
         storage: (
-          process.env.DB_TYPE === 'sqlite'
-            ? 'database.sqlite'
-            : null
+          process.env.DB_TYPE === 'sqlite' ?
+            'database.sqlite' :
+            null
         )
       }
     )
@@ -52,7 +52,9 @@ class Database {
   getModels() {
     return this._models
   }
-  getSequelize = () => this._sequelize
+  getSequelize() {
+    return this._sequelize
+  }
 }
 
 const database = new Database()

@@ -1,7 +1,7 @@
 import R from 'ramda'
 import fluture from 'fluture'
 import logger from '../logger'
-import {findAllPipelines, flattenSequence} from '../DAO/pipeline.dao'
+import {findAllPipelines} from '../DAO/pipeline.dao'
 import * as nodeBridge from '../bridge/node2node'
 
 const Future = fluture.Future
@@ -62,9 +62,9 @@ const processSequence = sequence => Future((rej, res) => {
     )
 })
 
-
 const traverseFlatSequence = sequence => Future((rej, res) => {
-  // Sequence looks like [ { webhook: { podName: 'biphub-pod-fake1', graph: [Object], next: [Object] } } ]
+  // Sequence looks like [ { webhook:
+  // {  podName: 'biphub-pod-fake1', graph: [Object], next: [Object] } } ]
   // Technically it does not need traverse, but we will
   // just receive it here as a backward compatibility
   R.traverse(Future.of, processSequence, sequence)
@@ -92,27 +92,31 @@ const flattenPipelines = pipelines => Future((rej, res) => {
 
 const processPipeline = R.curry((initialPayload, pipeline) =>
  Future((rej, res) => {
-  const nodes = pipeline.nodes
-  const edges = pipeline.edges
-  const flatEdgeIds = R.reduce((acc, edge) => R.concat(acc,
+   const nodes = pipeline.nodes
+   const edges = pipeline.edges
+   const flatEdgeIds = R.reduce((acc, edge) => R.concat(acc,
    [edge.from, edge.to]), [], edges)
-  const getFutures = R.map(id => {
-    return results => Future((frej, fres) => {
-      results = results ? results : []
-      const fromNode = R.find(R.propEq('id', id), nodes)
-      const actionName = R.propOr(null, 'actionName', fromNode)
-      const podName = R.propOr(null, 'podName', fromNode)
+
+  // Get all bridge actions in a map
+   const getFutures = R.map(id => {
+     return results => Future((frej, fres) => {
+       results = results ? results : []
+       const fromNode = R.find(R.propEq('id', id), nodes)
+       const actionName = R.propOr(null, 'actionName', fromNode)
+       const podName = R.propOr(null, 'podName', fromNode)
       // If either one of these is not provided, halt the process
-      if (!actionName || !podName) {
-        return frej(new Error(`Invalid node found in process pipeline.
+       if (!actionName || !podName) {
+         return frej(new Error(`Invalid node found in process pipeline.
          This is not permitted`))
-      }
-      logger.info('Init: Task', podName, ':', actionName,
+       }
+       logger.info('======================================')
+       logger.info('Init: Task', podName, ':', actionName,
        ' ; initial payload ', initialPayload)
       // Running action
-      nodeBridge.invokeAction(podName, actionName, initialPayload).fork(
+       nodeBridge.invokeAction(podName, actionName, initialPayload).fork(
         err => {
-          logger.error('Action has failed', err)
+          logger.error('Action has failed; Task:',
+                       `${podName}:${actionName}`, err)
           frej(err)
         },
         payload => {
@@ -126,14 +130,16 @@ const processPipeline = R.curry((initialPayload, pipeline) =>
           }
           results[resIndex] = nextPayload
             // Replaces existing index with nextPayload
+          logger.info('End of a task for ', podName)
+          logger.info('======================================')
           fres(results)
         }
       )
-    })
-  })
-  const futures = R.apply(R.pipeK)(getFutures(flatEdgeIds))
-  futures(null).fork(rej, res)
-}))
+     })
+   })
+   const futures = R.apply(R.pipeK)(getFutures(flatEdgeIds))
+   futures(null).fork(rej, res)
+ }))
 
 const traversePipelines = R.curry((initialPayload, pipelines) =>
   Future((rej, res) => {

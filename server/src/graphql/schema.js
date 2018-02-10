@@ -7,7 +7,7 @@ import {
 import {PipelineList, Pipeline} from './types/Pipeline.type'
 import {PodList} from './types/Pod.type'
 import {ActionList} from './types/Action.type'
-import {PodAuthList} from "./types/PodAuth.type"
+import {PodAuthList} from './types/PodAuth.type'
 
 const Query = new GraphQLObjectType({
   name: 'Query',

@@ -24,13 +24,20 @@ const create = (req, res) => {
     }
   })
   const {title, entryApp, entryType, description, nodes, edges} = req.body
-  pipelineDao.create({ title, entryApp, entryType, description, nodes, edges })
+  pipelineDao.create({
+    title,
+    entryApp,
+    entryType,
+    description,
+    nodes,
+    edges
+  })
     .fork(
-      (error) => {
+      error => {
         logger.error('failed to create a pipeline ', error)
         throw error
       },
-      (result) => {
+      result => {
         logger.info('Saved a pipeline!')
         return res.json({
           result: `Successfully created a pipeline ! ${result.get('id')}`
@@ -40,5 +47,5 @@ const create = (req, res) => {
 }
 
 export default {
-  create,
+  create
 }

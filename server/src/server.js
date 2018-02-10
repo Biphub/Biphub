@@ -14,7 +14,6 @@ import lusca from 'lusca'
 import flash from 'express-flash'
 import expressValidator from 'express-validator'
 import logger from './logger'
-import * as passportConfig from './config/passport.config'
 import {default as config} from './config'
 import {sequelize} from './models'
 import routes from './controllers/routes'
@@ -185,9 +184,6 @@ export const start =
         // 1. Set up config from dotenv
         config.setup()
         logger.info('Main config setup!')
-        // 2. Set up passport
-        passportConfig.setupPassport()
-        logger.info('Passport setup!')
         res(null)
       })
     }
