@@ -1,6 +1,7 @@
 import {Router} from 'express'
 import podController from './pod.contoller'
 import pipelineController from './pipeline.controller'
+import actionController from './action.controller'
 import webhooksContoller from './webhooks.controller'
 
 export default () => {
@@ -13,6 +14,9 @@ export default () => {
     res.json({test: 'test success'})
   })
   api.post('/pipeline', pipelineController.create)
+
+  // Action
+  api.get('/action/:id', actionController.get)
 
   // Webhooks
   api.post('/webhooks*', webhooksContoller.handleWebhook)

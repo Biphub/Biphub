@@ -1,3 +1,16 @@
+import fluture from 'fluture'
+import {models} from '../models'
+
+const Future = fluture.Future
+
+const getAction = (id) => {
+  return Future((rej, res) => {
+    models.findById(id)
+      .then(val => res(val))
+      .catch(err => rej(err))
+  })
+}
+
 /*
 Const createAction = (action: ActionInstance, pod: PodInstance)
    => Future((rej, res) => {
@@ -39,4 +52,6 @@ export default {
 }
 */
 
-export default null
+export default {
+  getAction
+}

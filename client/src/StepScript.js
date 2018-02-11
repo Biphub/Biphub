@@ -79,7 +79,7 @@ const getStepName = (x, y) => {
  */
 const appendStep = (step, script) => {
   if (R.type(script) === 'Array') {
-    return R.append(options, script)
+    return R.append(script, step)
   }
   throw new Error('Script is not an array!')
 }

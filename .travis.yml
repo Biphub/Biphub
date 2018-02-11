@@ -12,7 +12,7 @@ before_install:
   - "yarn global add npx"
 
 install:
-  - NODE_ENV=development yarn
+  - cd server && yarn
 
 script:
   - cd server && yarn xo:lint

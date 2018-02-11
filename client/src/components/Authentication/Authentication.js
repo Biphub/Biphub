@@ -61,7 +61,6 @@ class Authentication extends Component {
         </div>
       )
     }
-    console.log('auth ', auth)
   }
   render() {
     const { tabValue } = this.state
