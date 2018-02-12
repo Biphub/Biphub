@@ -6,6 +6,14 @@ import {getAllManifests} from '../bridge/node2node'
 const {Pod} = models
 const Future = fluture.Future
 
+export const findPodByName = name => Future((rej, res) => {
+  Pod.findOne({
+      where: { name }
+  })
+    .then(res)
+    .catch(rej)
+})
+
 //* *************
 // READ METHODS
 // ************
@@ -57,7 +65,6 @@ const createPod = manifesto => Future((rej, res) => {
     Actions: formatProp(actions),
     PodAuths: formatProp(podAuths)
   }, manifesto)
-  console.log('checking full pod ', fullPod)
   Pod.create(
     fullPod,
     {

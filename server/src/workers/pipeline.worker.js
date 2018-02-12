@@ -1,6 +1,7 @@
 import R from 'ramda'
 import fluture from 'fluture'
 import logger from '../logger'
+import {findPodByName} from '../DAO/pod.dao'
 import {findAllPipelines} from '../DAO/pipeline.dao'
 import * as nodeBridge from '../bridge/node2node'
 
@@ -11,84 +12,6 @@ const Future = fluture.Future
  * Please delete them later on.
  * @param {JSON} sequence
  */
-/*
-const processSequence = sequence => Future((rej, res) => {
-  const getFutures = R.compose(
-    R.map(node => {
-      return prev => Future((rej, res) => {
-        const actionName = R.propOr(null, 'actionName', node)
-        const podName = R.propOr(null, 'podName', node)
-        // If either one of these is not provided, halt the process
-        if (!actionName || !podName) {
-          return rej(false)
-        }
-        logger.info('Init: Task', podName, ':', actionName)
-        // Running an action
-        nodeBridge.invokeAction(podName, actionName, null).fork(
-          err => {
-            logger.error('Action has failed', err)
-            rej(err)
-          },
-          payload => {
-            const _prev = prev ? prev : []
-            // Recursively concatenating payload
-            const result = R.concat(_prev,
-              [{
-                actionName,
-                podName,
-                payload
-              }]
-            )
-            logger.info('Mid: task', podName, ':', actionName)
-            res(result)
-          }
-        )
-      })
-    }),
-    flattenSequence
-  )
-  console.log('checking stuff')
-  const futures = R.apply(R.pipeK)(getFutures(sequence))
-  futures(null)
-    .fork(
-      e => {
-        logger.error(e)
-        rej(e)
-      },
-      results => {
-        console.info('Futures sequence successful', results)
-        res(results)
-      }
-    )
-})
-
-const traverseFlatSequence = sequence => Future((rej, res) => {
-  // Sequence looks like [ { webhook:
-  // {  podName: 'biphub-pod-fake1', graph: [Object], next: [Object] } } ]
-  // Technically it does not need traverse, but we will
-  // just receive it here as a backward compatibility
-  R.traverse(Future.of, processSequence, sequence)
-    .fork(
-      e => rej(e),
-      results => res(results)
-    )
-})
-*/
-
-/**
- * Flattens Sequelize retrieved pipeline data
- * @param {Array<PipelineInstance>} pipelines
- */
-/*
-const flattenPipelines = pipelines => Future((rej, res) => {
-  if (R.isEmpty(pipelines)) {
-    rej(new Error('Flatten pipelines received empty an empty list'))
-  }
-  const sequences = R.map(x => x.get('sequence'), pipelines)
-  logger.info('flatten sequences ', sequences)
-  res(sequences)
-})
-*/
 
 const processPipeline = R.curry((initialPayload, pipeline) =>
  Future((rej, res) => {
@@ -112,7 +35,17 @@ const processPipeline = R.curry((initialPayload, pipeline) =>
        logger.info('======================================')
        logger.info('Init: Task', podName, ':', actionName,
        ' ; initial payload ', initialPayload)
-      // Running action
+
+       R.compose(
+         // Get action from pod
+         R.chian(
+           pod => Future((rej, res) => {
+
+           })
+         ),
+         () => findPodByName(podName)
+       )
+       // Running action
        nodeBridge.invokeAction(podName, actionName, initialPayload).fork(
         err => {
           logger.error('Action has failed; Task:',
