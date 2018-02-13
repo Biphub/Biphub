@@ -6,28 +6,44 @@ import {findAllPipelines} from '../DAO/pipeline.dao'
 import * as nodeBridge from '../bridge/node2node'
 
 const Future = fluture.Future
+
+const findDataMap = (dataMap, edgeId) => {
+
+}
+
 /**
  * Process sequences by turning them into a list of futures
  * NOTE: Leaving below comments as a recording keeping.
  * Please delete them later on.
  * @param {JSON} sequence
  */
-
 const processPipeline = R.curry((initialPayload, pipeline) =>
  Future((rej, res) => {
    const nodes = pipeline.nodes
    const edges = pipeline.edges
-   const flatEdgeIds = R.reduce((acc, edge) => R.concat(acc,
-   [edge.from, edge.to]), [], edges)
-
-  // Get all bridge actions in a map
-   const getFutures = R.map(id => {
+   const dataMaps = pipeline.dataMaps
+   const flatEdgeIds = R.compose(
+     R.prepend(edges[0].from),
+     R.map(edge => edge.to)
+   )(edges)
+   // Get all bridge actions in a map
+   const mapIndexed = R.addIndex(R.map)
+   const getFutures = mapIndexed((id, idx) => {
      return results => Future((frej, fres) => {
        results = results ? results : []
        const fromNode = R.find(R.propEq('id', id), nodes)
        const actionName = R.propOr(null, 'actionName', fromNode)
        const podName = R.propOr(null, 'podName', fromNode)
-      // If either one of these is not provided, halt the process
+
+       // Find current edge id using map index
+       const edgeLens = R.lensIndex(Math.floor(idx / 2))
+       const edge = R.view(edgeLens, edges)
+       const edgeId = R.prop('id', edge)
+
+       // Find current edge's datamap
+       const dataMap = R.find(R.propEq('edgeId', edgeId), dataMaps)
+       console.log('found a datamap', dataMap, ' results: ', results)
+       // If either one of these is not provided, halt the process
        if (!actionName || !podName) {
          return frej(new Error(`Invalid node found in process pipeline.
          This is not permitted`))
@@ -36,17 +52,8 @@ const processPipeline = R.curry((initialPayload, pipeline) =>
        logger.info('Init: Task', podName, ':', actionName,
        ' ; initial payload ', initialPayload)
 
-       R.compose(
-         // Get action from pod
-         R.chian(
-           pod => Future((rej, res) => {
-
-           })
-         ),
-         () => findPodByName(podName)
-       )
        // Running action
-       nodeBridge.invokeAction(podName, actionName, initialPayload).fork(
+       nodeBridge.invokeAction(podName, actionName, dataMap).fork(
         err => {
           logger.error('Action has failed; Task:',
                        `${podName}:${actionName}`, err)

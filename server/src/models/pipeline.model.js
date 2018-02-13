@@ -11,42 +11,6 @@ export default function (sequelize) {
     description: Sequelize.STRING,
     entryApp: Sequelize.STRING,
     entryType: Sequelize.ENUM('webhook', 'poll'),
-    /**
-     * {
-     *   action1(trigger) {
-     *      graph {
-     *        x
-     *        y
-     *      }
-     *      options {}
-     *      action2 {
-     *         graph {
-     *           x
-     *           y
-     *         }
-     *         options {}
-     *         action3 {
-     *           ...
-     *         }
-     *      }
-     *      action4 {
-     *        graph {
-     *          x
-     *          y
-     *        }
-     *        action 5{
-     *           ...
-     *           action6 {
-     *
-     *           }
-     *           action7 {
-     *
-     *           }
-     *        }
-     *      }
-     *   }
-     * }
-     */
     sequence: {
       type: Sequelize.JSONB,
       validate: {
@@ -59,6 +23,9 @@ export default function (sequelize) {
       type: Sequelize.JSONB
     },
     edges: {
+      type: Sequelize.JSONB
+    },
+    dataMaps: {
       type: Sequelize.JSONB
     }
   })

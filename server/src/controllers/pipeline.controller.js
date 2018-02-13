@@ -21,16 +21,20 @@ const create = (req, res) => {
     },
     edges: {
       notEmpty: true
+    },
+    dataMaps: {
+      notEmpty: true
     }
   })
-  const {title, entryApp, entryType, description, nodes, edges} = req.body
+  const {title, entryApp, entryType, description, nodes, edges, dataMaps} = req.body
   pipelineDao.create({
     title,
     entryApp,
     entryType,
     description,
     nodes,
-    edges
+    edges,
+    dataMaps,
   })
     .fork(
       error => {
