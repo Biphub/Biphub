@@ -52,6 +52,7 @@ const processPipeline = R.curry((initialPayload, pipeline) =>
        logger.info('Init: Task', podName, ':', actionName,
        ' ; initial payload ', initialPayload)
 
+       // TODO: dataMap data parse using results should happen
        // Running action
        nodeBridge.invokeAction(podName, actionName, dataMap).fork(
         err => {
