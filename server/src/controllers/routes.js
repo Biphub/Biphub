@@ -10,9 +10,7 @@ export default () => {
   api.get('/pod', podController.list)
 
   // Pipelines
-  api.get('/pipeline', (req, res) => {
-    res.json({test: 'test success'})
-  })
+  api.get('/pipeline', pipelineController.list)
   api.post('/pipeline', pipelineController.create)
 
   // Action

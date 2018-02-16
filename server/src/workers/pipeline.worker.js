@@ -7,8 +7,11 @@ import * as nodeBridge from '../bridge/node2node'
 
 const Future = fluture.Future
 
-const findDataMap = (dataMap, edgeId) => {
-
+const processDataMap = (resultsDict, dataMap) => {
+  console.log('checking reults dict', resultsDict)
+  console.log('datamap ', dataMap)
+  // 1. if there is dataMap.text handle it
+  // 1.1. catch any exceptions
 }
 
 /**
@@ -29,8 +32,9 @@ const processPipeline = R.curry((initialPayload, pipeline) =>
    // Get all bridge actions in a map
    const mapIndexed = R.addIndex(R.map)
    const getFutures = mapIndexed((id, idx) => {
-     return results => Future((frej, fres) => {
-       results = results ? results : []
+     return resultsDict => Future((frej, fres) => {
+       // FIXME: Do we need this?
+       resultsDict = resultsDict ? resultsDict : []
        const fromNode = R.find(R.propEq('id', id), nodes)
        const actionName = R.propOr(null, 'actionName', fromNode)
        const podName = R.propOr(null, 'podName', fromNode)
@@ -42,7 +46,8 @@ const processPipeline = R.curry((initialPayload, pipeline) =>
 
        // Find current edge's datamap
        const dataMap = R.find(R.propEq('edgeId', edgeId), dataMaps)
-       console.log('found a datamap', dataMap, ' results: ', results)
+       // console.log('found a datamap', dataMap, ' results: ', resultsDict)
+       processDataMap(resultsDict, dataMap)
        // If either one of these is not provided, halt the process
        if (!actionName || !podName) {
          return frej(new Error(`Invalid node found in process pipeline.
@@ -61,19 +66,22 @@ const processPipeline = R.curry((initialPayload, pipeline) =>
           frej(err)
         },
         payload => {
-          const resIndex = R.findIndex(R.propEq('id', id), results)
-          const nextPayload = {id, payload}
+          const resIndex = R.findIndex(R.propEq('podId', id), resultsDict)
+          const nextPayload = {
+            podId: id,
+            payload,
+          }
           // ResIndex === -1 means it's a new result
           if (resIndex === -1) {
-            const x = R.concat(results, [nextPayload])
+            const x = R.concat(resultsDict, [nextPayload])
             // Simply add the new result into results array
             return fres(x)
           }
-          results[resIndex] = nextPayload
+          resultsDict[resIndex] = nextPayload
             // Replaces existing index with nextPayload
           logger.info('End of a task for ', podName)
           logger.info('======================================')
-          fres(results)
+          fres(resultsDict)
         }
       )
      })

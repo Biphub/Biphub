@@ -1,6 +1,21 @@
 import logger from '../logger'
 import * as pipelineDao from '../DAO/pipeline.dao'
 
+const list = (req, res) => {
+  pipelineDao.listAll().fork(
+    error => {
+      logger.error('Failed to list all pipelines', error)
+      throw error
+    },
+    result => {
+      return res.json({
+        ok: true,
+        data: result
+      })
+    }
+  )
+}
+
 // Quick commit test
 const create = (req, res) => {
   req.checkBody({
@@ -51,5 +66,6 @@ const create = (req, res) => {
 }
 
 export default {
-  create
+  create,
+  list
 }

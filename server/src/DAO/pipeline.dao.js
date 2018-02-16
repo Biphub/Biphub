@@ -4,6 +4,15 @@ import logger from '../logger'
 import {models} from '../models'
 
 const Future = fluture.Future
+
+export function listAll() {
+  return Future((rej, res) => {
+    models.Pipeline.findAll()
+      .then(value => res(value))
+      .catch(err => rej(err))
+  })
+}
+
 /**
  * Creates a pipeline
  * @param pipeline
