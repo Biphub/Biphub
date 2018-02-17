@@ -74,17 +74,10 @@ export const invokeAction2 = (podName, actionName, attributes) =>
  * Invoke a pod's action by podname and actionName
  * @param {string} podName
  * @param {string} actionName
- * @param initialPayload
+ * @param input
  */
-export const invokeAction = (podName, actionName, payload) =>
+export const invokeAction = (podName, actionName, input) =>
   Future((rej, res) => {
-    // NOTE: skipping webhook, poll, and etc happens here!
-    if (actionName === 'webhook') {
-      // We don't have to invoke any action of type "webhook"
-      logger.info(`Webhook as initial action detected,
-                  returning original payload`)
-      return res(payload)
-    }
     const env = process.env.NODE_ENV
     const camelActionName = changeCase.camelCase(actionName)
     if (env === 'development' || env === 'test') {
@@ -95,7 +88,7 @@ export const invokeAction = (podName, actionName, payload) =>
       )
       // If found method is a promise
       if (stagingPodMethod) {
-        stagingPodMethod(payload)
+        stagingPodMethod(input)
           .then(result => {
             console.info(`podMethod was successfully invoked
              ${camelActionName} result of podMethod ${result}`)

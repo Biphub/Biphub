@@ -118,6 +118,7 @@
     "slack": "^9.1.1",
     "source-map": "^0.6.1",
     "sqlite3": "^3.1.13",
+    "string-template": "^1.0.0",
     "tracer": "^0.8.11",
     "umzug": "^2.1.0",
     "umzug-cli": "^2.0.0"
