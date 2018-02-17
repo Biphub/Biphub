@@ -9,8 +9,8 @@ describe('DAO pipeline', () => {
       .then(() =>
         console.log(
           'Initialised seqeulize in environment',
-          process.env.NODE_ENV
-        )
+          process.env.NODE_ENV,
+        ),
       )
     done()
   })
@@ -29,7 +29,7 @@ describe('DAO pipeline', () => {
         },
         e => {
           fail(e)
-        }
+        },
       )
   })
 })

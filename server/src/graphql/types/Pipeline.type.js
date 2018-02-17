@@ -51,7 +51,7 @@ export const PipelineType = new GraphQLObjectType({
               R.map(R.last),
               R.map(R.split('-')),
               R.uniq,
-              R.map(x => x.podName)
+              R.map(x => x.podName),
             )(nodes)
             findPodsWithNames(uniqueNames).fork(rej, pods => {
               // ORM found pods as json values
@@ -61,7 +61,7 @@ export const PipelineType = new GraphQLObjectType({
                 const podName = R.compose(R.last, R.split('-'))(n.podName)
                 const icon = R.compose(
                   R.prop('icon'),
-                  R.find(R.propEq('name', podName))
+                  R.find(R.propEq('name', podName)),
                 )(values)
                 return R.assoc('icon', icon, n)
               }, nodes)
@@ -83,7 +83,7 @@ export const PipelineType = new GraphQLObjectType({
               R.map(R.split('-')),
               R.uniq,
               R.map(z => z.podName),
-              flattenSequence
+              flattenSequence,
             )
             const names = getNames(x.get('sequence'))
             console.log('got names ', names)

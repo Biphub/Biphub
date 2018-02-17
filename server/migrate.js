@@ -39,7 +39,7 @@ const umzug = new Umzug({
       function() {
         throw new Error(
           `Migration tried to use old style "done" callback. Please
-           upgrade to "umzug" and return a promise instead.`
+           upgrade to "umzug" and return a promise instead.`,
         )
       },
     ],

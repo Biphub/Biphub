@@ -15,8 +15,8 @@ const handleWebhook = (req, res) => {
       // Split by /
       R.split('/'),
       // Removes initial / if it exists
-      R.replace(/^\//, '')
-    )
+      R.replace(/^\//, ''),
+    ),
   )
   const name = R.propOr(null, 'pod', getPathComponents(req.path))
   const body = R.propOr(null, 'body', req)
@@ -25,7 +25,7 @@ const handleWebhook = (req, res) => {
       'Incorrect approach to webhook endpoint name:',
       name,
       'body:',
-      body
+      body,
     )
     return res.json({
       ok: false,
@@ -43,7 +43,7 @@ const handleWebhook = (req, res) => {
         ok: getPathComponents(req.path),
         result,
       })
-    }
+    },
   )
 }
 

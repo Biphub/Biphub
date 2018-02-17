@@ -26,7 +26,7 @@ describe('#pipeline', () => {
               })
             })
         })
-      }
+      },
     )
   })
 
@@ -57,7 +57,7 @@ describe('#pipeline', () => {
               server.close(() => done())
             })
         })
-      }
+      },
     )
   })
 })

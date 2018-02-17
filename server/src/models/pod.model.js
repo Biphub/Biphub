@@ -39,7 +39,7 @@ export default function(sequelize) {
         Pod.hasMany(models.Action)
         Pod.hasMany(models.PodAuth)
       },
-    }
+    },
   )
   return Pod
 }

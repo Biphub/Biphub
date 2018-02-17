@@ -16,7 +16,7 @@ const processDataMap = (apiResponses, dataMap) =>
     // 1.1. catch any exceptions
     const textTemplate = R.prop('textTemplate', dataMap)
     if (textTemplate) {
-      // format(textTemplate, resultsDict)
+      // Format(textTemplate, resultsDict)
     }
     // Otherwise simply return an empty object
     res({})
@@ -34,7 +34,7 @@ const handleNextAction = ({
     if (!actionName || !podName) {
       return frej(
         new Error(`Invalid node found in process pipeline.
-                This is not permitted`)
+                This is not permitted`),
       )
     }
     logger.info('======================================')
@@ -54,7 +54,7 @@ const handleNextAction = ({
         logger.error(
           'Action has failed; Task:',
           `${podName}:${actionName}`,
-          err
+          err,
         )
         frej(err)
       },
@@ -70,7 +70,7 @@ const handleNextAction = ({
         logger.info('End of a task for ', podName)
         logger.info('======================================')
         fres(newApiResponses)
-      }
+      },
     )
   })
 
@@ -89,7 +89,7 @@ const processPipeline = R.curry((initialPayload, pipeline) =>
     const flatActionIds = R.compose(
       // Commenting out initial trigger id
       R.prepend(edges[0].from),
-      R.map(edge => edge.to)
+      R.map(edge => edge.to),
     )(edges)
     // Get all bridge actions in a map
     const mapIndexed = R.addIndex(R.map)
@@ -119,17 +119,17 @@ const processPipeline = R.curry((initialPayload, pipeline) =>
                 initialPayload,
                 apiResponses,
                 input,
-              })
+              }),
             ),
             () => {
               return processDataMap(apiResponses, dataMap)
-            }
+            },
           )().fork(error => frej(error), result => fres(result))
         })
     })
     const futures = R.apply(R.pipeK)(getFutures(flatActionIds))
     futures(null).fork(rej, res)
-  })
+  }),
 )
 
 const traversePipelines = R.curry((initialPayload, pipelines) =>
@@ -140,9 +140,9 @@ const traversePipelines = R.curry((initialPayload, pipelines) =>
     console.log('checking initial payload', initialPayload)
     R.traverse(Future.of, processPipeline(initialPayload), pipelines).fork(
       rej,
-      res
+      res,
     )
-  })
+  }),
 )
 
 /**
@@ -160,7 +160,7 @@ const executeTask = (task, cb) => {
     // R.chain(traverseFlatSequence),
     // R.chain(flattenPipelines),
     R.chain(traversePipelines(body)),
-    findAllPipelines
+    findAllPipelines,
   )
 
   executeSequence(podName).fork(
@@ -173,10 +173,10 @@ const executeTask = (task, cb) => {
         'End: Pipeline worker task has finished -',
         task.name,
         ' ',
-        results
+        results,
       )
       cb(results)
-    }
+    },
   )
 }
 

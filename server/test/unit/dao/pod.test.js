@@ -15,7 +15,7 @@ describe('#PodDao test', () => {
       err => console.error(err),
       pods => {
         expect(R.isEmpty(pods)).toBe(false)
-      }
+      },
     )
   })
   it('each pod should contain title, desc, name, id, url, updatedAt, createdAt', () => {
@@ -31,7 +31,7 @@ describe('#PodDao test', () => {
           expect(R.isEmpty(pod.updatedAt)).toBe(false)
           expect(R.isEmpty(pod.createdAt)).toBe(false)
         }, plainPods)
-      }
+      },
     )
   })
 })

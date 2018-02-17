@@ -27,7 +27,7 @@ program
       },
       () => {
         console.info('Install all pods complete!')
-      }
+      },
     )
   })
 
@@ -51,7 +51,7 @@ program
         return acc
       },
       {},
-      options
+      options,
     )
     console.log('checking action detail ', pod, action, attributes)
     bridge

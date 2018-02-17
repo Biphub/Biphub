@@ -19,7 +19,7 @@ export default function(sequelize) {
         PodAuth.belongsTo(models.Pod, { onDelete: 'cascade', hooks: true })
         // Create Action has Many action import
       },
-    }
+    },
   )
   return PodAuth
 }

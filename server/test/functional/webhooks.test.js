@@ -11,7 +11,7 @@ describe('POST /webhooks*', () => {
         app.listen(app.get('port'), () => {
           done()
         })
-      }
+      },
     )
   })
   it('should return 200 OK', done => {

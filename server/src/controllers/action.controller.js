@@ -18,7 +18,7 @@ const get = (req, res) => {
         ok: true,
         data: action,
       })
-    }
+    },
   )
 }
 

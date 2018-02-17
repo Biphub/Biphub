@@ -62,13 +62,13 @@ const createPod = manifesto =>
             return R.append(action, acc)
           },
           [],
-          keys
+          keys,
         )
       },
       x => {
         const keys = R.keys(x)
         return { keys, x }
-      }
+      },
     )
     // Merging manifesto and Actions
     const fullPod = R.merge(
@@ -76,7 +76,7 @@ const createPod = manifesto =>
         Actions: formatProp(actions),
         PodAuths: formatProp(podAuths),
       },
-      manifesto
+      manifesto,
     )
     Pod.create(fullPod, {
       include: [models.Action, models.PodAuth],
@@ -106,7 +106,7 @@ export const installPods = () =>
   Future((rej, res) => {
     R.traverse(Future.of, createPod, getAllManifests()).fork(
       e => rej(e),
-      pods => res(pods)
+      pods => res(pods),
     )
   })
 
@@ -123,6 +123,6 @@ export const uninstallPods = () =>
       })
     R.compose(R.chain(deletePods), R.chain(flatPods), findAllPods)().fork(
       rej,
-      res
+      res,
     )
   })

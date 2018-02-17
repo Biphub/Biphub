@@ -12,7 +12,7 @@ const list = (req, res) => {
         ok: true,
         data: result,
       })
-    }
+    },
   )
 }
 
@@ -70,7 +70,7 @@ const create = (req, res) => {
         return res.json({
           result: `Successfully created a pipeline ! ${result.get('id')}`,
         })
-      }
+      },
     )
 }
 

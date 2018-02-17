@@ -24,7 +24,7 @@ export default function defineUser(sequelize) {
           return `${this.firstName} ${this.lastName}`
         },
       },
-    }
+    },
   )
   UserSchema.beforeCreate(user => {
     return new Promise((resolve, reject) => {

@@ -47,7 +47,7 @@ export const getAllManifests = () => {
         return true
       }
       return false
-    })
+    }),
   )
   return getManifests(pods)
 }
@@ -84,7 +84,7 @@ export const invokeAction = (podName, actionName, input) =>
       const stagingPodMethod = R.pathOr(
         null,
         [podName, 'index', camelActionName],
-        pods
+        pods,
       )
       // If found method is a promise
       if (stagingPodMethod) {
@@ -98,7 +98,7 @@ export const invokeAction = (podName, actionName, input) =>
       } else {
         rej(
           new Error(`Pod method does not exist
-           ${podName} of ${camelActionName}`)
+           ${podName} of ${camelActionName}`),
         )
       }
     }

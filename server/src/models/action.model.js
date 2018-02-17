@@ -29,7 +29,7 @@ export default function defineUser(sequelize) {
         PodAction.belongsTo(models.Pod, { onDelete: 'cascade', hooks: true })
         // Create Action has Many action import
       },
-    }
+    },
   )
   return PodAction
 }

@@ -41,7 +41,7 @@ export const findAllPipelines = entryApp =>
         if (R.isEmpty(pipelines)) {
           logger.error(
             `Could not retrieve any pipelines of 
-          ${entryApp}, did you run node manage installAll?`
+          ${entryApp}, did you run node manage installAll?`,
           )
           return rej()
         }
@@ -81,7 +81,7 @@ export const flattenSequence = (currentSequence, nodes = []) => {
     R.map(key => {
       const composeNextNode = R.compose(
         R.assoc('actionName', key),
-        R.propOr(null, key)
+        R.propOr(null, key),
       )
       const nextNode = composeNextNode(currentSequence)
       return flattenSequence(nextNode, nodes)

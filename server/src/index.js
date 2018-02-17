@@ -19,9 +19,9 @@ start().fork(
       console.info(
         '  App is running at http://localhost:%d in %s mode',
         app.get('port'),
-        app.get('env')
+        app.get('env'),
       )
       console.info('  Press CTRL-C to stop\n')
     })
-  }
+  },
 )

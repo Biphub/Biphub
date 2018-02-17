@@ -40,7 +40,7 @@ const bootstrapExpress = app =>
         saveUninitialized: true,
         secret: process.env.SESSION_SECRET,
         store: sequelizeSessionStore,
-      })
+      }),
     )
     app.set('port', process.env.PORT || 3000)
     app.set('view engine', 'pug')
@@ -95,7 +95,7 @@ const bootstrapExpress = app =>
         rootValue: root,
         pretty: true,
         graphiql: true,
-      })
+      }),
     )
 
     // Error Handler. Provides full stack - remove for production
@@ -197,5 +197,5 @@ export const start = R.compose(
       logger.info('Main config setup!')
       res(null)
     })
-  }
+  },
 )
