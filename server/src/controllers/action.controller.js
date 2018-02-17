@@ -5,23 +5,23 @@ const get = (req, res) => {
   req.checkBody({
     id: {
       notEmpty: true,
-    }
+    },
   })
   const { id } = req.body
   actionDao.getAction(id).fork(
-    (err) => {
+    err => {
       logger.error('Could not find an action by id ', id, '  ', err)
       throw err
     },
-    (action) => {
+    action => {
       return res.json({
         ok: true,
-        data: action
+        data: action,
       })
     }
   )
 }
 
 export default {
-  get
+  get,
 }

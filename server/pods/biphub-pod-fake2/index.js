@@ -12,5 +12,5 @@ module.exports = {
       console.info('Moving a fake issue! ', reason)
       res({ ok: true })
     })
-  }
+  },
 }

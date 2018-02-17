@@ -11,7 +11,8 @@ module.exports = {
       sql => sql.split(/\r?\n/)
     )
     const sql = fs.readFileSync(
-      path.join(__dirname, './00_initial-tables.sql'), 'utf8'
+      path.join(__dirname, './00_initial-tables.sql'),
+      'utf8'
     )
     const rqs = getRawQueries(sql)
     console.log(rqs)
@@ -19,5 +20,5 @@ module.exports = {
   },
   down: queryInterface => {
     return queryInterface.dropTable('Pods')
-  }
+  },
 }

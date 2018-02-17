@@ -1,13 +1,13 @@
 import R from 'ramda'
 import {} from 'jest'
-import supertest from "supertest"
+import supertest from 'supertest'
 import { start } from '../../core/server'
 
-describe("#pipeline", () => {
-  it("respond with json", (done) => {
+describe('#pipeline', () => {
+  it('respond with json', done => {
     start().fork(
-      (e) => console.error(e),
-      (app) => {
+      e => console.error(e),
+      app => {
         const server = app.listen(app.get('port'), () => {
           const request = supertest(app)
           request
@@ -30,21 +30,23 @@ describe("#pipeline", () => {
     )
   })
 
-  it('creates a pipeline', (done) => {
+  it('creates a pipeline', done => {
     start().fork(
-      (e) => {
+      e => {
         throw e
       },
-      (app) => {
+      app => {
         const server = app.listen(app.get('port'), () => {
           const request = supertest(app)
-          request.post('/pipeline').type('form')
+          request
+            .post('/pipeline')
+            .type('form')
             .send({
               title: 'testing!',
               description: 'testing desc!',
               sequence: {
-                a: 1
-              }
+                a: 1,
+              },
             })
             .end((err, res) => {
               if (err) {

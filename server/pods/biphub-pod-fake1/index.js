@@ -1,5 +1,5 @@
 module.exports = {
-  postFakeMessage: function ({ text }) {
+  postFakeMessage: function({ text }) {
     return new Promise((res, rej) => {
       setTimeout(() => {
         console.info('pod fake 1 received a fake action trigger! ', text)
@@ -22,5 +22,5 @@ module.exports = {
         res({ ok: true })
       }, 1500)
     })
-  }
+  },
 }

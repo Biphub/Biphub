@@ -1,4 +1,4 @@
-import {Router} from 'express'
+import { Router } from 'express'
 import podController from './pod.contoller'
 import pipelineController from './pipeline.controller'
 import actionController from './action.controller'

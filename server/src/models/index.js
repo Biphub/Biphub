@@ -20,13 +20,9 @@ class Database {
           max: 5,
           min: 0,
           acquire: 30000,
-          idle: 10000
+          idle: 10000,
         },
-        storage: (
-          process.env.DB_TYPE === 'sqlite' ?
-            'database.sqlite' :
-            null
-        )
+        storage: process.env.DB_TYPE === 'sqlite' ? 'database.sqlite' : null,
       }
     )
 
@@ -63,5 +59,5 @@ export const sequelize = database.getSequelize()
 
 export default {
   models,
-  sequelize
+  sequelize,
 }

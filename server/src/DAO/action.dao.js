@@ -1,11 +1,12 @@
 import fluture from 'fluture'
-import {models} from '../models'
+import { models } from '../models'
 
 const Future = fluture.Future
 
-const getAction = (id) => {
+const getAction = id => {
   return Future((rej, res) => {
-    models.findById(id)
+    models
+      .findById(id)
       .then(val => res(val))
       .catch(err => rej(err))
   })
@@ -53,5 +54,5 @@ export default {
 */
 
 export default {
-  getAction
+  getAction,
 }

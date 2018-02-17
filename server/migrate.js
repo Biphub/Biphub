@@ -22,37 +22,37 @@ const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASS, {
   pool: {
     max: 5,
     min: 0,
-    idle: 10000
+    idle: 10000,
   },
-  storage: DB_TYPE === 'sqlite' ? 'database.sqlite' : null
+  storage: DB_TYPE === 'sqlite' ? 'database.sqlite' : null,
 })
 
 const umzug = new Umzug({
   storage: 'sequelize',
   storageOptions: {
-    sequelize
+    sequelize,
   },
   migrations: {
     params: [
       sequelize.getQueryInterface(),
       sequelize.constructor,
-      function () {
+      function() {
         throw new Error(
           `Migration tried to use old style "done" callback. Please
            upgrade to "umzug" and return a promise instead.`
         )
-      }
+      },
     ],
     path: './src/migrations',
-    pattern: /\.js$/
+    pattern: /\.js$/,
   },
   logging() {
     console.log.apply(null, arguments)
-  }
+  },
 })
 
 function logUmzugEvent(eventName) {
-  return function (name) {
+  return function(name) {
     console.log(`${name} ${eventName}`)
   }
 }
@@ -64,14 +64,17 @@ umzug.on('reverted', logUmzugEvent('reverted'))
 function cmdStatus() {
   const result = {}
 
-  return umzug.executed()
+  return umzug
+    .executed()
     .then(executed => {
       result.executed = executed
       return umzug.pending()
-    }).then(pending => {
+    })
+    .then(pending => {
       result.pending = pending
       return result
-    }).then(({executed, pending}) => {
+    })
+    .then(({ executed, pending }) => {
       executed = executed.map(m => {
         m.name = path.basename(m.file, '.js')
         return m
@@ -81,18 +84,16 @@ function cmdStatus() {
         return m
       })
 
-      const current = executed.length > 0 ?
-        executed[0].file :
-        '<NO_MIGRATIONS>'
+      const current = executed.length > 0 ? executed[0].file : '<NO_MIGRATIONS>'
       const status = {
         current,
         executed: executed.map(m => m.file),
-        pending: pending.map(m => m.file)
+        pending: pending.map(m => m.file),
       }
 
       console.log(JSON.stringify(status, null, 2))
 
-      return {executed, pending}
+      return { executed, pending }
     })
 }
 
@@ -101,19 +102,21 @@ function cmdStatus() {
  */
 function cmdInit() {
   const sqlLines = []
-  return models.sequelize.sync({
-    force: true,
-    logging: message => {
-      let line = message.replace('Executing (default): ', '').trim()
-      if (line.substr(-1) !== ';') {
-        line += ';'
-      }
-      sqlLines.push(line)
-    }
-  }).then(() => {
-    const sql = sqlLines.join('\n')
-    fs.writeFile('./src/migrations/00_initial-tables.sql', sql)
-  })
+  return models.sequelize
+    .sync({
+      force: true,
+      logging: message => {
+        let line = message.replace('Executing (default): ', '').trim()
+        if (line.substr(-1) !== ';') {
+          line += ';'
+        }
+        sqlLines.push(line)
+      },
+    })
+    .then(() => {
+      const sql = sqlLines.join('\n')
+      fs.writeFile('./src/migrations/00_initial-tables.sql', sql)
+    })
 }
 
 function cmdMigrate() {
@@ -121,29 +124,27 @@ function cmdMigrate() {
 }
 
 function cmdMigrateNext() {
-  return cmdStatus()
-    .then(({pending}) => {
-      if (pending.length === 0) {
-        return Promise.reject(new Error('No pending migrations'))
-      }
-      const next = pending[0].name
-      return umzug.up({to: next})
-    })
+  return cmdStatus().then(({ pending }) => {
+    if (pending.length === 0) {
+      return Promise.reject(new Error('No pending migrations'))
+    }
+    const next = pending[0].name
+    return umzug.up({ to: next })
+  })
 }
 
 function cmdReset() {
-  return umzug.down({to: 0})
+  return umzug.down({ to: 0 })
 }
 
 function cmdResetPrev() {
-  return cmdStatus()
-    .then(({executed}) => {
-      if (executed.length === 0) {
-        return Promise.reject(new Error('Already at initial state'))
-      }
-      const prev = executed[executed.length - 1].name
-      return umzug.down({to: prev})
-    })
+  return cmdStatus().then(({ executed }) => {
+    if (executed.length === 0) {
+      return Promise.reject(new Error('Already at initial state'))
+    }
+    const prev = executed[executed.length - 1].name
+    return umzug.down({ to: prev })
+  })
 }
 
 function cmdHardReset() {
@@ -153,9 +154,7 @@ function cmdHardReset() {
         console.log(`dropdb ${DB_NAME}`)
         child_process.spawnSync(`dropdb ${DB_NAME}`)
         console.log(`createdb ${DB_NAME} --username ${DB_USER}`)
-        child_process.spawnSync(
-          `createdb ${DB_NAME} --username ${DB_USER}`
-        )
+        child_process.spawnSync(`createdb ${DB_NAME} --username ${DB_USER}`)
         resolve()
       } catch (err) {
         console.log(err)

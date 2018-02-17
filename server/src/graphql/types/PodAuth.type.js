@@ -3,10 +3,10 @@ import {
   GraphQLObjectType,
   GraphQLString,
   GraphQLList,
-  GraphQLInt
+  GraphQLInt,
 } from 'graphql'
 import GraphQLJSON from 'graphql-type-json'
-import {models} from '../../models'
+import { models } from '../../models'
 
 export const PodAuth = new GraphQLObjectType({
   name: 'PodAuth',
@@ -14,33 +14,33 @@ export const PodAuth = new GraphQLObjectType({
   fields: () => ({
     id: {
       type: GraphQLString,
-      resolve: (x) => x.get('id')
+      resolve: x => x.get('id'),
     },
     strategyType: {
       type: GraphQLString,
-      resolve: (x) => x.get('strategyType')
+      resolve: x => x.get('strategyType'),
     },
     properties: {
       type: GraphQLJSON,
-      resolve: (x) => x.get('properties')
-    }
-  })
+      resolve: x => x.get('properties'),
+    },
+  }),
 })
 
 export const PodAuthList = {
   type: new GraphQLList(PodAuth),
   args: {
     podId: {
-      type: GraphQLInt
-    }
+      type: GraphQLInt,
+    },
   },
   resolve(root, args) {
     const podId = R.prop('podId', args)
     if (podId) {
       return models.PodAuth.findAll({
-        where: { podId }
+        where: { podId },
       })
     }
     return models.PodAuth.findAll()
-  }
+  },
 }

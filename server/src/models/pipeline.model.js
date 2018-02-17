@@ -5,7 +5,7 @@ import * as Sequelize from 'sequelize'
  * @param sequelize
  * @returns {any}
  */
-export default function (sequelize) {
+export default function(sequelize) {
   return sequelize.define('Pipeline', {
     title: Sequelize.STRING,
     description: Sequelize.STRING,
@@ -16,18 +16,17 @@ export default function (sequelize) {
       validate: {
         isInFormat() {
           return true
-        }
-      }
+        },
+      },
     },
     nodes: {
-      type: Sequelize.JSONB
+      type: Sequelize.JSONB,
     },
     edges: {
-      type: Sequelize.JSONB
+      type: Sequelize.JSONB,
     },
     dataMaps: {
-      type: Sequelize.JSONB
-    }
+      type: Sequelize.JSONB,
+    },
   })
 }
-

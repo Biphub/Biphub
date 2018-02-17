@@ -44,17 +44,19 @@ program
     // else prepend it to pod variable
     const xPod = R.test(/^biphub-pod/g, pod) ? pod : `biphub-pod-${pod}`
     // Iterate each options [ test=1, test=2 ], convert it to an object
-    const attributes = R.reduce((acc, x) => {
-      const [key, value] = R.split('=', x)
-      acc[key] = value
-      return acc
-    }, {}, options)
+    const attributes = R.reduce(
+      (acc, x) => {
+        const [key, value] = R.split('=', x)
+        acc[key] = value
+        return acc
+      },
+      {},
+      options
+    )
     console.log('checking action detail ', pod, action, attributes)
-    bridge.invokeAction2(xPod, action, attributes)
-      .fork(
-        console.error,
-        console.log
-      )
+    bridge
+      .invokeAction2(xPod, action, attributes)
+      .fork(console.error, console.log)
   })
 
 program
@@ -62,16 +64,11 @@ program
   .alias('ua')
   .description('Command to uninstall all installed pods')
   .action(() => {
-    podPao.uninstallPods().fork(
-      console.error,
-      console.info
-    )
+    podPao.uninstallPods().fork(console.error, console.info)
   })
 
-program
-  .command('*')
-  .action(env => {
-    console.error(`Command ${env} was not found!`)
-  })
+program.command('*').action(env => {
+  console.error(`Command ${env} was not found!`)
+})
 
 program.parse(process.argv)

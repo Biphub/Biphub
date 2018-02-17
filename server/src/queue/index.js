@@ -11,5 +11,5 @@ const createQueue = worker => {
 }
 
 export default {
-  createQueue
+  createQueue,
 }

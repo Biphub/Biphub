@@ -4,10 +4,10 @@ import {
   GraphQLString,
   GraphQLInt,
   GraphQLList,
-  GraphQLID
+  GraphQLID,
 } from 'graphql'
 import GraphQLJSON from 'graphql-type-json'
-import {models} from '../../models'
+import { models } from '../../models'
 
 export const ActionType = new GraphQLObjectType({
   name: 'Action',
@@ -16,34 +16,34 @@ export const ActionType = new GraphQLObjectType({
     return {
       id: {
         type: GraphQLInt,
-        resolve: x => x.get('id')
+        resolve: x => x.get('id'),
       },
       title: {
         type: GraphQLString,
-        resolve: x => x.get('title')
+        resolve: x => x.get('title'),
       },
       description: {
         type: GraphQLString,
-        resolve: x => x.get('description')
+        resolve: x => x.get('description'),
       },
       styles: {
         type: GraphQLJSON,
-        resolve: x => x.get('styles')
+        resolve: x => x.get('styles'),
       },
       trigger: {
         type: GraphQLString,
-        resolve: x => x.get('trigger')
-      }
+        resolve: x => x.get('trigger'),
+      },
     }
-  }
+  },
 })
 
 export const ActionList = {
   type: new GraphQLList(ActionType),
   args: {
     podId: {
-      type: GraphQLInt
-    }
+      type: GraphQLInt,
+    },
   },
   resolve(root, args) {
     const podId = R.prop('podId', args)
@@ -51,11 +51,11 @@ export const ActionList = {
     if (podId) {
       return models.Action.findAll({
         where: {
-          podId: args.podId
-        }
+          podId: args.podId,
+        },
       })
     }
     // Otherwise return full
     return models.Action.findAll()
-  }
+  },
 }

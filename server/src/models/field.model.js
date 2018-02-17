@@ -5,10 +5,10 @@ import * as Sequelize from 'sequelize'
  * @param sequelize
  * @returns {any}
  */
-export default function (sequelize) {
+export default function(sequelize) {
   const Field = sequelize.define('Field', {
     title: Sequelize.STRING,
-    properties: Sequelize.JSONB
+    properties: Sequelize.JSONB,
   })
   return Field
 }

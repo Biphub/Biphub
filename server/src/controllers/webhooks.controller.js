@@ -6,40 +6,47 @@ import logger from '../logger'
  * List of API examples.
  */
 const handleWebhook = (req, res) => {
-  const getPathComponents = R.memoize(R.compose(
-    comps => ({
-      root: comps[0],
-      pod: comps[1]
-    }),
-    // Split by /
-    R.split('/'),
-    // Removes initial / if it exists
-    R.replace(/^\//, '')
-  ))
+  const getPathComponents = R.memoize(
+    R.compose(
+      comps => ({
+        root: comps[0],
+        pod: comps[1],
+      }),
+      // Split by /
+      R.split('/'),
+      // Removes initial / if it exists
+      R.replace(/^\//, '')
+    )
+  )
   const name = R.propOr(null, 'pod', getPathComponents(req.path))
   const body = R.propOr(null, 'body', req)
   if (!name || !body) {
     logger.error(
       'Incorrect approach to webhook endpoint name:',
-      name, 'body:', body
+      name,
+      'body:',
+      body
     )
     return res.json({
-      ok: false
+      ok: false,
     })
   }
   // Pushing new message to the queue
-  req.queue.push({
-    name: getPathComponents(req.path).pod,
-    body: req.body
-  }, result => {
-    logger.info('End: Webhook endpoint task', name, 'has finished')
-    res.json({
-      ok: getPathComponents(req.path),
-      result
-    })
-  })
+  req.queue.push(
+    {
+      name: getPathComponents(req.path).pod,
+      body: req.body,
+    },
+    result => {
+      logger.info('End: Webhook endpoint task', name, 'has finished')
+      res.json({
+        ok: getPathComponents(req.path),
+        result,
+      })
+    }
+  )
 }
 
 export default {
-  handleWebhook
+  handleWebhook,
 }

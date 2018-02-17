@@ -1,7 +1,7 @@
 import R from 'ramda'
 import fluture from 'fluture'
 import logger from '../logger'
-import {models} from '../models'
+import { models } from '../models'
 
 const Future = fluture.Future
 
@@ -30,24 +30,25 @@ export function create(pipeline) {
  * Find all pipelines by entry app name.
  * @param {string} entryApp
  */
-export const findAllPipelines = entryApp => Future((rej, res) => {
-  models.Pipeline.findAll({
-    where: {
-      entryApp
-    }
-  })
-    .then(pipelines => {
-      if (R.isEmpty(pipelines)) {
-        logger.error(
-          `Could not retrieve any pipelines of 
-          ${entryApp}, did you run node manage installAll?`
-        )
-        return rej()
-      }
-      res(pipelines)
+export const findAllPipelines = entryApp =>
+  Future((rej, res) => {
+    models.Pipeline.findAll({
+      where: {
+        entryApp,
+      },
     })
-    .catch(err => rej(err))
-})
+      .then(pipelines => {
+        if (R.isEmpty(pipelines)) {
+          logger.error(
+            `Could not retrieve any pipelines of 
+          ${entryApp}, did you run node manage installAll?`
+          )
+          return rej()
+        }
+        res(pipelines)
+      })
+      .catch(err => rej(err))
+  })
 
 /**
  * Current sequence can be edge or node
@@ -65,11 +66,7 @@ export const flattenSequence = (currentSequence, nodes = []) => {
   // If it's a node, it must have current props
   // Current props are including podName, graph
 
-  const node = (
-    R.pickAll(['actionName', 'podName', 'graph'],
-      currentSequence
-    )
-  )
+  const node = R.pickAll(['actionName', 'podName', 'graph'], currentSequence)
 
   if (node && node.podName && node.graph) {
     nodes.push(node)

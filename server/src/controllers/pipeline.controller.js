@@ -10,7 +10,7 @@ const list = (req, res) => {
     result => {
       return res.json({
         ok: true,
-        data: result
+        data: result,
       })
     }
   )
@@ -20,29 +20,28 @@ const list = (req, res) => {
 const create = (req, res) => {
   req.checkBody({
     title: {
-      notEmpty: true
+      notEmpty: true,
     },
     entryApp: {
-      notEmpty: true
+      notEmpty: true,
     },
     entryType: {
-      notEmpty: true
+      notEmpty: true,
     },
     description: {
-      notEmpty: true
+      notEmpty: true,
     },
     nodes: {
-      notEmpty: true
+      notEmpty: true,
     },
     edges: {
-      notEmpty: true
+      notEmpty: true,
     },
     dataMaps: {
-      notEmpty: true
-    }
+      notEmpty: true,
+    },
   })
-  const {title, entryApp, entryType, description, nodes, edges, dataMaps} = req.body
-  pipelineDao.create({
+  const {
     title,
     entryApp,
     entryType,
@@ -50,7 +49,17 @@ const create = (req, res) => {
     nodes,
     edges,
     dataMaps,
-  })
+  } = req.body
+  pipelineDao
+    .create({
+      title,
+      entryApp,
+      entryType,
+      description,
+      nodes,
+      edges,
+      dataMaps,
+    })
     .fork(
       error => {
         logger.error('failed to create a pipeline ', error)
@@ -59,7 +68,7 @@ const create = (req, res) => {
       result => {
         logger.info('Saved a pipeline!')
         return res.json({
-          result: `Successfully created a pipeline ! ${result.get('id')}`
+          result: `Successfully created a pipeline ! ${result.get('id')}`,
         })
       }
     )
@@ -67,5 +76,5 @@ const create = (req, res) => {
 
 export default {
   create,
-  list
+  list,
 }
