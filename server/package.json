@@ -12,7 +12,7 @@
     "build:dev": "npx cross-env NODE_ENV=development gulp build",
     "start": "npx cross-env NODE_ENV=development nodemon -L --watch src --watch pods --watch gulpfile.babel.js --watch .env --exec \"gulp build && node\" ./dist/index.js",
     "test": "jest --forceExit",
-    "xo:lint": "npx xo src/**/*.js ./manage.js ./migrate.js",
+    "xo:lint": "yarn fix && npx xo src/**/*.js ./manage.js ./migrate.js",
     "fix": "npx prettier --write \"./**/*.js\"",
     "sequelize": "npm run build:dev && npm run sequelize:clean && npm run sequelize:migrate && npm run sequelize:seed",
     "sequelize:clean": "node tools/sequelize/db_drop.js",

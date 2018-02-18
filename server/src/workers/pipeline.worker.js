@@ -44,6 +44,7 @@ const handleNextAction = ({
     // TODO: Any chain must start with a trigger
     if (actionName === 'webhook') {
       const newApiResponses = R.concat(apiResponses, [initialPayload])
+      console.log('checking webhook intial payload', initialPayload)
       return fres(newApiResponses)
     }
 
@@ -99,17 +100,24 @@ const processPipeline = R.curry((initialPayload, pipeline) =>
           // FIXME: Do we need this?
           apiResponses = apiResponses ? apiResponses : []
           // Current node data
-          const fromNode = R.find(R.propEq('id', id), nodes)
-          const actionName = R.propOr(null, 'actionName', fromNode)
-          const podName = R.propOr(null, 'podName', fromNode)
-
+          const fromNode = R.find(R.propEq('id', idx), nodes)
+          console.log('!!!')
+          console.log(fromNode)
+          const actionName = fromNode.actionName
+          console.log('hmm')
+          const podName = fromNode.podName
+          console.log('lol')
           // Current edge data
-          const edgeLens = R.lensIndex(Math.floor(idx / 2))
-          const edge = R.view(edgeLens, edges)
-          const edgeId = R.prop('id', edge)
-
+          const edge = edges[Math.floor(idx / 2)]
+          console.log('hmmmzzz')
+          const edgeId = edge.id
+          console.log('hmmm', edgeId)
           // Datamap
           const dataMap = R.find(R.propEq('edgeId', edgeId), dataMaps)
+          console.log(
+            'checking initial payload from proc pipeline ',
+            initialPayload,
+          )
 
           R.compose(
             R.chain(input =>
