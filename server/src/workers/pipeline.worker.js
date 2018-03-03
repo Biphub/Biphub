@@ -9,7 +9,7 @@ import format from 'string-template'
 const Future = fluture.Future
 
 const processDataMap = (apiResponses, dataMap) =>
-  Future.try((rej, res) => {
+  Future.try(() => {
     console.log('checking apiResponseDict', apiResponses)
     console.log('datamap ', dataMap)
     // 1. if there is dataMap.text handle it
@@ -19,7 +19,7 @@ const processDataMap = (apiResponses, dataMap) =>
       // Format(textTemplate, resultsDict)
     }
     // Otherwise simply return an empty object
-    res({})
+    return {}
   })
 
 const handleNextAction = ({
@@ -103,7 +103,7 @@ const processPipeline = R.curry((initialPayload, pipeline) =>
     const mapIndexed = R.addIndex(R.map)
     const getFutures = mapIndexed((id, idx) => {
       return apiResponses =>
-        Future.try((frej, fres) => {
+        Future.tryP(new Promise((fres, frej) => {
           // FIXME: Do we need this?
           apiResponses = apiResponses ? apiResponses : []
           // Current node data
@@ -114,12 +114,13 @@ const processPipeline = R.curry((initialPayload, pipeline) =>
           const edgeIndex = R.lensIndex(Math.floor(idx / 2))
           const edge = R.view(edgeIndex, edges)
           const edgeId = R.prop('id', edge)
-          const dataMap = R.ifElse(
-            !dataMaps,
-            R.find(R.propEq('id', edgeId), dataMaps),
-            null
-          )
-
+          console.log('checking yoyo')
+          let dataMap
+          if (dataMaps) {
+            dataMap = R.find(R.propEq('id', edgeId), dataMaps)
+          }
+          console.log('heyhey')
+          console.log(dataMap)
           if (!podName)
             return frej(`Invalid podName: ${podName}`)
           if (!actionName)
@@ -144,8 +145,12 @@ const processPipeline = R.curry((initialPayload, pipeline) =>
             () => {
               return processDataMap(apiResponses, dataMap)
             },
-          )().fork(error => frej(error), result => fres(result))
+          )().fork(
+            error => frej(error),
+            result => fres(result)
+          )
         })
+      )
     })
     const futures = R.apply(R.pipeK)(getFutures(flatActionIds))
     futures(null).fork(rej, res)
