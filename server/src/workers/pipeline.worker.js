@@ -9,7 +9,7 @@ import format from 'string-template'
 const Future = fluture.Future
 
 const processDataMap = (apiResponses, dataMap) =>
-  Future((rej, res) => {
+  Future.try((rej, res) => {
     console.log('checking apiResponseDict', apiResponses)
     console.log('datamap ', dataMap)
     // 1. if there is dataMap.text handle it
@@ -83,52 +83,64 @@ const handleNextAction = ({
  */
 const processPipeline = R.curry((initialPayload, pipeline) =>
   Future((rej, res) => {
-    const nodes = pipeline.nodes
-    const edges = pipeline.edges
-    const dataMaps = pipeline.dataMaps
+    const nodes = pipeline.get('nodes')
+    const edges = pipeline.get('edges')
+    const dataMaps = pipeline.get('dataMaps')
+    // Null check
+    if (!nodes)
+      return rej('Payload.Nodes is null')
+    if (!edges)
+      return rej('payload.edges is null')
+    console.log('checking datamap ', dataMaps)
     // Flatten all ids from edges
     const flatActionIds = R.compose(
       // Commenting out initial trigger id
       R.prepend(edges[0].from),
       R.map(edge => edge.to),
     )(edges)
+    console.log(flatActionIds)
     // Get all bridge actions in a map
     const mapIndexed = R.addIndex(R.map)
     const getFutures = mapIndexed((id, idx) => {
       return apiResponses =>
-        Future((frej, fres) => {
+        Future.try((frej, fres) => {
           // FIXME: Do we need this?
           apiResponses = apiResponses ? apiResponses : []
           // Current node data
-          const fromNode = R.find(R.propEq('id', idx), nodes)
-          console.log('!!!')
-          console.log(fromNode)
-          const actionName = fromNode.actionName
-          console.log('hmm')
-          const podName = fromNode.podName
-          console.log('lol')
-          // Current edge data
-          const edge = edges[Math.floor(idx / 2)]
-          console.log('hmmmzzz')
-          const edgeId = edge.id
-          console.log('hmmm', edgeId)
-          // Datamap
-          const dataMap = R.find(R.propEq('edgeId', edgeId), dataMaps)
-          console.log(
-            'checking initial payload from proc pipeline ',
-            initialPayload,
+          const fromNode = R.find(R.propEq('id', id), nodes)
+          // Action and podName
+          const actionName = R.prop('actionName', fromNode)
+          const podName = R.prop('podName', fromNode)
+          const edgeIndex = R.lensIndex(Math.floor(idx / 2))
+          const edge = R.view(edgeIndex, edges)
+          const edgeId = R.prop('id', edge)
+          const dataMap = R.ifElse(
+            !dataMaps,
+            R.find(R.propEq('id', edgeId), dataMaps),
+            null
           )
 
+          if (!podName)
+            return frej(`Invalid podName: ${podName}`)
+          if (!actionName)
+            return frej(`Invalid actionName: ${actionName}`)
+          if (!initialPayload)
+            return frej(`Invalid initial payload: ${initialPayload}`)
+          if (!apiResponses)
+            return frej(`Invalid apiResponses: ${apiResponses}`)
+
           R.compose(
-            R.chain(input =>
-              handleNextAction({
+            R.chain(input => {
+              if (!input)
+                frej(`Exception before handleNextAction, invalid input ${input}`)
+              return handleNextAction({
                 podName,
                 actionName,
                 initialPayload,
                 apiResponses,
                 input,
-              }),
-            ),
+              })
+            }),
             () => {
               return processDataMap(apiResponses, dataMap)
             },
@@ -145,7 +157,7 @@ const traversePipelines = R.curry((initialPayload, pipelines) =>
     if (R.isEmpty(pipelines)) {
       rej(new Error('Pipeline traverse failed because it is an empty list!'))
     }
-    console.log('checking initial payload', initialPayload)
+    console.log('checking initial payload yoyo', initialPayload)
     R.traverse(Future.of, processPipeline(initialPayload), pipelines).fork(
       rej,
       res,
