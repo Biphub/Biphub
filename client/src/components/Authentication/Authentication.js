@@ -44,6 +44,13 @@ class Authentication extends Component {
   _renderContent = (allPodAuths, tabValue) => {
     const authIndex = R.lensIndex(tabValue)
     const podAuth = R.view(authIndex, allPodAuths)
+    if (!podAuth) {
+      return (
+        <div>
+          Pod does not have any auth type!
+        </div>
+      )
+    }
     const { strategyType, properties } = podAuth
     if (strategyType === 'token') {
       const fields = R.mapObjIndexed((num, key, val) => (

@@ -39,7 +39,11 @@ class PodCardList extends Component {
   }
   _onClickPodCard = (id) => {
     const { onClick } = this.props
-    onClick(id)
+    if (onClick) {
+      onClick(id)
+    } else {
+      console.warn('OnClick is undefined!')
+    }
   }
   /**
    * Searchbox input onchange

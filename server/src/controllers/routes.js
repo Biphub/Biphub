@@ -7,7 +7,7 @@ import webhooksContoller from './webhooks.controller'
 export default () => {
   const api = Router()
   // Pods
-  api.get('/pod', podController.list)
+  // api.get('/pod', podController.list)
 
   // Pipelines
   api.get('/pipeline', pipelineController.list)

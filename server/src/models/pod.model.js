@@ -1,7 +1,7 @@
 import Sequelize from 'sequelize'
 
 // Conventional namespace used by all biphub pods
-const NAMESPACE = 'biphub-pod-'
+// const NAMESPACE = 'biphub-pod-'
 
 export default function(sequelize) {
   const Pod = sequelize.define(
@@ -27,7 +27,7 @@ export default function(sequelize) {
         get() {
           const name = this.getDataValue('name')
           const icon = this.getDataValue('icon')
-          return `pods/${NAMESPACE}${name}/images/${icon}`
+          return `pods/${name}/images/${icon}`
         },
       },
       styles: {

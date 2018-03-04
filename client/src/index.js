@@ -10,7 +10,7 @@ import 'vis/dist/vis.css'
 import './index.css'
 import PrimaryLayout from './layouts/PrimaryLayout'
 import HomePage from './pages/HomePage/HomePage'
-import PodsPage from './pages/PodsPage'
+// import PodsPage from './pages/PodsPage'
 import PipelinePage from './pages/PipelinePage'
 import registerServiceWorker from './registerServiceWorker'
 

@@ -24,7 +24,7 @@ const Header = styled.header`
   z-index: 102;
 `
 
-const LogoImg = styled.div`
+const LogoImg = styled(Link)`
   padding-left: 10px;
   width: 20%;
   img {
@@ -59,8 +59,13 @@ const Main = styled.main`
 const PrimaryLayout = (props) => (
   <PageWrapper>
     <Header>
-      <LogoImg>
-        <img src={BiphubLogo} alt='Biphub Logo' />
+      <LogoImg
+        key='home'
+        to='/'
+      >
+        <img
+          src={BiphubLogo} alt='Biphub Logo'
+        />
       </LogoImg>
       <HeaderNav>
         <Nav

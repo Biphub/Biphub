@@ -1,4 +1,5 @@
 import { exec } from 'child_process'
+import path from 'path'
 import R from 'ramda'
 import graphqlHTTP from 'express-graphql'
 import fluture from 'fluture'
@@ -13,6 +14,7 @@ import errorHandler from 'errorhandler'
 import lusca from 'lusca'
 import flash from 'express-flash'
 import expressValidator from 'express-validator'
+import morgan from 'morgan'
 import logger from './logger'
 import { default as config } from './config'
 import { sequelize } from './models'
@@ -43,9 +45,10 @@ const bootstrapExpress = app =>
       }),
     )
     app.set('port', process.env.PORT || 3000)
-    app.set('view engine', 'pug')
+    // app.set('view engine', 'pug')
     app.use(compression())
     app.use(cors())
+    app.use(morgan('combined'))
     app.use(bodyParser.json())
     app.use(bodyParser.urlencoded({ extended: true }))
     app.use(expressValidator())
@@ -54,6 +57,7 @@ const bootstrapExpress = app =>
     app.use(flash())
     app.use(lusca.xframe('SAMEORIGIN'))
     app.use(lusca.xssProtection(true))
+    // Setting locals user
     app.use((req, res, next) => {
       res.locals.user = req.user
       next()
@@ -79,6 +83,8 @@ const bootstrapExpress = app =>
     // Main statics
     app.use(express.static(appRoot.resolve('/src/public'), staticConfig))
     logger.info('main /src/public static is set!')
+    console.log('checking  ', appRoot.resolve('pods'))
+    console.log(path.join(__dirname, 'pods'))
     app.use('/pods', express.static(appRoot.resolve('/pods'), staticConfig))
     logger.info('staging pod /pod/staging')
     // Routes!
