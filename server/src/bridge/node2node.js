@@ -75,7 +75,7 @@ export const invokeAction2 = (podName, actionName, attributes) =>
  * @param {string} actionName
  * @param input
  */
-async function invokeAction({podName, actionName, input}) {
+async function invokeAction({ podName, actionName, input }) {
   const env = process.env.NODE_ENV
   const camelActionName = changeCase.camelCase(actionName)
   if (env === 'development' || env === 'test') {
@@ -101,5 +101,5 @@ async function invokeAction({podName, actionName, input}) {
 }
 
 export default {
-  invokeAction
+  invokeAction,
 }
