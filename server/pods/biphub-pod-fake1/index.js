@@ -7,7 +7,7 @@ module.exports = {
       }, 2000)
     })
   },
-  searchChannel: ({ searchText }) => {
+  searchChannel: function ({ searchText }) {
     return new Promise((res, rej) => {
       setTimeout(() => {
         console.info('Searching a channel! ', searchText)
@@ -15,7 +15,7 @@ module.exports = {
       }, 2000)
     })
   },
-  deleteFakeMessage: ({ messageId }) => {
+  deleteFakeMessage: function ({ messageId }) {
     return new Promise((res, rej) => {
       setTimeout(() => {
         console.info('Deleting a fake message', messageId)

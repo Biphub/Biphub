@@ -75,7 +75,7 @@ export const invokeAction2 = (podName, actionName, attributes) =>
  * @param {string} actionName
  * @param input
  */
-export async function invokeAction({podName, actionName, input}) {
+async function invokeAction({podName, actionName, input}) {
   const env = process.env.NODE_ENV
   const camelActionName = changeCase.camelCase(actionName)
   if (env === 'development' || env === 'test') {
@@ -87,13 +87,10 @@ export async function invokeAction({podName, actionName, input}) {
     console.log('checking staging pod method ', podName, ' ', camelActionName)
     // If found method is a promise
     if (stagingPodMethod) {
-      stagingPodMethod(input)
-        .then(result => {
-          console.info(`podMethod was successfully invoked
+      const result = await stagingPodMethod(input)
+      console.info(`podMethod was successfully invoked
            ${camelActionName} result of podMethod ${result}`)
-          return Promise.resolve(result)
-        })
-        .catch(err => rej(err))
+      return Promise.resolve(result)
     } else {
       return Promise.reject(
         new Error(`Pod method does not exist
@@ -102,33 +99,7 @@ export async function invokeAction({podName, actionName, input}) {
     }
   }
 }
-/*
-export const invokeAction = (podName, actionName, input) =>
-  Future((rej, res) => {
-    const env = process.env.NODE_ENV
-    const camelActionName = changeCase.camelCase(actionName)
-    if (env === 'development' || env === 'test') {
-      const stagingPodMethod = R.pathOr(
-        null,
-        [podName, 'index', camelActionName],
-        pods,
-      )
-      console.log('checking staging pod method ', podName, ' ', camelActionName)
-      // If found method is a promise
-      if (stagingPodMethod) {
-        stagingPodMethod(input)
-          .then(result => {
-            console.info(`podMethod was successfully invoked
-             ${camelActionName} result of podMethod ${result}`)
-            res(result)
-          })
-          .catch(err => rej(err))
-      } else {
-        rej(
-          new Error(`Pod method does not exist
-           ${podName} of ${camelActionName}`),
-        )
-      }
-    }
-  })
-*/
+
+export default {
+  invokeAction
+}

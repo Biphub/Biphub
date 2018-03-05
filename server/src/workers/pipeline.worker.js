@@ -1,9 +1,8 @@
 import R from 'ramda'
 import fluture from 'fluture'
 import logger from '../logger'
-import { findPodByName } from '../DAO/pod.dao'
 import { findAllPipelines } from '../DAO/pipeline.dao'
-import * as nodeBridge from '../bridge/node2node'
+import nodeBridge from '../bridge/node2node'
 import format from 'string-template'
 
 const Future = fluture.Future
@@ -37,24 +36,30 @@ async function invokeAction({
     )
   }
   logger.info('======================================')
-    logger.info('Init: Task', podName, ':', actionName)
+  logger.info('Init: Task', podName, ':', actionName)
 
-    // Handle any triggers (e.g. webhook)
-    // TODO: Any chain must start with a trigger
-    if (actionName === 'webhook') {
-      const newApiResponses = R.concat(apiResponses, [initialPayload])
-      return Promise.resolve(newApiResponses)
-    }
+  // Handle any triggers (e.g. webhook)
+  // TODO: Any chain must start with a trigger
+  if (actionName === 'webhook') {
+    const newApiResponses = R.concat(apiResponses, [initialPayload])
+    return Promise.resolve(newApiResponses)
+  }
 
-    // Running action
-    // FIXME: Later, should we support more than just nodeBridge?
-    const payload = await nodeBridge.invokeAction({podName, actionName, input})
-    const nextPayload = {
-      podName,
-      actionName,
-      payload,
-    }
-    return Promise.resolve(nextPayload)
+  // Running action
+  // FIXME: Later, should we support more than just nodeBridge?z
+  const payload = await nodeBridge.invokeAction({podName, actionName, input})
+  const nextPayload = {
+    podName,
+    actionName,
+    payload,
+  }
+  logger.info('End of the task')
+  console.log(nextPayload)
+  console.log('checking promise resolve')
+  console.log(Promise.resolve)
+  console.log('')
+  // logger.info('======================================')
+  return Promise.resolve(nextPayload)
 }
 
 async function handleAction(
@@ -73,7 +78,60 @@ async function handleAction(
     apiResponses,
     input
   })
+  console.log('handling action! ')
+  console.log(actionResult)
+  console.log('')
   return Promise.resolve(actionResult)
+}
+
+async function getFutureActions({
+  nodes,
+  edges,
+  dataMaps,
+  initialPayload
+}) {
+  const flatActionIds = R.compose(
+    // Commenting out initial trigger id
+    R.prepend(edges[0].from),
+    R.map(edge => edge.to),
+  )(edges)
+  const mapIndexed = R.addIndex(R.map)
+  const getFutures = mapIndexed((id, index) => {
+    return apiResponses =>
+      Future((frej, fres) => {
+        apiResponses = apiResponses ? apiResponses : []
+        // Current node data
+        const fromNode = R.find(R.propEq('id', id), nodes)
+        // Action and podName
+        const actionName = R.prop('actionName', fromNode)
+        const podName = R.prop('podName', fromNode)
+        const edgeIndex = R.lensIndex(Math.floor(index / 2))
+        const edge = R.view(edgeIndex, edges)
+        const edgeId = R.prop('id', edge)
+        let dataMap
+        if (dataMaps) {
+          dataMap = R.find(R.propEq('id', edgeId), dataMaps)
+        }
+        if (!podName) return Promise.reject(`Invalid podName: ${podName}`)
+        if (!actionName)
+          return Promise.reject(`Invalid actionName: ${actionName}`)
+        if (!initialPayload)
+          return Promise.reject(`Invalid initial payload: ${initialPayload}`)
+        if (!apiResponses)
+          return Promise.reject(`Invalid apiResponses: ${apiResponses}`)
+
+        handleAction(
+          podName,
+          actionName,
+          dataMap,
+          initialPayload,
+          apiResponses
+        ).then(fres).catch(frej)
+      })
+  })
+  const futures = R.apply(R.pipeK)(getFutures(flatActionIds))
+  // const futures = getFutures(flatActionIds)
+  return Promise.resolve(futures)
 }
 
 /**
@@ -86,57 +144,29 @@ const processPipeline = R.curry((initialPayload, pipeline) =>
   Future((rej, res) => {
     const nodes = pipeline.get('nodes')
     const edges = pipeline.get('edges')
+    // Datamaps can be null
     const dataMaps = pipeline.get('dataMaps')
     // Null check
     if (!nodes) return rej('Payload.Nodes is null')
     if (!edges) return rej('payload.edges is null')
-    console.log('checking datamap ', dataMaps)
-    // Flatten all ids from edges
-    const flatActionIds = R.compose(
-      // Commenting out initial trigger id
-      R.prepend(edges[0].from),
-      R.map(edge => edge.to),
-    )(edges)
-    console.log(flatActionIds)
-    // Get all bridge actions in a map
-    const mapIndexed = R.addIndex(R.map)
-    const getFutures = mapIndexed((id, index) => {
-      return apiResponses =>
-        Future((frej, fres) => {
+    return getFutureActions({
+      nodes,
+      edges,
+      dataMaps,
+      initialPayload
+    }).then((futures) => {
+      futures(null).fork(
+        rej,
+        (result) => {
+          console.log('finished invoking ', result)
+          console.log('aoaoao', res)
+          console.log('')
+          res(result)
+        }
+      )
+    }).catch(rej)
 
-          apiResponses = apiResponses ? apiResponses : []
-          // Current node data
-          const fromNode = R.find(R.propEq('id', id), nodes)
-          // Action and podName
-          const actionName = R.prop('actionName', fromNode)
-          const podName = R.prop('podName', fromNode)
-          const edgeIndex = R.lensIndex(Math.floor(index / 2))
-          const edge = R.view(edgeIndex, edges)
-          const edgeId = R.prop('id', edge)
-          let dataMap
-          if (dataMaps) {
-            dataMap = R.find(R.propEq('id', edgeId), dataMaps)
-          }
-          if (!podName) return Promise.reject(`Invalid podName: ${podName}`)
-          if (!actionName)
-            return Promise.reject(`Invalid actionName: ${actionName}`)
-          if (!initialPayload)
-            return Promise.reject(`Invalid initial payload: ${initialPayload}`)
-          if (!apiResponses)
-            return Promise.reject(`Invalid apiResponses: ${apiResponses}`)
 
-          handleAction(
-            podName,
-            actionName,
-            dataMap,
-            initialPayload,
-            apiResponses
-          ).then(fres).catch((frej))
-        })
-    })
-
-    const futures = R.apply(R.pipeK)(getFutures(flatActionIds))
-    futures(null).fork(rej, res)
   }),
 )
 
@@ -145,10 +175,12 @@ const traversePipelines = R.curry((initialPayload, pipelines) =>
     if (R.isEmpty(pipelines)) {
       rej(new Error('Pipeline traverse failed because it is an empty list!'))
     }
-    console.log('checking initial payload yoyo', initialPayload)
     R.traverse(Future.of, processPipeline(initialPayload), pipelines).fork(
       rej,
-      res,
+      (result) => {
+        console.log('traverpipe!! done!1 ', result)
+        res(result)
+      },
     )
   }),
 )
@@ -183,6 +215,7 @@ const executeTask = (task, cb) => {
         ' ',
         results,
       )
+      console.log('hey!')
       cb(results)
     },
   )
