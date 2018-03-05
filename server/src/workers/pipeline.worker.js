@@ -8,72 +8,73 @@ import format from 'string-template'
 
 const Future = fluture.Future
 
-const processDataMap = (apiResponses, dataMap) =>
-  Future.try(() => {
-    console.log('checking apiResponseDict', apiResponses)
-    console.log('datamap ', dataMap)
-    // 1. if there is dataMap.text handle it
-    // 1.1. catch any exceptions
-    const textTemplate = R.prop('textTemplate', dataMap)
-    if (textTemplate) {
-      // Format(textTemplate, resultsDict)
-    }
-    // Otherwise simply return an empty object
-    return {}
-  })
+async function processDataMap({apiResponses, dataMap}) {
+  if (!dataMap) {
+    // Return an empty object if dataMap is invalid
+    return Promise.resolve({})
+  }
+  // 1. if there is dataMap.text handle it
+  // 1.1. catch any exceptions
+  const textTemplate = R.prop('textTemplate', dataMap)
+  if (textTemplate) {
+    // Format(textTemplate, resultsDict)
+  }
+  // Otherwise simply return an empty object
+  return Promise.resolve({})
+}
 
-const handleNextAction = ({
+async function invokeAction({
   podName,
   actionName,
   initialPayload,
   apiResponses,
   input,
-}) =>
-  Future((frej, fres) => {
-    // If either one of these is not provided, halt the process
-    if (!actionName || !podName) {
-      return frej(
-        new Error(`Invalid node found in process pipeline.
-                This is not permitted`),
-      )
-    }
-    logger.info('======================================')
+}) {
+  if (!actionName || !podName) {
+    return Promise.reject(
+      new Error(`Invalid node found in process pipeline.
+              This is not permitted`),
+    )
+  }
+  logger.info('======================================')
     logger.info('Init: Task', podName, ':', actionName)
 
     // Handle any triggers (e.g. webhook)
     // TODO: Any chain must start with a trigger
     if (actionName === 'webhook') {
       const newApiResponses = R.concat(apiResponses, [initialPayload])
-      console.log('checking webhook intial payload', initialPayload)
-      return fres(newApiResponses)
+      return Promise.resolve(newApiResponses)
     }
 
     // Running action
     // FIXME: Later, should we support more than just nodeBridge?
-    nodeBridge.invokeAction(podName, actionName, input).fork(
-      err => {
-        logger.error(
-          'Action has failed; Task:',
-          `${podName}:${actionName}`,
-          err,
-        )
-        frej(err)
-      },
-      payload => {
-        //  const resIndex = R.findIndex(R.propEq('podId', id), resultsDict)
-        const nextPayload = {
-          podName,
-          actionName,
-          payload,
-        }
-        const newApiResponses = R.concat(apiResponses, [nextPayload])
-        console.log('Checking newApiResponses', newApiResponses)
-        logger.info('End of a task for ', podName)
-        logger.info('======================================')
-        fres(newApiResponses)
-      },
-    )
+    const payload = await nodeBridge.invokeAction({podName, actionName, input})
+    const nextPayload = {
+      podName,
+      actionName,
+      payload,
+    }
+    return Promise.resolve(nextPayload)
+}
+
+async function handleAction(
+  podName,
+  actionName,
+  dataMap,
+  initialPayload,
+  apiResponses
+) {
+
+  const input = await processDataMap({apiResponses, dataMap})
+  const actionResult = await invokeAction({
+    podName,
+    actionName,
+    initialPayload,
+    apiResponses,
+    input
   })
+  return Promise.resolve(actionResult)
+}
 
 /**
  * Process sequences by turning them into a list of futures
@@ -87,10 +88,8 @@ const processPipeline = R.curry((initialPayload, pipeline) =>
     const edges = pipeline.get('edges')
     const dataMaps = pipeline.get('dataMaps')
     // Null check
-    if (!nodes)
-      return rej('Payload.Nodes is null')
-    if (!edges)
-      return rej('payload.edges is null')
+    if (!nodes) return rej('Payload.Nodes is null')
+    if (!edges) return rej('payload.edges is null')
     console.log('checking datamap ', dataMaps)
     // Flatten all ids from edges
     const flatActionIds = R.compose(
@@ -101,57 +100,41 @@ const processPipeline = R.curry((initialPayload, pipeline) =>
     console.log(flatActionIds)
     // Get all bridge actions in a map
     const mapIndexed = R.addIndex(R.map)
-    const getFutures = mapIndexed((id, idx) => {
+    const getFutures = mapIndexed((id, index) => {
       return apiResponses =>
-        Future.tryP(new Promise((fres, frej) => {
-          // FIXME: Do we need this?
+        Future((frej, fres) => {
+
           apiResponses = apiResponses ? apiResponses : []
           // Current node data
           const fromNode = R.find(R.propEq('id', id), nodes)
           // Action and podName
           const actionName = R.prop('actionName', fromNode)
           const podName = R.prop('podName', fromNode)
-          const edgeIndex = R.lensIndex(Math.floor(idx / 2))
+          const edgeIndex = R.lensIndex(Math.floor(index / 2))
           const edge = R.view(edgeIndex, edges)
           const edgeId = R.prop('id', edge)
-          console.log('checking yoyo')
           let dataMap
           if (dataMaps) {
             dataMap = R.find(R.propEq('id', edgeId), dataMaps)
           }
-          console.log('heyhey')
-          console.log(dataMap)
-          if (!podName)
-            return frej(`Invalid podName: ${podName}`)
+          if (!podName) return Promise.reject(`Invalid podName: ${podName}`)
           if (!actionName)
-            return frej(`Invalid actionName: ${actionName}`)
+            return Promise.reject(`Invalid actionName: ${actionName}`)
           if (!initialPayload)
-            return frej(`Invalid initial payload: ${initialPayload}`)
+            return Promise.reject(`Invalid initial payload: ${initialPayload}`)
           if (!apiResponses)
-            return frej(`Invalid apiResponses: ${apiResponses}`)
+            return Promise.reject(`Invalid apiResponses: ${apiResponses}`)
 
-          R.compose(
-            R.chain(input => {
-              if (!input)
-                frej(`Exception before handleNextAction, invalid input ${input}`)
-              return handleNextAction({
-                podName,
-                actionName,
-                initialPayload,
-                apiResponses,
-                input,
-              })
-            }),
-            () => {
-              return processDataMap(apiResponses, dataMap)
-            },
-          )().fork(
-            error => frej(error),
-            result => fres(result)
-          )
+          handleAction(
+            podName,
+            actionName,
+            dataMap,
+            initialPayload,
+            apiResponses
+          ).then(fres).catch((frej))
         })
-      )
     })
+
     const futures = R.apply(R.pipeK)(getFutures(flatActionIds))
     futures(null).fork(rej, res)
   }),

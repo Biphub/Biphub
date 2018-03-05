@@ -1,5 +1,4 @@
 import fs from 'fs'
-import path from 'path'
 import R from 'ramda'
 import appRoot from 'app-root-path'
 import requireAll from 'require-all'
@@ -7,7 +6,7 @@ import changeCase from 'change-case'
 import fluture from 'fluture'
 import logger from '../logger'
 
-const pods = requireAll(path.join(__dirname, '/../../pods'))
+const pods = requireAll(appRoot.resolve('/pods'))
 
 const Future = fluture.Future
 
@@ -76,6 +75,34 @@ export const invokeAction2 = (podName, actionName, attributes) =>
  * @param {string} actionName
  * @param input
  */
+export async function invokeAction({podName, actionName, input}) {
+  const env = process.env.NODE_ENV
+  const camelActionName = changeCase.camelCase(actionName)
+  if (env === 'development' || env === 'test') {
+    const stagingPodMethod = R.pathOr(
+      null,
+      [podName, 'index', camelActionName],
+      pods,
+    )
+    console.log('checking staging pod method ', podName, ' ', camelActionName)
+    // If found method is a promise
+    if (stagingPodMethod) {
+      stagingPodMethod(input)
+        .then(result => {
+          console.info(`podMethod was successfully invoked
+           ${camelActionName} result of podMethod ${result}`)
+          return Promise.resolve(result)
+        })
+        .catch(err => rej(err))
+    } else {
+      return Promise.reject(
+        new Error(`Pod method does not exist
+         ${podName} of ${camelActionName}`),
+      )
+    }
+  }
+}
+/*
 export const invokeAction = (podName, actionName, input) =>
   Future((rej, res) => {
     const env = process.env.NODE_ENV
@@ -86,6 +113,7 @@ export const invokeAction = (podName, actionName, input) =>
         [podName, 'index', camelActionName],
         pods,
       )
+      console.log('checking staging pod method ', podName, ' ', camelActionName)
       // If found method is a promise
       if (stagingPodMethod) {
         stagingPodMethod(input)
@@ -103,3 +131,4 @@ export const invokeAction = (podName, actionName, input) =>
       }
     }
   })
+*/
