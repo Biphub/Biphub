@@ -56,6 +56,7 @@ class PipelinePage extends Component {
    * @private
    */
   _onClickPodCard = (groupIndex, id) => {
+    console.log('Clicked ', groupIndex, ' pod id ', id)
     this._fetchActionByPodId(groupIndex, id)
   }
   /**
@@ -75,7 +76,7 @@ class PipelinePage extends Component {
       const { stepScript } = this.state
       const newStepScript = R.compose(
         x => StepScript.setNextStep(groupIndex, 0, x),
-        x => StepScript.setGroupValue(
+        x => StepScript.setStepValue(
           groupIndex,
           'podId',
           podId,
@@ -115,7 +116,7 @@ class PipelinePage extends Component {
       const allPodAuths = R.view(authLens, res)
       const newStepScript = R.compose(
         x => StepScript.setNextStep(groupIndex, 1, x),
-        x => StepScript.setGroupValue(groupIndex, 'triggerId', triggerId, x)
+        x => StepScript.setStepValue(groupIndex, 'triggerId', triggerId, x)
       )(stepScript)
       this.setState({
         stepScript: newStepScript,

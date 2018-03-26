@@ -3,6 +3,25 @@ import settings from "./settings";
 const mapIndexed = R.addIndex(R.map)
 
 /**
+ * What is stepscript?
+ *
+ * Script used by pipeline steps (frontend)
+ * {
+ *   name: name of the step
+ *   description: Description of the pipeline
+ *   editing: step that is currently being edited
+ *   steps: [
+ *     // step object
+ *     {
+ *        id: unique identification
+ *        description: description of this step
+ *        nextStep: nextStep
+ *     }
+ *   ]
+ * }
+ */
+
+/**
  * UUID4 Generator
  * @returns {string}
  */
@@ -39,7 +58,7 @@ const init = (number = 2) => {
         trigger: 'event', // This may change
         triggerId: -1,
         options: {},
-        lastEditingStep: 0,
+        // lastEditingStep: 0,
         nextStep: '', // going to next index by default
       }
     }
@@ -101,13 +120,14 @@ const setNextStep = (groupIndex, stepIndex, stepScript) => {
 
 /**
  * Set group value by key
- * @param groupIndex
+ * @param stepIndex
  * @param key
  * @param value
  * @param stepScript
  */
-const setGroupValue = (groupIndex, key, value, stepScript) => {
-  const stepLens = R.lensPath(['steps', groupIndex, key])
+const setStepValue = (stepIndex, key, value, stepScript) => {
+  console.log('gindex ', stepIndex, ' key ', key, ' value ', value, ' script ', stepScript)
+  const stepLens = R.lensPath(['steps', stepIndex, key])
   return R.set(stepLens, value, stepScript)
 }
 
@@ -125,5 +145,5 @@ export default {
   getStepName,
   setNextStep,
   appendStep,
-  setGroupValue,
+  setStepValue,
 }

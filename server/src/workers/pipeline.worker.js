@@ -73,9 +73,6 @@ async function handleAction(
     apiResponses,
     input,
   })
-  console.log('handling action! ')
-  console.log(actionResult)
-  console.log('')
   return Promise.resolve(actionResult)
 }
 
