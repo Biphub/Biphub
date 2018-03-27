@@ -56,8 +56,8 @@ class PipelineSteps extends Component {
     active: {
       index: 0,
       type: 'event',
-      step: 'choosePod'
-    }
+      step: 'choosePod',
+    },
   }
   /**
    *
@@ -82,18 +82,13 @@ class PipelineSteps extends Component {
     const { stepScript } = this.props
     const rendered = mapIndexed((x, stepIndex) => {
       const [xGroupIndex, yStepIndex] = stepScript.editing
-      if (
-        groupIndex === xGroupIndex &&
-        stepIndex === yStepIndex
-      ) {
+      if (groupIndex === xGroupIndex && stepIndex === yStepIndex) {
         return (
           <StepButtonActive
             key={`${groupIndex}_${stepIndex}_${x.name}`}
-            onClick={
-              () => this._onStepClick(groupIndex, stepIndex)
-            }
+            onClick={() => this._onStepClick(groupIndex, stepIndex)}
           >
-            <Icon type='pencil' />
+            <Icon type="pencil" />
             <StepButtonLabel>{x.title}</StepButtonLabel>
           </StepButtonActive>
         )
@@ -103,16 +98,12 @@ class PipelineSteps extends Component {
           key={`${groupIndex}_${stepIndex}_${x.name}`}
           onClick={() => this._onStepClick(groupIndex, stepIndex)}
         >
-          <Icon type='lock' />
+          <Icon type="lock" />
           <StepButtonLabel>{x.title}</StepButtonLabel>
         </StepButtonInactive>
       )
     }, steps)
-    return (
-      <Step>
-        {rendered}
-      </Step>
-    )
+    return <Step>{rendered}</Step>
   }
 
   render() {
@@ -127,16 +118,10 @@ class PipelineSteps extends Component {
     return (
       <Container>
         <div>
-          <TextField
-            placeholder='Pipeline title'
-          />
+          <TextField placeholder="Pipeline title" />
         </div>
-        <div>
-          {actionSteps}
-        </div>
-        <div>
-          add step
-        </div>
+        <div>{actionSteps}</div>
+        <div>add step</div>
       </Container>
     )
   }

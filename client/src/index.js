@@ -15,9 +15,9 @@ import PipelinePage from './pages/PipelinePage'
 import registerServiceWorker from './registerServiceWorker'
 
 const routes = [
-  <Route path='/' name='home' exact component={HomePage} />,
-  <Route path='/pipeline' name='pipeline' component={PipelinePage} />,
-  <Route path='/pipeline/:id' name='pipeline' component={PipelinePage} />,
+  <Route path="/" name="home" exact component={HomePage} />,
+  <Route path="/pipeline" name="pipeline" component={PipelinePage} />,
+  <Route path="/pipeline/:id" name="pipeline" component={PipelinePage} />,
 ]
 
 const RouterApp = () => (
@@ -32,7 +32,7 @@ const client = new ApolloClient({
   // Pass the configuration option { uri: YOUR_GRAPHQL_API_URL } to the `HttpLink` to connect
   // to a different host
   link: new HttpLink({ uri: process.env.GRAPHQL_URI || '/graphql' }),
-  cache: new InMemoryCache()
+  cache: new InMemoryCache(),
 })
 
 const ApolloApp = () => (

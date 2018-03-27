@@ -1,5 +1,5 @@
 import * as R from 'ramda'
-import React, { Component }  from 'react'
+import React, { Component } from 'react'
 import styled from 'styled-components'
 import TextField from 'material-ui/TextField'
 import PodCard from '../PodCard'
@@ -35,9 +35,9 @@ const _PodCardsContainer = styled.div`
 
 class PodCardList extends Component {
   state = {
-    search: ''
+    search: '',
   }
-  _onClickPodCard = (id) => {
+  _onClickPodCard = id => {
     const { onClick } = this.props
     if (onClick) {
       onClick(id)
@@ -50,57 +50,50 @@ class PodCardList extends Component {
    * @param event
    * @private
    */
-  _onSearch = (event) => {
+  _onSearch = event => {
     this.setState({
       search: event.target.value,
     })
   }
   render() {
-    const {
-      allPods = [],
-    } = this.props
-    const {
-      search
-    } = this.state
+    const { allPods = [] } = this.props
+    const { search } = this.state
     const bgPath = R.lensPath(['styles', 'background-color'])
     // Build pod cards
     const getPodCards = R.compose(
-      R.map(x => <PodCard
-        key={`PodCard-${x.id}`}
-        name={x.title}
-        id={x.id}
-        icon={x.icon}
-        background={R.view(bgPath, x)}
-        onClick={this._onClickPodCard}
-      />),
-      R.filter((x) => {
+      R.map(x => (
+        <PodCard
+          key={`PodCard-${x.id}`}
+          name={x.title}
+          id={x.id}
+          icon={x.icon}
+          background={R.view(bgPath, x)}
+          onClick={this._onClickPodCard}
+        />
+      )),
+      R.filter(x => {
         if (!search) {
           return true
         }
-        return R.compose(
-          x => x.indexOf(search) !== -1,
-          R.toLower
-        )(x.title)
-      })
+        return R.compose(x => x.indexOf(search) !== -1, R.toLower)(x.title)
+      }),
     )
 
     return (
       <_Container>
         <_SearchContainer>
           <_SearchText
-            placeholder='Search a pod...'
+            placeholder="Search a pod..."
             InputProps={{
               disableUnderline: true,
             }}
             InputLabelProps={{
-              shrink: true
+              shrink: true,
             }}
             onChange={this._onSearch}
           />
         </_SearchContainer>
-        <_PodCardsContainer>
-          {getPodCards(allPods)}
-        </_PodCardsContainer>
+        <_PodCardsContainer>{getPodCards(allPods)}</_PodCardsContainer>
       </_Container>
     )
   }

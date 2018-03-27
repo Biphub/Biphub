@@ -56,36 +56,27 @@ const Main = styled.main`
   overflow: hidden;
 `
 
-const PrimaryLayout = (props) => (
+const PrimaryLayout = props => (
   <PageWrapper>
     <Header>
-      <LogoImg
-        key='home'
-        to='/'
-      >
-        <img
-          src={BiphubLogo} alt='Biphub Logo'
-        />
+      <LogoImg key="home" to="/">
+        <img src={BiphubLogo} alt="Biphub Logo" />
       </LogoImg>
       <HeaderNav>
-        <Nav
-          key='primary-nav-pod'
-          to='/pods'>Pods</Nav>
-        <Nav
-          key='primary-nav-auth'
-          to='/'>Auth</Nav>
-        <Nav
-          key='primary-nav-pipeline'
-          to={{pathname: 'pipeline'}}>
-          <Button raised color='primary'>
+        <Nav key="primary-nav-pod" to="/pods">
+          Pods
+        </Nav>
+        <Nav key="primary-nav-auth" to="/">
+          Auth
+        </Nav>
+        <Nav key="primary-nav-pipeline" to={{ pathname: 'pipeline' }}>
+          <Button raised color="primary">
             Create Pipeline
           </Button>
         </Nav>
       </HeaderNav>
     </Header>
-    <Main>
-      {props.routes}
-    </Main>
+    <Main>{props.routes}</Main>
   </PageWrapper>
 )
 

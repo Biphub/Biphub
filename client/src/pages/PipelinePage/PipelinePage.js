@@ -9,7 +9,6 @@ import StepScript from '../../StepScript'
 import ACTION_QUERY from '../../graphql/ActionsByPodQuery'
 import AUTH_QUERY from '../../graphql/AuthByPodQuery'
 
-
 const _Page = styled.div`
   height: 100%;
   display: flex;
@@ -37,14 +36,14 @@ class PipelinePage extends Component {
     activeStep: {
       index: 0,
       type: 'event',
-      step: 'choosePod'
+      step: 'choosePod',
     },
     // Stores values
     steps: [],
     // Current states
     selectedPod: {},
     allActions: [],
-    allPodAuths: []
+    allPodAuths: [],
   }
 
   /**
@@ -66,36 +65,36 @@ class PipelinePage extends Component {
    * @private
    */
   _fetchActionByPodId = (groupIndex, podId) => {
-    this.props.client.query({
-      query: ACTION_QUERY,
-      variables: {
-        podId
-      }
-    }).then((res) => {
-      const { stepScript } = this.state
-      const newStepScript = R.compose(
-        x => StepScript.setNextStep(groupIndex, 0, x),
-        x => StepScript.setStepValue(
-          groupIndex,
-          'podId',
+    this.props.client
+      .query({
+        query: ACTION_QUERY,
+        variables: {
           podId,
-          x
-        )
-      )(stepScript)
-      this.setState({
-        stepScript: newStepScript
-      }, () => {
-        const podPath = R.lensPath(['data', 'allPods'])
-        const actionsPath = R.lensPath(['data', 'allActions'])
-        const selectedPod = R.view(podPath, res)
-        const allActions = R.view(actionsPath, res)
-        // Setting selected pod and allActions of the pod
-        this.setState({
-          selectedPod,
-          allActions
-        })
+        },
       })
-    })
+      .then(res => {
+        const { stepScript } = this.state
+        const newStepScript = R.compose(
+          x => StepScript.setNextStep(groupIndex, 0, x),
+          x => StepScript.setStepValue(groupIndex, 'podId', podId, x),
+        )(stepScript)
+        this.setState(
+          {
+            stepScript: newStepScript,
+          },
+          () => {
+            const podPath = R.lensPath(['data', 'allPods'])
+            const actionsPath = R.lensPath(['data', 'allActions'])
+            const selectedPod = R.view(podPath, res)
+            const allActions = R.view(actionsPath, res)
+            // Setting selected pod and allActions of the pod
+            this.setState({
+              selectedPod,
+              allActions,
+            })
+          },
+        )
+      })
   }
   /**
    * On click action
@@ -105,23 +104,28 @@ class PipelinePage extends Component {
    */
   _onClickTriggerCard = (groupIndex, triggerId) => {
     const { stepScript, selectedPod } = this.state
-    this.props.client.query({
-      query: AUTH_QUERY,
-      variables: {
-        podId: selectedPod.id
-      }
-    }).then((res) => {
-      const authLens = R.lensPath(['data', 'allPodAuths'])
-      const allPodAuths = R.view(authLens, res)
-      const newStepScript = R.compose(
-        x => StepScript.setNextStep(groupIndex, 1, x),
-        x => StepScript.setStepValue(groupIndex, 'triggerId', triggerId, x)
-      )(stepScript)
-      this.setState({
-        stepScript: newStepScript,
-        allPodAuths
-      }, () => console.log('checking step scr ', this.state.stepScript))
-    })
+    this.props.client
+      .query({
+        query: AUTH_QUERY,
+        variables: {
+          podId: selectedPod.id,
+        },
+      })
+      .then(res => {
+        const authLens = R.lensPath(['data', 'allPodAuths'])
+        const allPodAuths = R.view(authLens, res)
+        const newStepScript = R.compose(
+          x => StepScript.setNextStep(groupIndex, 1, x),
+          x => StepScript.setStepValue(groupIndex, 'triggerId', triggerId, x),
+        )(stepScript)
+        this.setState(
+          {
+            stepScript: newStepScript,
+            allPodAuths,
+          },
+          () => console.log('checking step scr ', this.state.stepScript),
+        )
+      })
   }
 
   /**
@@ -133,11 +137,11 @@ class PipelinePage extends Component {
   _onStepChange = (groupIndex, stepIndex) => {
     const { stepScript } = this.state
     const newEdit = {
-      editing: [groupIndex, stepIndex]
+      editing: [groupIndex, stepIndex],
     }
     const newScript = R.merge(stepScript, newEdit)
     this.setState({
-      stepScript: newScript
+      stepScript: newScript,
     })
   }
   render() {
@@ -149,9 +153,7 @@ class PipelinePage extends Component {
       allPodAuths = [],
       stepScript,
     } = this.state
-    const {
-      allPods = [],
-    } = this.props.data
+    const { allPods = [] } = this.props.data
     console.log('Checking stepscript', stepScript)
     return (
       <_Page>

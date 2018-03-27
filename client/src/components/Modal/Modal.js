@@ -3,13 +3,7 @@ import Modal from 'material-ui/Modal'
 
 class MyModal extends React.Component {
   render() {
-    return (
-      <Modal
-        show
-      >
-        test content
-      </Modal>
-    )
+    return <Modal show>test content</Modal>
   }
 }
 

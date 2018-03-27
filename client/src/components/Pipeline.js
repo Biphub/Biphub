@@ -1,7 +1,7 @@
 import * as R from 'ramda'
 import styled from 'styled-components'
 import vis from 'vis'
-import React, { Component }  from 'react'
+import React, { Component } from 'react'
 import Modal from './Modal'
 
 const Container = styled.div`
@@ -19,11 +19,14 @@ const Vis = styled.div`
 class Pipeline extends Component {
   componentWillUpdate(nextProps) {
     const { nodes, edges } = nextProps
-    const newNodes = R.map((x) => ({
-      id: x.id,
-      label: x.actionName,
-      icon: x.icon,
-    }), nodes)
+    const newNodes = R.map(
+      x => ({
+        id: x.id,
+        label: x.actionName,
+        icon: x.icon,
+      }),
+      nodes,
+    )
     if (newNodes && edges) {
       this._renderGraph(newNodes, edges)
     }
@@ -45,7 +48,7 @@ class Pipeline extends Component {
      * @type {vis.DataSet}
      */
     const nz = new vis.DataSet(nodes)
-    nz.on('click', (props) => {
+    nz.on('click', props => {
       console.log('clicked node! ', props)
     })
     // create an array with edges
@@ -59,11 +62,11 @@ class Pipeline extends Component {
      * @type {vis.DataSet}
      */
     const ez = new vis.DataSet([
-      {from: 1, to: 3},
-      {from: 1, to: 4},
-      {from: 1, to: 6},
-      {from: 2, to: 3},
-      {from: 4, to: 5}
+      { from: 1, to: 3 },
+      { from: 1, to: 4 },
+      { from: 1, to: 6 },
+      { from: 2, to: 3 },
+      { from: 4, to: 5 },
     ])
 
     // create a network
@@ -72,19 +75,19 @@ class Pipeline extends Component {
     // provide the data in the vis format
     const data = {
       nodes: nz,
-      edges: ez
+      edges: ez,
     }
     const options = {}
     // initialize your network!
     const network = new vis.Network(container, data, options)
-    network.on('click', (props) => {
+    network.on('click', props => {
       console.log('on network click! ', props)
     })
   }
   render() {
     return (
       <Container>
-        <Vis id='VisContainer' />
+        <Vis id="VisContainer" />
         <div>test</div>
       </Container>
     )

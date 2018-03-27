@@ -50,7 +50,7 @@ const Title = styled.div`
 const styles = theme => ({
   cardAction: {
     display: 'none',
-  }
+  },
 })
 
 class SequenceRow extends Component {
@@ -59,27 +59,20 @@ class SequenceRow extends Component {
   }
   render() {
     const { host, flattenSequence = [], title, className } = this.props
-    const getIcons = R.compose(
-      (x) => R.map(z => {
+    const getIcons = R.compose(x =>
+      R.map(z => {
         // Otherwise generate it as an icon
         return (
           <Icon>
             <img src={`${host}${z.icon}`} />
           </Icon>
         )
-      }, x)
+      }, x),
     )
     return (
-      <Row
-        className={className}
-        onClick={this._onClick}
-      >
-        <IconContainer>
-          {getIcons(flattenSequence)}
-        </IconContainer>
-        <Title>
-          {title}
-        </Title>
+      <Row className={className} onClick={this._onClick}>
+        <IconContainer>{getIcons(flattenSequence)}</IconContainer>
+        <Title>{title}</Title>
       </Row>
     )
   }

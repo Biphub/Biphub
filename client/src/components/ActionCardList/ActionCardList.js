@@ -4,7 +4,7 @@ import React, { Component } from 'react'
 import TextField from 'material-ui/TextField'
 import ActionCard from '../ActionCard'
 import settings from '../../settings'
-import theme from "../../theme"
+import theme from '../../theme'
 
 const _CardList = styled.div`
   display: flex;
@@ -36,9 +36,9 @@ const _SearchText = styled(TextField)`
 
 class ActionCardList extends Component {
   state = {
-    search: ''
+    search: '',
   }
-  _onSearch = (event) => {
+  _onSearch = event => {
     const search = event.target.value
     this.setState({ search })
   }
@@ -54,10 +54,7 @@ class ActionCardList extends Component {
   _getBgColor = (pod, action) => {
     const bgPath = R.lensPath(['styles', 'background-color'])
     const actionBg = R.view(bgPath, action)
-    const podBg = R.compose(
-      R.view(bgPath),
-      R.head,
-    )(pod)
+    const podBg = R.compose(R.view(bgPath), R.head)(pod)
     if (actionBg) {
       return actionBg
     } else if (podBg) {
@@ -71,7 +68,7 @@ class ActionCardList extends Component {
   }
   render() {
     const { pod, allActions, onClick } = this.props
-    const cards = R.map((action) => {
+    const cards = R.map(action => {
       return (
         <ActionCard
           key={`ActionCard-${action.id}`}
@@ -87,19 +84,17 @@ class ActionCardList extends Component {
       <div>
         <_SearchContainer>
           <_SearchText
-            placeholder='Search a pod...'
+            placeholder="Search a pod..."
             InputProps={{
               disableUnderline: true,
             }}
             InputLabelProps={{
-              shrink: true
+              shrink: true,
             }}
             onChange={this._onSearch}
           />
         </_SearchContainer>
-        <_CardList>
-          {cards}
-        </_CardList>
+        <_CardList>{cards}</_CardList>
       </div>
     )
   }

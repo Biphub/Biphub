@@ -5,26 +5,22 @@ import Tabs, { Tab } from 'material-ui/Tabs'
 import TextField from 'material-ui/TextField'
 
 const TabsContainer = styled.div`
-  background-color: #499DF3;
+  background-color: #499df3;
   color: white;
 `
 
 class Authentication extends Component {
   state = {
-    tabValue: 0
+    tabValue: 0,
   }
   _handleTabChange = (event, tabValue) => {
     this.setState({ tabValue })
   }
-  _getTabs = (auths) => {
+  _getTabs = auths => {
     const { tabValue } = this.state
-    const tabs = R.map((x) => {
+    const tabs = R.map(x => {
       const { strategyType } = x
-      return (
-        <Tab
-          label={strategyType}
-        />
-      )
+      return <Tab label={strategyType} />
     }, auths)
     return (
       <TabsContainer>
@@ -45,28 +41,23 @@ class Authentication extends Component {
     const authIndex = R.lensIndex(tabValue)
     const podAuth = R.view(authIndex, allPodAuths)
     if (!podAuth) {
-      return (
-        <div>
-          Pod does not have any auth type!
-        </div>
-      )
+      return <div>Pod does not have any auth type!</div>
     }
     const { strategyType, properties } = podAuth
     if (strategyType === 'token') {
-      const fields = R.mapObjIndexed((num, key, val) => (
-        <TextField
-          key={`secret-${num}-${key}`}
-          id={key}
-          label={val.title}
-          type='password'
-          margin='normal'
-        />
-      ), properties)
-      return (
-        <div>
-          {fields}
-        </div>
+      const fields = R.mapObjIndexed(
+        (num, key, val) => (
+          <TextField
+            key={`secret-${num}-${key}`}
+            id={key}
+            label={val.title}
+            type="password"
+            margin="normal"
+          />
+        ),
+        properties,
       )
+      return <div>{fields}</div>
     }
   }
   render() {

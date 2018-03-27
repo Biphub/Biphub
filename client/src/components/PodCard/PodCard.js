@@ -23,17 +23,14 @@ const PodName = styled.div`
 `
 
 class PodCard extends Component {
-  _onClick = (id) => {
+  _onClick = id => {
     const { onClick } = this.props
     onClick(id)
   }
   render() {
     const { icon, name, id, background } = this.props
     return (
-      <Wrapper
-        style={{ background }}
-        onClick={() => this._onClick(id)}
-      >
+      <Wrapper style={{ background }} onClick={() => this._onClick(id)}>
         <Icon src={icon} />
         <PodName>{name}</PodName>
       </Wrapper>

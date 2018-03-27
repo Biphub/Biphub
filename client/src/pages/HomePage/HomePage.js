@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import React, { Component }  from 'react'
+import React, { Component } from 'react'
 import { graphql } from 'react-apollo'
 import gql from 'graphql-tag'
 import PodCardList from '../../components/PodCardList'
@@ -26,8 +26,12 @@ const _AppLogo = styled.img`
   animation: App-logo-spin infinite 20s linear;
   height: 80px;
   @keyframes App-logo-spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
   }
 `
 
@@ -36,7 +40,6 @@ const _PageIntro = styled.div`
 `
 
 class HomePage extends Component {
-
   render() {
     const { allPods = [] } = this.props.data
     return (
@@ -49,7 +52,7 @@ class HomePage extends Component {
           <PodCardList allPods={allPods} />
         </_PageIntro>
       </_App>
-    );
+    )
   }
 }
 

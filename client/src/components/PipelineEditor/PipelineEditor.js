@@ -12,7 +12,6 @@ const Container = styled.div`
 `
 
 class PipelineEditor extends Component {
-
   /**
    * Renders editor according to given condition
    * @returns {XML} | undefined
@@ -32,7 +31,7 @@ class PipelineEditor extends Component {
       return (
         <PodCardList
           allPods={allPods}
-          onClick={(id) => this.props.onClickPodCard(x, id)}
+          onClick={id => this.props.onClickPodCard(x, id)}
         />
       )
     } else if (stepName === CHOOSE_EVENT) {
@@ -40,24 +39,16 @@ class PipelineEditor extends Component {
         <ActionCardList
           pod={selectedPod}
           allActions={allActions}
-          onClick={(id) => this.props.onClickTriggerCard(x, id)}
+          onClick={id => this.props.onClickTriggerCard(x, id)}
         />
       )
     } else if (stepName === AUTHENTICATION) {
-      return (
-        <Authentication
-          allPodAuths={allPodAuths}
-        />
-      )
+      return <Authentication allPodAuths={allPodAuths} />
     }
   }
 
   render() {
-    return (
-      <Container>
-        {this._renderEditor()}
-      </Container>
-    )
+    return <Container>{this._renderEditor()}</Container>
   }
 }
 

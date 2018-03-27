@@ -14,13 +14,13 @@ export default {
     { name: CHOOSE_EVENT, title: 'Choose Event' },
     { name: AUTHENTICATION, title: 'Authentication' },
     { name: SETUP_OPTIONS, title: 'Setup Options' },
-    { name: TEST_SETUP, title: 'Test Setup' }
+    { name: TEST_SETUP, title: 'Test Setup' },
   ],
   STEP_ACTION: [
     { name: CHOOSE_POD, title: 'Choose Pod' },
     { name: CHOOSE_ACTIONS, title: 'Choose Action' },
     { name: AUTHENTICATION, title: 'Authentication' },
     { name: SETUP_TEMPLATES, title: 'Setup Templates' },
-    { name: TEST_SETUP, title: 'Test Setup' }
-  ]
+    { name: TEST_SETUP, title: 'Test Setup' },
+  ],
 }

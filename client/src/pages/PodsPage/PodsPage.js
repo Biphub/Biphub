@@ -4,20 +4,16 @@ import gql from 'graphql-tag'
 
 class PodsPage extends Component {
   render() {
-    return (
-      <div>
-        pods
-      </div>
-    )
+    return <div>pods</div>
   }
 }
 
-const PodsPageQuery = gql`  
+const PodsPageQuery = gql`
   query {
-      allPods {
-          id
-          name
-      }
+    allPods {
+      id
+      name
+    }
   }
 `
 

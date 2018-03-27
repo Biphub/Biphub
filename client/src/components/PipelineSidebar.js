@@ -57,19 +57,22 @@ class PipelineSidebar extends Component {
   _onClickCreateEdge = () => {
     console.log('hanling click!')
   }
-  _onClickPod = (pod) => {
+  _onClickPod = pod => {
     console.log('checking pod click', pod)
   }
   render() {
     const { classes, host = '', pods = [] } = this.props
-    const PodList = R.map((x) => (
-      <Pod onClick={() => this._onClickPod(x)}>
-        <div className='sidebar-icon-container'>
-          <img src={`${host}${x.icon}`} />
-        </div>
-        <div>Pod!</div>
-      </Pod>
-    ), pods)
+    const PodList = R.map(
+      x => (
+        <Pod onClick={() => this._onClickPod(x)}>
+          <div className="sidebar-icon-container">
+            <img src={`${host}${x.icon}`} />
+          </div>
+          <div>Pod!</div>
+        </Pod>
+      ),
+      pods,
+    )
     return (
       <Container>
         <Toolbox />
@@ -77,14 +80,12 @@ class PipelineSidebar extends Component {
         <EdgeContainer>
           <Chip
             avatar={<Avatar>MB</Avatar>}
-            label='Create Edge'
+            label="Create Edge"
             onClick={this._onClickCreateEdge}
             className={classes.chip}
           />
         </EdgeContainer>
-        <PodContainer>
-          {PodList}
-        </PodContainer>
+        <PodContainer>{PodList}</PodContainer>
       </Container>
     )
   }

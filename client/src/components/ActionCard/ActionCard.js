@@ -16,21 +16,16 @@ const _CardHeader = styled.h3``
 const _CardDesc = styled.div``
 
 class ActionCard extends Component {
-  _onClick = (id) => {
+  _onClick = id => {
     this.props.onClick(id)
   }
   render() {
-    const {
-      id,
-      title,
-      description,
-      backgroundColor
-    } = this.props
+    const { id, title, description, backgroundColor } = this.props
     return (
       <_Card
         onClick={() => this._onClick(id)}
         style={{
-          backgroundColor
+          backgroundColor,
         }}
       >
         <_CardHeader>{title}</_CardHeader>

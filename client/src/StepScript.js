@@ -1,6 +1,6 @@
 import * as R from 'ramda'
 import uuid from 'uuid4'
-import settings from "./settings"
+import settings from './settings'
 const mapIndexed = R.addIndex(R.map)
 
 /**
@@ -60,7 +60,7 @@ const init = (number = 2) => {
     name: 'A new set of steps',
     description: 'Change the description',
     editing: [0, 0],
-    steps
+    steps,
   }
 }
 
@@ -84,11 +84,7 @@ const getStepName = (x, y) => {
  */
 const setNextStep = (groupIndex, stepIndex, stepScript) => {
   const editingPath = R.lensProp('editing')
-  return R.set(
-    editingPath,
-    [groupIndex, stepIndex + 1],
-    stepScript
-  )
+  return R.set(editingPath, [groupIndex, stepIndex + 1], stepScript)
 }
 
 /**
@@ -99,7 +95,16 @@ const setNextStep = (groupIndex, stepIndex, stepScript) => {
  * @param stepScript
  */
 const setStepValue = (stepIndex, key, value, stepScript) => {
-  console.log('gindex ', stepIndex, ' key ', key, ' value ', value, ' script ', stepScript)
+  console.log(
+    'gindex ',
+    stepIndex,
+    ' key ',
+    key,
+    ' value ',
+    value,
+    ' script ',
+    stepScript,
+  )
   const stepLens = R.lensPath(['steps', stepIndex, key])
   return R.set(stepLens, value, stepScript)
 }
