@@ -5,11 +5,10 @@ import { graphql, withApollo } from 'react-apollo'
 import gql from 'graphql-tag'
 import PipelineEditor from '../../components/PipelineEditor'
 import PipelineSteps from '../../components/PipelineSteps'
-import settings from '../../settings'
 import StepScript from '../../StepScript'
 import ACTION_QUERY from '../../graphql/ActionsByPodQuery'
 import AUTH_QUERY from '../../graphql/AuthByPodQuery'
-const mapIndexed = R.addIndex(R.map)
+
 
 const _Page = styled.div`
   height: 100%;

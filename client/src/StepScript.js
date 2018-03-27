@@ -1,5 +1,6 @@
 import * as R from 'ramda'
-import settings from "./settings";
+import uuid from 'uuid4'
+import settings from "./settings"
 const mapIndexed = R.addIndex(R.map)
 
 /**
@@ -15,27 +16,11 @@ const mapIndexed = R.addIndex(R.map)
  *     {
  *        id: unique identification
  *        description: description of this step
- *        nextStep: nextStep
+ *        nextStep: indicate next step
  *     }
  *   ]
  * }
  */
-
-/**
- * UUID4 Generator
- * @returns {string}
- */
-const uuid = () => {
-  let uuid = "", i, random;
-  for (i = 0; i < 32; i++) {
-    random = Math.random() * 16 | 0;
-    if (i === 8 || i === 12 || i === 16 || i === 20) {
-      uuid += "-"
-    }
-    uuid += (i === 12 ? 4 : (i === 16 ? (random & 3 | 8) : random)).toString(16);
-  }
-  return uuid;
-}
 
 /**
  * Initialise stepscript according to given number of steps
@@ -92,18 +77,6 @@ const getStepName = (x, y) => {
 }
 
 /**
- * Append a new step
- * @param step
- * @param script
- */
-const appendStep = (step, script) => {
-  if (R.type(script) === 'Array') {
-    return R.append(script, step)
-  }
-  throw new Error('Script is not an array!')
-}
-
-/**
  * Edits editing property of stepscript
  * @param groupIndex
  * @param stepIndex
@@ -131,19 +104,9 @@ const setStepValue = (stepIndex, key, value, stepScript) => {
   return R.set(stepLens, value, stepScript)
 }
 
-/**
- * Validate if stepscript is valid
- * @param script
- * @returns {boolean}
- */
-const valiedateStepScript = (script) => {
-  return true
-}
-
 export default {
   init,
   getStepName,
   setNextStep,
-  appendStep,
   setStepValue,
 }

@@ -1,6 +1,6 @@
 {
   "extends": "react-app",
   "rules": {
-    "react/jsx-pascal-case": 0
+    "react/jsx-pascal-case": [0]
   }
 }
