@@ -9,7 +9,7 @@
   "author": "Jason Shin",
   "license": "MIT",
   "scripts": {
-    "build:dev": "npx cross-env NODE_ENV=development gulp build",
+    "build:dev": "npx cross-env NODE_ENV=development gulp build --silent",
     "start": "npx cross-env NODE_ENV=development nodemon -L --watch src --watch pods --watch gulpfile.babel.js --watch .env --exec \"gulp build && node\" ./dist/index.js",
     "test": "jest --forceExit",
     "xo:lint": "yarn fix && npx xo src/**/*.js ./manage.js ./migrate.js",
