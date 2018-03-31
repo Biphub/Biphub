@@ -3,9 +3,10 @@ import styled from 'styled-components'
 import React, { Component } from 'react'
 import { graphql, withApollo } from 'react-apollo'
 import gql from 'graphql-tag'
+import Button from 'material-ui/Button'
 import PipelineEditor from '../../components/PipelineEditor'
 import PipelineSteps from '../../components/PipelineSteps'
-import StepScript from '../../StepScript'
+import StepScriptUtil from '../../utils/StepScript'
 import ACTION_QUERY from '../../graphql/ActionsByPodQuery'
 import AUTH_QUERY from '../../graphql/AuthByPodQuery'
 
@@ -32,7 +33,7 @@ class PipelinePage extends Component {
   state = {
     numberOfActions: 1,
     // Currently active step
-    stepScript: StepScript.init(),
+    stepScript: StepScriptUtil.init(),
     activeStep: {
       index: 0,
       type: 'event',
@@ -75,8 +76,8 @@ class PipelinePage extends Component {
       .then(res => {
         const { stepScript } = this.state
         const newStepScript = R.compose(
-          x => StepScript.setNextStep(groupIndex, 0, x),
-          x => StepScript.setStepValue(groupIndex, 'podId', podId, x),
+          x => StepScriptUtil.setNextStep(groupIndex, 0, x),
+          x => StepScriptUtil.setStepValue(groupIndex, 'podId', podId, x),
         )(stepScript)
         this.setState(
           {
@@ -85,13 +86,19 @@ class PipelinePage extends Component {
           () => {
             const podPath = R.lensPath(['data', 'allPods'])
             const actionsPath = R.lensPath(['data', 'allActions'])
-            const selectedPod = R.view(podPath, res)
+            // TODO: change querying aginst allPod to just pod
+            const selectedPod = R.compose(
+              R.head,
+              R.view(podPath)
+            )(res)
             const allActions = R.view(actionsPath, res)
-            // Setting selected pod and allActions of the pod
-            this.setState({
-              selectedPod,
-              allActions,
-            })
+            // Assign pod and actions to the stepScript
+            const stepScript = R.compose(
+              (script) => StepScriptUtil.setSelectedActions(allActions, script),
+              (script) => StepScriptUtil.setSelectedPod(selectedPod, script)
+            )(this.state.stepScript)
+
+            this.setState({ stepScript })
           },
         )
       })
@@ -115,8 +122,8 @@ class PipelinePage extends Component {
         const authLens = R.lensPath(['data', 'allPodAuths'])
         const allPodAuths = R.view(authLens, res)
         const newStepScript = R.compose(
-          x => StepScript.setNextStep(groupIndex, 1, x),
-          x => StepScript.setStepValue(groupIndex, 'triggerId', triggerId, x),
+          x => StepScriptUtil.setNextStep(groupIndex, 1, x),
+          x => StepScriptUtil.setStepValue(groupIndex, 'triggerId', triggerId, x),
         )(stepScript)
         this.setState(
           {
@@ -144,17 +151,21 @@ class PipelinePage extends Component {
       stepScript: newScript,
     })
   }
+  _onSubmitClick = () => {
+    const { stepScript } = this.state
+    console.log('clicked on submit', stepScript)
+    const result = StepScriptUtil.convertToPipelineData(stepScript)
+    console.log(result)
+  }
   render() {
     const {
       activeStep,
       numberOfActions,
-      allActions = [],
-      selectedPod = {},
-      allPodAuths = [],
       stepScript,
     } = this.state
     const { allPods = [] } = this.props.data
-    console.log('Checking stepscript', stepScript)
+    const [stepTypeIndex, stepNameIndex] = stepScript.editing
+    console.log('checking selected actions ', stepTypeIndex, stepNameIndex)
     return (
       <_Page>
         <PipelineSteps
@@ -167,16 +178,24 @@ class PipelinePage extends Component {
           <_EditorContent>
             <PipelineEditor
               allPods={allPods}
-              stepScript={stepScript}
-              selectedPod={selectedPod}
-              allActions={allActions}
-              allPodAuths={allPodAuths}
+              stepTypeIndex={stepTypeIndex}
+              stepNameIndex={stepNameIndex}
+              selectedPod={stepScript.selectedPod}
+              allActions={stepScript.selectedActions}
+              allPodAuths={[]}
               index={activeStep.index}
               type={activeStep.type}
               step={activeStep.step}
               onClickPodCard={this._onClickPodCard}
               onClickTriggerCard={this._onClickTriggerCard}
             />
+            <Button
+              raised
+              color="primary"
+              onClick={this._onSubmitClick}
+            >
+              Submit
+            </Button>
           </_EditorContent>
         </_Editor>
       </_Page>

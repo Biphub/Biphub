@@ -46,28 +46,25 @@ class ActionCardList extends Component {
    * Get action's bg color
    * If action styles.background-color is empty,
    * fallback to pod's background-color
-   * @param pod
+   * @param selectedPod  // currently selected pod
    * @param action
    * @returns {*}
    * @private
    */
-  _getBgColor = (pod, action) => {
+  _getBgColor = (selectedPod, action) => {
     const bgPath = R.lensPath(['styles', 'background-color'])
     const actionBg = R.view(bgPath, action)
-    const podBg = R.compose(R.view(bgPath), R.head)(pod)
+    const podBg = R.compose(R.view(bgPath), R.head)(selectedPod)
     if (actionBg) {
       return actionBg
     } else if (podBg) {
       // If actionBg is somehow undefined, fallback to pod's bg color
       return podBg
     }
-    // If neither actionBg and podBg are defined,
-    // fallback to default color
-    console.warn('Failed to retrieve any background-colors!')
     return settings.defaultCardBg
   }
   render() {
-    const { pod, allActions, onClick } = this.props
+    const { selectedPod, allActions, onClick } = this.props
     const cards = R.map(action => {
       return (
         <ActionCard
@@ -76,7 +73,7 @@ class ActionCardList extends Component {
           title={action.title}
           description={action.description}
           onClick={onClick}
-          backgroundColor={this._getBgColor(pod, action)}
+          backgroundColor={this._getBgColor(selectedPod, action)}
         />
       )
     }, allActions)
