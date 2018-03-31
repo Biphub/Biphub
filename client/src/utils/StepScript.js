@@ -1,5 +1,5 @@
 import * as R from 'ramda'
-import uuid from 'uuid4'
+// import * as uuid from 'uuid4'
 import settings from '../settings'
 const mapIndexed = R.addIndex(R.map)
 
@@ -24,10 +24,10 @@ const mapIndexed = R.addIndex(R.map)
 
 /**
  * Initialise stepscript according to given number of steps
- * @param number
+ * @param initialLength
  * @returns {*}
  */
-const init = (number = 2) => {
+const init = (initialLength = 2) => {
   const steps = mapIndexed((x, index) => {
     // If x is not empty, simply return it back
     // TODO: Handle payload merge
@@ -37,7 +37,8 @@ const init = (number = 2) => {
     // 0 is always a trigger
     if (index === 0) {
       return {
-        id: uuid(),
+        // id: uuid(),
+        id: 1,
         description: 'Initial step',
         podId: -1,
         trigger: 'event', // This may change
@@ -48,14 +49,15 @@ const init = (number = 2) => {
       }
     }
     return {
-      id: uuid(),
+      // id: uuid(),
+      id: 2,
       description: 'Initial step',
       podId: -1,
       trigger: 'invoke',
       triggerId: -1,
       nextStep: '',
     }
-  }, new Array(number))
+  }, new Array(initialLength))
   return {
     name: 'A new set of steps',
     description: 'Change the description',
