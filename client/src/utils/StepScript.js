@@ -38,7 +38,7 @@ const init = (initialLength = 2) => {
     if (index === 0) {
       return {
         // id: uuid(),
-        id: 1,
+        id: index,
         description: 'Initial step',
         podId: -1,
         trigger: 'event', // This may change
@@ -50,7 +50,7 @@ const init = (initialLength = 2) => {
     }
     return {
       // id: uuid(),
-      id: 2,
+      id: index,
       description: 'Initial step',
       podId: -1,
       trigger: 'invoke',
