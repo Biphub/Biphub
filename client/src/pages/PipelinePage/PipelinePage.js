@@ -55,7 +55,6 @@ class PipelinePage extends Component {
    * @private
    */
   _onClickPodCard = (groupIndex, id) => {
-    console.log('Clicked ', groupIndex, ' pod id ', id)
     this._fetchActionByPodId(groupIndex, id)
   }
   /**
@@ -153,9 +152,8 @@ class PipelinePage extends Component {
   }
   _onSubmitClick = () => {
     const { stepScript } = this.state
-    console.log('clicked on submit', stepScript)
     const result = StepScriptUtil.convertToPipelineData(stepScript)
-    console.log(result)
+    console.log('checking onsubmit result: ', result)
   }
   render() {
     const {
@@ -165,7 +163,6 @@ class PipelinePage extends Component {
     } = this.state
     const { allPods = [] } = this.props.data
     const [stepTypeIndex, stepNameIndex] = stepScript.editing
-    console.log('checking selected actions ', stepTypeIndex, stepNameIndex)
     return (
       <_Page>
         <PipelineSteps

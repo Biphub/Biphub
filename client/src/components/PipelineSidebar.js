@@ -55,10 +55,8 @@ const styles = theme => ({
 
 class PipelineSidebar extends Component {
   _onClickCreateEdge = () => {
-    console.log('hanling click!')
   }
   _onClickPod = pod => {
-    console.log('checking pod click', pod)
   }
   render() {
     const { classes, host = '', pods = [] } = this.props

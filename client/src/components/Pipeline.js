@@ -35,8 +35,6 @@ class Pipeline extends Component {
     console.log('clicked graph component')
   }
   _renderGraph = (nodes, edges) => {
-    console.log('checking nodes ', nodes)
-    console.log('edges ', edges)
     /**
      * [
      {id: 1, label: 'Node 1'},
@@ -49,7 +47,6 @@ class Pipeline extends Component {
      */
     const nz = new vis.DataSet(nodes)
     nz.on('click', props => {
-      console.log('clicked node! ', props)
     })
     // create an array with edges
     /**

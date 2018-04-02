@@ -1,9 +1,9 @@
-import { GraphQLObjectType, GraphQLSchema, GraphQLString } from 'graphql'
-
-import { PipelineList, Pipeline } from './types/Pipeline.type'
+import { GraphQLObjectType, GraphQLSchema, GraphQLString, GraphQLList } from 'graphql'
+import { PipelineList, Pipeline, PipelineType } from './types/Pipeline.type'
 import { PodList } from './types/Pod.type'
 import { ActionList } from './types/Action.type'
 import { PodAuthList } from './types/PodAuth.type'
+import { CreatePipelineMutation } from './mutations/Pipeline.mutation'
 
 const Query = new GraphQLObjectType({
   name: 'Query',
@@ -23,8 +23,17 @@ const Query = new GraphQLObjectType({
   },
 })
 
+const Mutation = new GraphQLObjectType({
+  name: 'Mutation',
+  description: 'Root mutation Object',
+  fields: {
+    createPipeline: CreatePipelineMutation
+  }
+})
+
 const Schema = new GraphQLSchema({
   query: Query,
+  mutation: Mutation,
 })
 
 export default Schema
