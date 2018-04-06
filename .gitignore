@@ -39,4 +39,4 @@ Thumbs.db
 .env.production.local
 
 # sqlite
-database.sqlite
+*.sqlite
