@@ -7,8 +7,8 @@ import Button from 'material-ui/Button'
 import PipelineEditor from '../../components/PipelineEditor'
 import PipelineSteps from '../../components/PipelineSteps'
 import StepScriptUtil from '../../utils/StepScript'
-import ACTION_QUERY from '../../graphql/ActionsByPodQuery'
-import AUTH_QUERY from '../../graphql/AuthByPodQuery'
+import ACTION_QUERY from '../../graphql/queries/ActionsByPodQuery'
+import AUTH_QUERY from '../../graphql/queries/AuthByPodQuery'
 
 const _Page = styled.div`
   height: 100%;
@@ -154,6 +154,21 @@ class PipelinePage extends Component {
     const { stepScript } = this.state
     const result = StepScriptUtil.convertToPipelineData(stepScript)
     console.log('checking onsubmit result: ', result)
+    this.props.client
+      .mutate({
+        variables: {
+          title: "Test pipeline",
+          entryApp: "ASD2",
+          entryType: "webhook",
+          description: "Test pipeline desc",
+          nodes: "[{'id': 1, 'podName': 'biphub-pod-fake1', 'actionName': 'webhook'}]",
+          edges: "[]",
+          dataMaps: "[]"
+        }
+      })
+      .then(res => {
+        console.log('mutation success ', res)
+      })
   }
   render() {
     const {
