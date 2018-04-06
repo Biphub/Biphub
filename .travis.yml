@@ -12,7 +12,9 @@ before_install:
   - "yarn global add npx"
 
 install:
-  - cd server && yarn
+  - cd server && yarn && cd ..
+  - cd client && yarn && cd ..
 
 script:
-  - cd server && yarn xo:lint
+  - cd server && yarn xo:lint && cd ..
+  - cd client && yarn test && cd ..
