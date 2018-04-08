@@ -7,7 +7,7 @@
   "styles": {
     "background-color": "rgb(30, 32, 35)"
   },
-  "preparedConfig": {
+  "config": {
     "token": ""
   },
   "podAuth": {
