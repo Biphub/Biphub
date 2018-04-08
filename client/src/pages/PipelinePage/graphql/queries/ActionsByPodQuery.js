@@ -12,6 +12,8 @@ export default gql`
       description
       trigger
       styles
+      imports
+      exports
     }
   }
 `

@@ -63,7 +63,7 @@ const init = (initialLength = 2) => {
     description: 'Change the description',
     editing: [0, 0],
     selectedPod: undefined, // Currently selected pod
-    selectedActions: [], // Currently displaying actions
+    selectedPodActions: [], // Currently displaying actions
     steps,
   }
 }
@@ -118,16 +118,42 @@ const setSelectedPod = (pod, stepScript) => {
 }
 
 /**
- * Setting selected actions
- * @param actions
+ * Actions of selected pod
+ * @param podActions
  * @param stepScript
  */
-const setSelectedActions = (actions, stepScript) => {
-  if (R.type(actions) !== 'Array') {
-    throw Error('Invalid actions object ', actions)
+const setSelectedPodActions = (podActions, stepScript) => {
+  if (R.type(podActions) !== 'Array') {
+    throw Error('Invalid actions object ', podActions)
   }
-  const actionsLens = R.lensProp('selectedActions')
-  return R.set(actionsLens, actions, stepScript)
+  const lens = R.lensProp('selectedPodActions')
+  return R.set(lens, podActions, stepScript)
+}
+
+/**
+ * Action selected from list of pod actions
+ * @param action
+ * @param stepScript
+ */
+const setSelectedAction = (action, stepScript) => {
+  if (R.type(action) !== 'Object') {
+    throw Error('Invalid action object ', action)
+  }
+  const lens = R.lensProp('selectedAction')
+  return R.set(lens, action, stepScript)
+}
+
+/**
+ * Setting selected action options
+ * @param options
+ * @param stepScript
+ */
+const setSelectedActionOptions = (options, stepScript) => {
+  if (R.type(options) !== 'Object') {
+    throw Error('Invalid options object ', options)
+  }
+  const lens = R.lensProp('selectedActionOptions')
+  return R.set(lens, options, stepScript)
 }
 
 /**
@@ -207,6 +233,8 @@ export default {
   setNextStep,
   setStepValue,
   setSelectedPod,
-  setSelectedActions,
+  setSelectedPodActions,
+  setSelectedAction,
+  setSelectedActionOptions,
   convertToPipelineData
 }

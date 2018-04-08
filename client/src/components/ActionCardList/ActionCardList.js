@@ -64,7 +64,8 @@ class ActionCardList extends Component {
     return settings.defaultCardBg
   }
   render() {
-    const { selectedPod, allActions, onClick } = this.props
+    const { selectedPod, selectedPodActions, onClick } = this.props
+    console.log('checking selected pod actions ', selectedPodActions)
     const cards = R.map(action => {
       return (
         <ActionCard
@@ -76,7 +77,7 @@ class ActionCardList extends Component {
           backgroundColor={this._getBgColor(selectedPod, action)}
         />
       )
-    }, allActions)
+    }, selectedPodActions)
     return (
       <div>
         <_SearchContainer>

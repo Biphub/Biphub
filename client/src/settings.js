@@ -23,4 +23,9 @@ export default {
     { name: SETUP_TEMPLATES, title: 'Setup Templates' },
     { name: TEST_SETUP, title: 'Test Setup' },
   ],
+  OPTIONS: {
+    types: {
+      string: 'string'
+    }
+  }
 }

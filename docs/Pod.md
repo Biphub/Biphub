@@ -37,6 +37,8 @@ describes title, actions, authentications and pod styles.
 | actions.<name>.imports.properties                 | List of input data of the action |
 | actions.<name>.imports.properties.<property_name> | Properties, it contains data type and display title |
 
+Each action has various configurations, imports and exports. We will call them 
+"options" as an umbrella term
 
 ### 2. Pod handler
 

@@ -1,16 +1,13 @@
 import * as R from 'ramda'
 import styled from 'styled-components'
 import React, { Component } from 'react'
-import { graphql, withApollo, compose } from 'react-apollo'
-import gql from 'graphql-tag'
+import { graphql, withApollo } from 'react-apollo'
 import Button from 'material-ui/Button'
 import PipelineEditor from '../../components/PipelineEditor'
 import PipelineSteps from '../../components/PipelineSteps'
 import StepScriptUtil from '../../utils/StepScript'
 import PAGE_QUERY from './graphql/queries/PipelinePageQuery'
 import ACTION_QUERY from './graphql/queries/ActionsByPodQuery'
-import AUTH_QUERY from './graphql/queries/AuthByPodQuery'
-import CREATE_PIPELINE_MUTATION from './graphql/mutations/CreatePipelineMutation'
 
 const _Page = styled.div`
   height: 100%;
@@ -40,33 +37,17 @@ class PipelinePage extends Component {
       index: 0,
       type: 'event',
       step: 'choosePod',
-    },
-    // Stores values
-    steps: [],
-    // Current states
-    selectedPod: {},
-    allActions: [],
-    allPodAuths: [],
+    }
   }
 
   /**
    * Clicking on a pod results in fetching
    * actions by pod id
    * @param groupIndex
-   * @param id
-   * @private
-   */
-  _onClickPodCard = (groupIndex, id) => {
-    this._fetchActionByPodId(groupIndex, id)
-  }
-  /**
-   * Fetches actions by pod id. It results in changing current navigation
-   * context
-   * @param groupIndex
    * @param podId
    * @private
    */
-  _fetchActionByPodId = (groupIndex, podId) => {
+  _onClickPodCard = (groupIndex, podId) => {
     this.props.client
       .query({
         query: ACTION_QUERY,
@@ -92,13 +73,12 @@ class PipelinePage extends Component {
               R.head,
               R.view(podPath)
             )(res)
-            const allActions = R.view(actionsPath, res)
+            const podActions = R.view(actionsPath, res)
             // Assign pod and actions to the stepScript
             const stepScript = R.compose(
-              (script) => StepScriptUtil.setSelectedActions(allActions, script),
+              (script) => StepScriptUtil.setSelectedPodActions(podActions, script),
               (script) => StepScriptUtil.setSelectedPod(selectedPod, script)
             )(this.state.stepScript)
-
             this.setState({ stepScript })
           },
         )
@@ -106,26 +86,53 @@ class PipelinePage extends Component {
   }
   /**
    * On click action
+   * States, stepScript and selectedPod
    * @param groupIndex
-   * @param triggerId
+   * @param actionId
    * @private
    */
-  _onClickTriggerCard = (groupIndex, triggerId) => {
-    const { stepScript, selectedPod } = this.state
+  _onClickAction = (groupIndex, actionId) => {
+    const { stepScript } = this.state
     this.props.client
       .query({
-        query: AUTH_QUERY,
+        query: ACTION_QUERY,
         variables: {
-          podId: selectedPod.id,
+          podId: stepScript.selectedPod.id,
         },
       })
       .then(res => {
         const authLens = R.lensPath(['data', 'allPodAuths'])
         const allPodAuths = R.view(authLens, res)
+
+        // Client side search an action from actions list
+        const findSelectedPodAction = (actions, id) =>
+          R.find(R.propEq('id', id))(actions)
+        const selectedPodAction = findSelectedPodAction(
+          res.data.allActions,
+          actionId)
+
         const newStepScript = R.compose(
-          x => StepScriptUtil.setNextStep(groupIndex, 1, x),
-          x => StepScriptUtil.setStepValue(groupIndex, 'triggerId', triggerId, x),
+          script => StepScriptUtil.setSelectedActionOptions(
+            selectedPodAction.imports.properties,
+            script
+          ),
+          script => StepScriptUtil.setSelectedAction(
+            selectedPodAction,
+            script
+          ),
+          script => StepScriptUtil.setNextStep(
+            groupIndex,
+            1,
+            script
+          ),
+          script => StepScriptUtil.setStepValue(
+            groupIndex,
+            'triggerId',
+            actionId,
+            script
+          ),
         )(stepScript)
+        console.log('checking new script ', newStepScript)
         this.setState(
           {
             stepScript: newStepScript,
@@ -134,6 +141,10 @@ class PipelinePage extends Component {
           () => console.log('checking step scr ', this.state.stepScript),
         )
       })
+  }
+
+  _onOptionUpdate = () => {
+
   }
 
   /**
@@ -153,9 +164,8 @@ class PipelinePage extends Component {
     })
   }
   _onSubmitClick = () => {
-    const { stepScript } = this.state
-    const result = StepScriptUtil.convertToPipelineData(stepScript)
-    console.log('checking result ', result)
+    // const { stepScript } = this.state
+    // const result = StepScriptUtil.convertToPipelineData(stepScript)
     /* this.props.client
       .mutate({
         mutation: CREATE_PIPELINE_MUTATION,
@@ -196,13 +206,14 @@ class PipelinePage extends Component {
               stepTypeIndex={stepTypeIndex}
               stepNameIndex={stepNameIndex}
               selectedPod={stepScript.selectedPod}
-              allActions={stepScript.selectedActions}
+              selectedPodActions={stepScript.selectedPodActions}
               allPodAuths={[]}
+              selectedActionOptions={stepScript.selectedActionOptions}
               index={activeStep.index}
               type={activeStep.type}
               step={activeStep.step}
               onClickPodCard={this._onClickPodCard}
-              onClickTriggerCard={this._onClickTriggerCard}
+              onClickTriggerCard={this._onClickAction}
             />
             <Button
               raised

@@ -3,8 +3,9 @@ import styled from 'styled-components'
 import PodCardList from '../../components/PodCardList'
 import ActionCardList from '../../components/ActionCardList'
 import Authentication from '../../components/Authentication'
+import OptionsEditor from '../../components/OptionsEditor'
 import StepScript from '../../utils/StepScript'
-import { CHOOSE_POD, CHOOSE_EVENT, AUTHENTICATION } from '../../settings'
+import { CHOOSE_POD, CHOOSE_EVENT, AUTHENTICATION, SETUP_OPTIONS } from '../../settings'
 
 const Container = styled.div`
   width: 100%;
@@ -23,8 +24,9 @@ class PipelineEditor extends Component {
       stepNameIndex,
       allPods,
       selectedPod,
-      allActions,
+      selectedPodActions,
       allPodAuths,
+      selectedActionOptions
     } = this.props
     const stepName = StepScript.getStepName(stepTypeIndex, stepNameIndex)
     if (stepName === CHOOSE_POD) {
@@ -38,12 +40,18 @@ class PipelineEditor extends Component {
       return (
         <ActionCardList
           selectedPod={selectedPod}
-          allActions={allActions}
+          selectedPodActions={selectedPodActions}
           onClick={id => this.props.onClickTriggerCard(stepTypeIndex, id)}
         />
       )
     } else if (stepName === AUTHENTICATION) {
       return <Authentication allPodAuths={allPodAuths} />
+    } else if (stepName === SETUP_OPTIONS) {
+      return (
+        <OptionsEditor
+          selectedActionOptions={selectedActionOptions}
+        />
+      )
     }
   }
 
