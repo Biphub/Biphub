@@ -1,7 +1,7 @@
 import * as R from 'ramda'
 import styled from 'styled-components'
 import React, { Component } from 'react'
-import { graphql, withApollo } from 'react-apollo'
+import { graphql, withApollo, compose } from 'react-apollo'
 import gql from 'graphql-tag'
 import Button from 'material-ui/Button'
 import PipelineEditor from '../../components/PipelineEditor'
@@ -9,6 +9,7 @@ import PipelineSteps from '../../components/PipelineSteps'
 import StepScriptUtil from '../../utils/StepScript'
 import ACTION_QUERY from '../../graphql/queries/ActionsByPodQuery'
 import AUTH_QUERY from '../../graphql/queries/AuthByPodQuery'
+import CREATE_PIPELINE_MUTATION from '../../graphql/mutations/CreatePipelineMutation'
 
 const _Page = styled.div`
   height: 100%;
@@ -156,6 +157,7 @@ class PipelinePage extends Component {
     console.log('checking onsubmit result: ', result)
     this.props.client
       .mutate({
+        mutation: CREATE_PIPELINE_MUTATION,
         variables: {
           title: "Test pipeline",
           entryApp: "ASD2",
@@ -169,6 +171,7 @@ class PipelinePage extends Component {
       .then(res => {
         console.log('mutation success ', res)
       })
+    console.log('checkinbg mutate', this.props.client.mutate)
   }
   render() {
     const {
