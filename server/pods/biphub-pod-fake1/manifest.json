@@ -27,30 +27,6 @@
       "styles": {
         "background-color": "#3b579d"
       },
-      "config": {
-        "properties": {
-          "channel": {
-            "type": "string",
-            "oneOf": [
-              {
-                "$ref": "/rpcs/channels_list#channels/{id}"
-              }
-            ],
-            "label": {
-              "$ref": "/rpcs/channels_list#channels/{name}"
-            },
-            "title": "Channel ID"
-          },
-          "username": {
-            "type": "string",
-            "title": "Bot Name (optional)"
-          }
-        },
-        "disposition": [
-          "channel",
-          "username"
-        ]
-      },
       "exports": {
         "properties": {
           "ok": {
@@ -124,10 +100,6 @@
         "properties" : {},
         "definitions" : {}
       },
-      "config" : {
-        "properties" : {},
-        "definitions" : {}
-      },
       "exports" : {
         "type" : "object",
         "properties": {
@@ -170,9 +142,5 @@
         }
       }
     }
-  },
-  "tags": [
-    "messaging",
-    "productivity"
-  ]
+  }
 }

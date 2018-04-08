@@ -154,8 +154,8 @@ class PipelinePage extends Component {
   _onSubmitClick = () => {
     const { stepScript } = this.state
     const result = StepScriptUtil.convertToPipelineData(stepScript)
-    console.log('checking onsubmit result: ', result)
-    this.props.client
+    console.log('checking result ', result)
+    /* this.props.client
       .mutate({
         mutation: CREATE_PIPELINE_MUTATION,
         variables: {
@@ -170,8 +170,7 @@ class PipelinePage extends Component {
       })
       .then(res => {
         console.log('mutation success ', res)
-      })
-    console.log('checkinbg mutate', this.props.client.mutate)
+      }) */
   }
   render() {
     const {
