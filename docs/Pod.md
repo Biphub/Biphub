@@ -5,6 +5,10 @@ APIs. Example of a pod can be "biphub-slack-pod" that can submit message to a
 channel, create channels and set up reminder. Also this pod can register a 
 Webhook endpoint to Slack.
 
+# Requirements
+
+- Pod name must be globally unique in Biphub pod network
+
 # Core concepts
 
 ### 1. Pod resource

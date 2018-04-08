@@ -59,30 +59,6 @@
       "title": "Create a fake issue",
       "description": "Posts a Message to a Channel",
       "trigger": "invoke",
-      "config": {
-        "properties": {
-          "channel": {
-            "type": "string",
-            "oneOf": [
-              {
-                "$ref": "/rpcs/channels_list#channels/{id}"
-              }
-            ],
-            "label": {
-              "$ref": "/rpcs/channels_list#channels/{name}"
-            },
-            "title": "Channel ID"
-          },
-          "username": {
-            "type": "string",
-            "title": "Bot Name (optional)"
-          }
-        },
-        "disposition": [
-          "channel",
-          "username"
-        ]
-      },
       "exports": {
         "properties": {
           "ok": {

@@ -6,9 +6,8 @@ import * as Sequelize from 'sequelize'
  * @returns {any}
  */
 export default function(sequelize) {
-  const Field = sequelize.define('Field', {
+  return sequelize.define('Field', {
     title: Sequelize.STRING,
     properties: Sequelize.JSONB,
   })
-  return Field
 }
