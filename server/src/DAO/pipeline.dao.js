@@ -21,12 +21,11 @@ export function listAll() {
 export function create(pipeline) {
   return models.Pipeline.create(pipeline)
 }
-  /* return fluture.Future((rej, res) => {
+/* return fluture.Future((rej, res) => {
     models.Pipeline.create(pipeline)
       .then(value => res(value))
       .catch(err => rej(err))
   }) */
-
 
 /**
  * Find all pipelines by entry app name.

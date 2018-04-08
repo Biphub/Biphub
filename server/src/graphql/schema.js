@@ -1,4 +1,9 @@
-import { GraphQLObjectType, GraphQLSchema, GraphQLString, GraphQLList } from 'graphql'
+import {
+  GraphQLObjectType,
+  GraphQLSchema,
+  GraphQLString,
+  GraphQLList,
+} from 'graphql'
 import { PipelineList, Pipeline, PipelineType } from './types/Pipeline.type'
 import { PodList } from './types/Pod.type'
 import { ActionList } from './types/Action.type'
@@ -27,8 +32,8 @@ const Mutation = new GraphQLObjectType({
   name: 'Mutation',
   description: 'Root mutation Object',
   fields: {
-    createPipeline: CreatePipelineMutation
-  }
+    createPipeline: CreatePipelineMutation,
+  },
 })
 
 const Schema = new GraphQLSchema({

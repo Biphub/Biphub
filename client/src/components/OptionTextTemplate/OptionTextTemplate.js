@@ -4,15 +4,15 @@ import React, { Component } from 'react'
 
 class OptionTextTemplate extends Component {
   state = {
-    value: 'Controlled'
+    value: 'Controlled',
   }
   /**
    * Handle text field change
    * @private
    */
-  _handleChange = (e) => {
+  _handleChange = e => {
     this.setState({
-      value: e.target.value
+      value: e.target.value,
     })
   }
 

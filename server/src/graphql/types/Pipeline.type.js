@@ -19,7 +19,7 @@ export const PipelineType = new GraphQLObjectType({
     return {
       id: {
         type: GraphQLInt,
-        resolve: x => x.get('id')
+        resolve: x => x.get('id'),
       },
       title: {
         type: GraphQLString,

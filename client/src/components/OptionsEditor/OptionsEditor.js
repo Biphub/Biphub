@@ -10,23 +10,14 @@ class OptionsEditor extends Component {
       R.values,
       R.mapObjIndexed((option, key) => {
         if (option.type === settings.OPTIONS.types.string) {
-          return (
-            <OptionTextTemplate
-              key={`OptionTextTemplate-${key}`}
-            />
-          )
+          return <OptionTextTemplate key={`OptionTextTemplate-${key}`} />
         } else {
           throw Error('Unrecognised option field!', option)
         }
-      })
+      }),
     )
     const options = getOptions(selectedActionOptions)
-    console.log(options)
-    return (
-      <div>
-        {options}
-      </div>
-    )
+    return <div>{options}</div>
   }
 }
 

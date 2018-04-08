@@ -37,7 +37,7 @@ class PipelinePage extends Component {
       index: 0,
       type: 'event',
       step: 'choosePod',
-    }
+    },
   }
 
   /**
@@ -69,15 +69,13 @@ class PipelinePage extends Component {
             const podPath = R.lensPath(['data', 'allPods'])
             const actionsPath = R.lensPath(['data', 'allActions'])
             // TODO: change querying aginst allPod to just pod
-            const selectedPod = R.compose(
-              R.head,
-              R.view(podPath)
-            )(res)
+            const selectedPod = R.compose(R.head, R.view(podPath))(res)
             const podActions = R.view(actionsPath, res)
             // Assign pod and actions to the stepScript
             const stepScript = R.compose(
-              (script) => StepScriptUtil.setSelectedPodActions(podActions, script),
-              (script) => StepScriptUtil.setSelectedPod(selectedPod, script)
+              script =>
+                StepScriptUtil.setSelectedPodActions(podActions, script),
+              script => StepScriptUtil.setSelectedPod(selectedPod, script),
             )(this.state.stepScript)
             this.setState({ stepScript })
           },
@@ -109,28 +107,24 @@ class PipelinePage extends Component {
           R.find(R.propEq('id', id))(actions)
         const selectedPodAction = findSelectedPodAction(
           res.data.allActions,
-          actionId)
+          actionId,
+        )
 
         const newStepScript = R.compose(
-          script => StepScriptUtil.setSelectedActionOptions(
-            selectedPodAction.imports.properties,
-            script
-          ),
-          script => StepScriptUtil.setSelectedAction(
-            selectedPodAction,
-            script
-          ),
-          script => StepScriptUtil.setNextStep(
-            groupIndex,
-            1,
-            script
-          ),
-          script => StepScriptUtil.setStepValue(
-            groupIndex,
-            'triggerId',
-            actionId,
-            script
-          ),
+          script =>
+            StepScriptUtil.setSelectedActionOptions(
+              selectedPodAction.imports.properties,
+              script,
+            ),
+          script => StepScriptUtil.setSelectedAction(selectedPodAction, script),
+          script => StepScriptUtil.setNextStep(groupIndex, 1, script),
+          script =>
+            StepScriptUtil.setStepValue(
+              groupIndex,
+              'triggerId',
+              actionId,
+              script,
+            ),
         )(stepScript)
         console.log('checking new script ', newStepScript)
         this.setState(
@@ -143,9 +137,7 @@ class PipelinePage extends Component {
       })
   }
 
-  _onOptionUpdate = () => {
-
-  }
+  _onOptionUpdate = () => {}
 
   /**
    * Change currently editing step
@@ -184,11 +176,7 @@ class PipelinePage extends Component {
       }) */
   }
   render() {
-    const {
-      activeStep,
-      numberOfActions,
-      stepScript,
-    } = this.state
+    const { activeStep, numberOfActions, stepScript } = this.state
     const { allPods = [] } = this.props.data
     const [stepTypeIndex, stepNameIndex] = stepScript.editing
     return (
@@ -215,11 +203,7 @@ class PipelinePage extends Component {
               onClickPodCard={this._onClickPodCard}
               onClickTriggerCard={this._onClickAction}
             />
-            <Button
-              raised
-              color="primary"
-              onClick={this._onSubmitClick}
-            >
+            <Button raised color="primary" onClick={this._onSubmitClick}>
               Submit
             </Button>
           </_EditorContent>

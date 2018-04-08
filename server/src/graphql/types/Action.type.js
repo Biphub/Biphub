@@ -36,12 +36,12 @@ export const ActionType = new GraphQLObjectType({
       },
       imports: {
         type: GraphQLJSON,
-        resolve: x => x.get('imports')
+        resolve: x => x.get('imports'),
       },
       exports: {
         type: GraphQLJSON,
-        resolve: x => x.get('exports')
-      }
+        resolve: x => x.get('exports'),
+      },
     }
   },
 })

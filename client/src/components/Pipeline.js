@@ -46,8 +46,7 @@ class Pipeline extends Component {
      * @type {vis.DataSet}
      */
     const nz = new vis.DataSet(nodes)
-    nz.on('click', props => {
-    })
+    nz.on('click', props => {})
     // create an array with edges
     /**
      * [

@@ -25,8 +25,8 @@ test('init stepscript', () => {
         trigger: 'invoke',
         triggerId: -1,
         nextStep: '',
-      }
-    ]
+      },
+    ],
   }
   expect(result).toEqual(expected)
 })
@@ -61,22 +61,22 @@ test('get step names', () => {
       StepScriptUtil.getStepName(0, 1),
       StepScriptUtil.getStepName(0, 2),
       StepScriptUtil.getStepName(0, 3),
-      StepScriptUtil.getStepName(0, 4)
+      StepScriptUtil.getStepName(0, 4),
     ],
     STEP_ACTION: [
       StepScriptUtil.getStepName(1, 0),
       StepScriptUtil.getStepName(1, 1),
       StepScriptUtil.getStepName(1, 2),
       StepScriptUtil.getStepName(1, 3),
-      StepScriptUtil.getStepName(1, 4)
-    ]
+      StepScriptUtil.getStepName(1, 4),
+    ],
   }
   expect(result).toEqual(expected)
 })
 
 test('set next step: from editing 0, 0 to 0, 1', () => {
   const expected = {
-    editing: [0, 1]
+    editing: [0, 1],
   }
   const result = StepScriptUtil.setNextStep(0, 0, {})
   expect(result).toEqual(expected)
@@ -84,18 +84,18 @@ test('set next step: from editing 0, 0 to 0, 1', () => {
 
 test('set step value: setting a random value', () => {
   const stepScript = {
-   steps: [
-     {
-       test: 0,
-     }
-   ]
+    steps: [
+      {
+        test: 0,
+      },
+    ],
   }
   const expected = {
     steps: [
-     {
-       test: 123,
-     }
-   ]
+      {
+        test: 123,
+      },
+    ],
   }
   const result = StepScriptUtil.setStepValue(0, 'test', 123, stepScript)
   expect(result).toEqual(expected)
@@ -104,31 +104,25 @@ test('set step value: setting a random value', () => {
 test('set selected pod id 1', () => {
   const stepScript = {
     selectedPod: {
-      id: -1
-    }
+      id: -1,
+    },
   }
   const expected = {
     selectedPod: {
-      id: 1
-    }
+      id: 1,
+    },
   }
-  const result = StepScriptUtil.setSelectedPod(
-    { id: 1 },
-    stepScript
-  )
+  const result = StepScriptUtil.setSelectedPod({ id: 1 }, stepScript)
   expect(result).toEqual(expected)
 })
 
 test('set selected actions 1', () => {
   const stepScript = {
-    selectedActions: [123]
+    selectedActions: [123],
   }
   const expected = {
-    selectedActions: [321]
+    selectedActions: [321],
   }
-  const result = StepScriptUtil.setSelectedActions(
-    [321],
-    stepScript
-  )
+  const result = StepScriptUtil.setSelectedActions([321], stepScript)
   expect(result).toEqual(expected)
 })

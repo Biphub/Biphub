@@ -25,7 +25,7 @@ export default {
   ],
   OPTIONS: {
     types: {
-      string: 'string'
-    }
-  }
+      string: 'string',
+    },
+  },
 }

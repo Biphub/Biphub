@@ -7,28 +7,28 @@ export const CreatePipelineMutation = {
   type: PipelineType,
   args: {
     title: {
-      type: GraphQLString
+      type: GraphQLString,
     },
     entryApp: {
-      type: GraphQLString
+      type: GraphQLString,
     },
     entryType: {
-      type: GraphQLString
+      type: GraphQLString,
     },
     description: {
-      type: GraphQLString
+      type: GraphQLString,
     },
     nodes: {
-      type: GraphQLJSON
+      type: GraphQLJSON,
     },
     edges: {
-      type: GraphQLJSON
+      type: GraphQLJSON,
     },
     dataMaps: {
-      type: GraphQLJSON
-    }
+      type: GraphQLJSON,
+    },
   },
   resolve: (_, pipeline) => {
     return create(pipeline)
-  }
+  },
 }

@@ -54,10 +54,8 @@ const styles = theme => ({
 })
 
 class PipelineSidebar extends Component {
-  _onClickCreateEdge = () => {
-  }
-  _onClickPod = pod => {
-  }
+  _onClickCreateEdge = () => {}
+  _onClickPod = pod => {}
   render() {
     const { classes, host = '', pods = [] } = this.props
     const PodList = R.map(
