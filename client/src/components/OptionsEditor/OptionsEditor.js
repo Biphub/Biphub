@@ -9,8 +9,12 @@ class OptionsEditor extends Component {
     const getOptions = R.compose(
       R.values,
       R.mapObjIndexed((option, key) => {
+        console.log('checking option ', option)
         if (option.type === settings.OPTIONS.types.string) {
-          return <OptionTextTemplate key={`OptionTextTemplate-${key}`} />
+          return <OptionTextTemplate
+            label={option.title}
+            key={`OptionTextTemplate-${key}`}
+          />
         } else {
           throw Error('Unrecognised option field!', option)
         }

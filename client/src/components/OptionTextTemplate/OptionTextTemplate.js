@@ -17,15 +17,24 @@ class OptionTextTemplate extends Component {
   }
 
   render() {
-    const { classes } = this.props
+    const {
+      classes,
+      label = 'Text field',
+      rowMax = 4,
+      fullWidth = true,
+      labelShrink = true
+    } = this.props
     return (
       <div>
         <TextField
-          id="multiline-flexible"
-          label="Multiline"
+          label={label}
           multiline
-          rowsMax="4"
+          fullWidth={fullWidth}
+          rowsMax={rowMax}
           value={this.state.multiline}
+          InputLabelProps={{
+            shrink: labelShrink,
+          }}
           onChange={this._handleChange}
           className={classes.textField}
           margin="normal"
