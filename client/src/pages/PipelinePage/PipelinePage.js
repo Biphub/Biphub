@@ -7,9 +7,10 @@ import Button from 'material-ui/Button'
 import PipelineEditor from '../../components/PipelineEditor'
 import PipelineSteps from '../../components/PipelineSteps'
 import StepScriptUtil from '../../utils/StepScript'
-import ACTION_QUERY from '../../graphql/queries/ActionsByPodQuery'
-import AUTH_QUERY from '../../graphql/queries/AuthByPodQuery'
-import CREATE_PIPELINE_MUTATION from '../../graphql/mutations/CreatePipelineMutation'
+import PAGE_QUERY from './graphql/queries/PipelinePageQuery'
+import ACTION_QUERY from './graphql/queries/ActionsByPodQuery'
+import AUTH_QUERY from './graphql/queries/AuthByPodQuery'
+import CREATE_PIPELINE_MUTATION from './graphql/mutations/CreatePipelineMutation'
 
 const _Page = styled.div`
   height: 100%;
@@ -217,16 +218,5 @@ class PipelinePage extends Component {
   }
 }
 
-const PipelinePageQuery = gql`
-  query {
-    allPods {
-      id
-      title
-      icon
-      styles
-    }
-  }
-`
-
 const ApolloPipelinePage = withApollo(PipelinePage)
-export default graphql(PipelinePageQuery)(ApolloPipelinePage)
+export default graphql(PAGE_QUERY)(ApolloPipelinePage)
