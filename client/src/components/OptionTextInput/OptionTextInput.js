@@ -1,3 +1,4 @@
+import * as R from 'ramda'
 import TextField from 'material-ui/TextField'
 import { withStyles } from 'material-ui/styles'
 import React, { Component } from 'react'
@@ -6,19 +7,23 @@ class OptionTextTemplate extends Component {
   state = {
     value: 'Controlled',
   }
+  constructor() {
+    super()
+    this.setState.bind(this)
+  }
   /**
    * Handle text field change
    * @private
    */
   _handleChange = e => {
-    this.setState({
-      value: e.target.value,
-    })
+    const { onUpdateOption } = this.props
+    const { value } = e.target
+    onUpdateOption(value)
+    this.setState({ value })
   }
 
   render() {
     const {
-      classes,
       label = 'Text field',
       rowMax = 4,
       fullWidth = true,
@@ -36,7 +41,6 @@ class OptionTextTemplate extends Component {
             shrink: labelShrink,
           }}
           onChange={this._handleChange}
-          className={classes.textField}
           margin="normal"
         />
       </div>

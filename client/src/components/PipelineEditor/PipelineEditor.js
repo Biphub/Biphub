@@ -32,6 +32,7 @@ class PipelineEditor extends Component {
       selectedPodActions,
       allPodAuths,
       selectedActionOptions,
+      onUpdateOption
     } = this.props
     const stepName = StepScript.getStepName(stepTypeIndex, stepNameIndex)
     if (stepName === CHOOSE_POD) {
@@ -52,7 +53,12 @@ class PipelineEditor extends Component {
     } else if (stepName === AUTHENTICATION) {
       return <Authentication allPodAuths={allPodAuths} />
     } else if (stepName === SETUP_OPTIONS) {
-      return <OptionsEditor selectedActionOptions={selectedActionOptions} />
+      return (
+        <OptionsEditor
+          selectedActionOptions={selectedActionOptions}
+          onUpdateOption={onUpdateOption}
+        />
+      )
     }
   }
 

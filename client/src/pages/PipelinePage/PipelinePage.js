@@ -137,7 +137,14 @@ class PipelinePage extends Component {
       })
   }
 
-  _onOptionUpdate = () => {}
+  /**
+   *
+   * @param key
+   * @param value
+   */
+  _onUpdateOption = (key, value) => {
+    console.log('checking option update ', key, value)
+  }
 
   /**
    * Change currently editing step
@@ -202,6 +209,7 @@ class PipelinePage extends Component {
               step={activeStep.step}
               onClickPodCard={this._onClickPodCard}
               onClickTriggerCard={this._onClickAction}
+              onUpdateOption={this._onUpdateOption}
             />
             <Button raised color="primary" onClick={this._onSubmitClick}>
               Submit
