@@ -19,7 +19,8 @@ export function listAll() {
  * @returns {any} // TODO Fix any type
  */
 export function create(pipeline) {
-  return models.Pipeline.create(pipeline)
+  console.log('checking pipeline ', pipeline)
+  // return models.Pipeline.create(pipeline)
 }
 /* return fluture.Future((rej, res) => {
     models.Pipeline.create(pipeline)

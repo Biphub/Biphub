@@ -18,15 +18,9 @@ export const CreatePipelineMutation = {
     description: {
       type: GraphQLString,
     },
-    nodes: {
+    stepScript: {
       type: GraphQLJSON,
-    },
-    edges: {
-      type: GraphQLJSON,
-    },
-    dataMaps: {
-      type: GraphQLJSON,
-    },
+    }
   },
   resolve: (_, pipeline) => {
     return create(pipeline)

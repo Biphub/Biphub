@@ -8,6 +8,7 @@ import PipelineSteps from '../../components/PipelineSteps'
 import StepScriptUtil from '../../utils/StepScript'
 import PAGE_QUERY from './graphql/queries/PipelinePageQuery'
 import ACTION_QUERY from './graphql/queries/ActionsByPodQuery'
+import CREATE_PIPELINE_MUTATION from './graphql/mutations/CreatePipelineMutation'
 
 const _Page = styled.div`
   height: 100%;
@@ -144,14 +145,15 @@ class PipelinePage extends Component {
    */
   _onUpdateOption = (groupIndex, id, value) => {
     const { stepScript } = this.state
-
     const newScript = StepScriptUtil.setStepValue(
       groupIndex,
       ['options', id],
       value,
       stepScript
     )
-    console.log('checking option update ', newScript)
+    this.setState({
+      stepScript: newScript
+    })
   }
 
   /**
@@ -171,9 +173,10 @@ class PipelinePage extends Component {
     })
   }
   _onSubmitClick = () => {
-    // const { stepScript } = this.state
+    const { stepScript } = this.state
+    console.log('submitting stepscript ', stepScript)
     // const result = StepScriptUtil.convertToPipelineData(stepScript)
-    /* this.props.client
+    this.props.client
       .mutate({
         mutation: CREATE_PIPELINE_MUTATION,
         variables: {
@@ -181,14 +184,12 @@ class PipelinePage extends Component {
           entryApp: "ASD2",
           entryType: "webhook",
           description: "Test pipeline desc",
-          nodes: "[{'id': 1, 'podName': 'biphub-pod-fake1', 'actionName': 'webhook'}]",
-          edges: "[]",
-          dataMaps: "[]"
+          stepScript: stepScript
         }
       })
       .then(res => {
         console.log('mutation success ', res)
-      }) */
+      })
   }
   render() {
     const { activeStep, numberOfActions, stepScript } = this.state

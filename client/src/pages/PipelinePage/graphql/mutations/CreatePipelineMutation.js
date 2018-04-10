@@ -6,18 +6,14 @@ export default gql`
     $entryApp: String!
     $entryType: String!
     $description: String!
-    $nodes: JSON!
-    $edges: JSON!
-    $dataMaps: JSON!
+    $stepScript: JSON!
   ) {
     createPipeline(
       title: $title
       entryApp: $entryApp
       entryType: $entryType
       description: $description
-      nodes: $nodes
-      edges: $edges
-      dataMaps: $dataMaps
+      stepScript: $stepScript
     ) {
       id
       title

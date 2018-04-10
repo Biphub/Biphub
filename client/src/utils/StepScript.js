@@ -106,7 +106,7 @@ const setStepValue = (stepIndex, path, value, stepScript) => {
       return R.append(path, initialPath)
     } else if (R.type(path) === 'Array') {
       // Merging array path
-      return R.merge(path, initialPath)
+      return R.concat(initialPath, path)
     }
   }
   const stepLens = R.lensPath(getPath())
