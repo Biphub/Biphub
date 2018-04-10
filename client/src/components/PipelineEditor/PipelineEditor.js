@@ -32,14 +32,16 @@ class PipelineEditor extends Component {
       selectedPodActions,
       allPodAuths,
       selectedActionOptions,
-      onUpdateOption
+      onUpdateOption,
+      onClickPodCard,
+      onClickTriggerCard
     } = this.props
     const stepName = StepScript.getStepName(stepTypeIndex, stepNameIndex)
     if (stepName === CHOOSE_POD) {
       return (
         <PodCardList
           allPods={allPods}
-          onClick={id => this.props.onClickPodCard(stepTypeIndex, id)}
+          onClick={id => onClickPodCard(stepTypeIndex, id)}
         />
       )
     } else if (stepName === CHOOSE_EVENT) {
@@ -47,7 +49,7 @@ class PipelineEditor extends Component {
         <ActionCardList
           selectedPod={selectedPod}
           selectedPodActions={selectedPodActions}
-          onClick={id => this.props.onClickTriggerCard(stepTypeIndex, id)}
+          onClick={id => onClickTriggerCard(stepTypeIndex, id)}
         />
       )
     } else if (stepName === AUTHENTICATION) {
@@ -56,7 +58,7 @@ class PipelineEditor extends Component {
       return (
         <OptionsEditor
           selectedActionOptions={selectedActionOptions}
-          onUpdateOption={onUpdateOption}
+          onUpdateOption={(id, value) => onUpdateOption(stepTypeIndex, id, value)}
         />
       )
     }

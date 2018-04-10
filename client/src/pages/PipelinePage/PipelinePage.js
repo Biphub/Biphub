@@ -138,12 +138,20 @@ class PipelinePage extends Component {
   }
 
   /**
-   *
-   * @param key
+   * @param groupIndex
+   * @param id
    * @param value
    */
-  _onUpdateOption = (key, value) => {
-    console.log('checking option update ', key, value)
+  _onUpdateOption = (groupIndex, id, value) => {
+    const { stepScript } = this.state
+
+    const newScript = StepScriptUtil.setStepValue(
+      groupIndex,
+      ['options', id],
+      value,
+      stepScript
+    )
+    console.log('checking option update ', newScript)
   }
 
   /**

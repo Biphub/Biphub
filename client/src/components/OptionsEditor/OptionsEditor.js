@@ -12,10 +12,10 @@ class OptionsEditor extends Component {
     const getOptions = R.compose(
       R.values,
       R.mapObjIndexed((option, key) => {
-        console.log('checking option ', option)
         if (option.type === settings.OPTIONS.types.string) {
           return (
             <OptionTextInput
+              id={key}
               label={option.title}
               key={`OptionTextTemplate-${key}`}
               onUpdateOption={onUpdateOption}

@@ -1,4 +1,5 @@
 import * as R from 'ramda'
+import debounce from 'lodash/debounce'
 import TextField from 'material-ui/TextField'
 import { withStyles } from 'material-ui/styles'
 import React, { Component } from 'react'
@@ -11,15 +12,22 @@ class OptionTextTemplate extends Component {
     super()
     this.setState.bind(this)
   }
+
+  componentWillMount() {
+    const { onUpdateOption } = this.props
+    this._onUpdateOption = debounce(onUpdateOption, 1000)
+  }
+
   /**
    * Handle text field change
    * @private
    */
-  _handleChange = e => {
-    const { onUpdateOption } = this.props
-    const { value } = e.target
-    onUpdateOption(value)
-    this.setState({ value })
+  _handleChange = value => {
+    const { id } = this.props
+    this.setState(
+      { value },
+      () => this._onUpdateOption(id, value)
+    )
   }
 
   render() {
@@ -40,7 +48,7 @@ class OptionTextTemplate extends Component {
           InputLabelProps={{
             shrink: labelShrink,
           }}
-          onChange={this._handleChange}
+          onChange={(e) => this._handleChange(e.target.value)}
           margin="normal"
         />
       </div>

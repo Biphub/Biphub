@@ -95,12 +95,21 @@ const setNextStep = (groupIndex, stepIndex, stepScript) => {
 /**
  * Set group value by key
  * @param stepIndex
- * @param key
+ * @param path
  * @param value
  * @param stepScript
  */
-const setStepValue = (stepIndex, key, value, stepScript) => {
-  const stepLens = R.lensPath(['steps', stepIndex, key])
+const setStepValue = (stepIndex, path, value, stepScript) => {
+  const getPath = () => {
+    const initialPath = ['steps', stepIndex]
+    if (R.type(path) !== 'Array') {
+      return R.append(path, initialPath)
+    } else if (R.type(path) === 'Array') {
+      // Merging array path
+      return R.merge(path, initialPath)
+    }
+  }
+  const stepLens = R.lensPath(getPath())
   return R.set(stepLens, value, stepScript)
 }
 
