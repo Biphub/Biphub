@@ -11,6 +11,7 @@ class OptionTextTemplate extends Component {
   constructor() {
     super()
     this.setState.bind(this)
+    this.keyCodeChain = [0, 0]
   }
 
   componentWillMount() {
@@ -22,11 +23,13 @@ class OptionTextTemplate extends Component {
    * Handle text field change
    * @private
    */
-  _handleChange = value => {
+  _handleChange = (value, key) => {
     const { id } = this.props
     this.setState(
       { value },
-      () => this._onUpdateOption(id, value)
+      () => {
+        this._onUpdateOption(id, value)
+      }
     )
   }
 
